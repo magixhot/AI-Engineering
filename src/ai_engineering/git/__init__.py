@@ -17,11 +17,19 @@ from .tools import (
 )
 
 __all__ = [
+
+    # Exceptions
     "GitError",
     "GitCommandError",
     "GitRepositoryNotFoundError",
+
+    # Models
     "GitStatus",
+
+    # Service
     "GitService",
+
+    # MCP tools
     "git_status",
     "git_branch",
     "git_log",

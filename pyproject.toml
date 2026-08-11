@@ -4,7 +4,9 @@ version = "0.1.0"
 description = "Engineering MCP Server and engineering tools."
 readme = "README.md"
 requires-python = ">=3.11"
-dependencies = []
+dependencies = [
+    "mcp>=1.27,<1.28",
+]
 
 [dependency-groups]
 dev = [

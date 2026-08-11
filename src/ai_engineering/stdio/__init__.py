@@ -1,9 +1,9 @@
 """
-MCP STDIO package.
+AI-Engineering STDIO package.
 """
 
-from .server import STDIOTransportServer
+from .main import main
 
 __all__ = [
-    "STDIOTransportServer",
+    "main",
 ]

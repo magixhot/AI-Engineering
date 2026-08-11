@@ -24,12 +24,20 @@ from .tools import (
 )
 
 __all__ = [
-    "WorkspaceAlreadyExistsError",
+
+    # Exceptions
     "WorkspaceError",
     "WorkspaceNotFoundError",
+    "WorkspaceAlreadyExistsError",
     "WorkspacePermissionError",
+
+    # Models
     "WorkspaceEntry",
+
+    # Service
     "WorkspaceService",
+
+    # MCP tools
     "workspace_list",
     "workspace_read_file",
     "workspace_write_file",

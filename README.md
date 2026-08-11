@@ -2,7 +2,7 @@
 
 **Status:** Active
 
-**Version:** 1.0
+**Version:** 0.1.0
 
 ---
 
@@ -12,7 +12,7 @@ AI-Engineering is the engineering foundation of the AI Infrastructure ecosystem.
 
 Its purpose is to provide the tools, standards, workflows and automation required to build, maintain and evolve AI projects in a consistent, reproducible and scalable way.
 
-The first major component of this repository is the **Engineering MCP Server**, which enables AI assistants to interact with engineering projects through the Model Context Protocol (MCP).
+The first major component of this repository is the **Engineering MCP Server**, which enables AI assistants to interact with engineering projects through the Model Context Protocol (MCP) and now uses the official Python `mcp` SDK.
 
 ---
 
@@ -83,9 +83,9 @@ This document contains everything required to restore the current project contex
 
 Current phase:
 
-**Sprint 0 — Documentation Foundation**
+**Release Candidate 0.1.0 — Official Python MCP SDK migration active**
 
-Implementation begins only after the documentation foundation has been completed and approved.
+Implementation continues with stabilization and documentation completion for the 0.1.0 release candidate.
 
 ---
 

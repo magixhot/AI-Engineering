@@ -30,6 +30,7 @@ from ..workspace import (
 )
 from .config import DEFAULT_CONFIG, MCPConfig
 from .lifecycle import MCPLifecycle
+from .sdk_adapter import SDKAdapter
 
 
 class EngineeringMCPServer:
@@ -46,6 +47,11 @@ class EngineeringMCPServer:
         self._lifecycle = MCPLifecycle(self._config)
 
         self._register_builtin_tools()
+
+        # Official MCP SDK adapter
+        self._sdk = SDKAdapter(
+            self._registry
+)
 
     def _register_builtin_tools(self) -> None:
         """
@@ -185,7 +191,19 @@ class EngineeringMCPServer:
         self._lifecycle.start()
 
     def stop(self) -> None:
+        """
+        Stop the MCP server.
+        """
+
         self._lifecycle.stop()
+
+    @property
+    def sdk(self) -> SDKAdapter:
+        """
+        Return the official MCP SDK adapter.
+        """
+
+        return self._sdk
 
 
 def create_server(

@@ -13,6 +13,7 @@ def git_status() -> dict:
     """
     Return Git repository status.
     """
+
     status = _service.status()
 
     return {
@@ -28,6 +29,7 @@ def git_branch() -> dict:
     """
     Return current Git branch.
     """
+
     return {
         "branch": _service.branch(),
     }
@@ -37,6 +39,7 @@ def git_log(limit: int = 10) -> dict:
     """
     Return recent Git commits.
     """
+
     return {
         "commits": _service.log(limit),
     }
@@ -46,6 +49,7 @@ def git_diff() -> dict:
     """
     Return current Git diff.
     """
+
     return {
         "diff": _service.diff(),
     }

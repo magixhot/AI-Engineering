@@ -15,7 +15,7 @@ from .registry import UnifiedRegistry
 
 class CompositeRegistry:
     """
-    Composite registry used during M3 migration.
+    Composite registry used during migration.
 
     Keeps the legacy ToolRegistry and the new
     UnifiedRegistry synchronized.
@@ -66,7 +66,7 @@ class CompositeRegistry:
         **kwargs: Any,
     ) -> Any:
         """
-        Execute tool through the legacy registry.
+        Execute tool.
         """
 
         return self._legacy.call(
@@ -83,3 +83,12 @@ class CompositeRegistry:
 
     def names(self) -> list[str]:
         return self._legacy.names()
+
+    def descriptors(
+        self,
+    ) -> list[ToolDescriptor]:
+        """
+        Return all tool descriptors.
+        """
+
+        return self._unified.descriptors()
