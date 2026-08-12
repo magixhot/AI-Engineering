@@ -31,6 +31,54 @@ class ProjectTemplateGenerator:
         "MASTER_INDEX.md",
     ]
 
+    DOCUMENT_METADATA: Dict[str, tuple[str, str, str]] = {
+        "README.md": (
+            "Project overview, scope, and contributor guidance.",
+            "project name, purpose and scope, bootstrap guidance, documentation links",
+            "implementation detail beyond the architecture summary",
+        ),
+        "AI_CHAT_START.md": (
+            "Bootstrap context for a new project chat session.",
+            "document purpose, bootstrap order, core documents, current status, continuation guidance",
+            "AI-Engineering operational history or code-generation instructions",
+        ),
+        "PROJECT_CONTEXT.md": (
+            "Project vision, objectives, and engineering principles.",
+            "project purpose, vision, initial objectives, engineering principles",
+            "implementation task lists that belong in ROADMAP.md",
+        ),
+        "PROJECT_MAP.md": (
+            "Repository structure and architecture boundaries.",
+            "repository layout, architecture overview, development phases",
+            "detailed implementation plans or APIs",
+        ),
+        "CURRENT_STATUS.md": (
+            "Current phase, completed work, and immediate next steps.",
+            "status, current phase, completed items, in-progress items, next steps",
+            "speculative milestones without current relevance",
+        ),
+        "ROADMAP.md": (
+            "Planned project phases and deliverables.",
+            "roadmap structure, phase goals, planned deliverables, phase status",
+            "implementation-only task checklists",
+        ),
+        "DECISIONS.md": (
+            "Accepted engineering decisions and policies.",
+            "decision ID, title, status, decision statement, rationale",
+            "transient discussion notes or unresolved debates",
+        ),
+        "CODING_STANDARDS.md": (
+            "Code and design conventions for the project.",
+            "general principles, architecture guidance, naming, testing and documentation",
+            "project-specific implementation details",
+        ),
+        "MASTER_INDEX.md": (
+            "Document index and project overview.",
+            "document table, project status, source tree outline, current priority",
+            "outdated document listings or marketing content",
+        ),
+    }
+
     TEMPLATE_CONTENTS: Dict[str, str] = {
         "README.md": (
             "# {{PROJECT_NAME}}\n"
@@ -39,6 +87,9 @@ class ProjectTemplateGenerator:
             "\n"
             "## Purpose\n"
             "This project is generated from the SDK-0001 standalone template.\n"
+            "\n"
+            "## Scope\n"
+            "The initial scope is a documentation-first project foundation.\n"
             "\n"
             "## Bootstrap\n"
             "Start by reading `AI_CHAT_START.md` and then follow the project\n"
@@ -68,6 +119,12 @@ class ProjectTemplateGenerator:
             "6. DECISIONS.md\n"
             "7. CODING_STANDARDS.md\n"
             "8. MASTER_INDEX.md\n"
+            "\n"
+            "## Core Project Documents\n"
+            "The bootstrap order lists the required project documents.\n"
+            "\n"
+            "## Current Project Status\n"
+            "The generated project begins in the template generation foundation phase.\n"
             "\n"
             "## Project context\n"
             "The generated project is `{{PROJECT_NAME}}` and should be understood\n"
@@ -142,9 +199,11 @@ class ProjectTemplateGenerator:
             "\n"
             "## Sprint 0 — Documentation Foundation\n"
             "- Complete required project documents.\n"
+            "- Status: Active\n"
             "\n"
             "## Sprint 1 — Project Implementation\n"
             "- Add source and tests after documentation approval.\n"
+            "- Status: Planned\n"
         ),
         "DECISIONS.md": (
             "# DECISIONS\n"
@@ -170,6 +229,13 @@ class ProjectTemplateGenerator:
             "## Naming\n"
             "- Use descriptive names.\n"
             "- Use lowercase and underscore separation for Python packages.\n"
+            "\n"
+            "## Architecture Guidance\n"
+            "- Keep modules focused and dependencies explicit.\n"
+            "\n"
+            "## Testing and Documentation\n"
+            "- Add tests for observable behavior.\n"
+            "- Update documentation with relevant changes.\n"
         ),
         "MASTER_INDEX.md": (
             "# MASTER_INDEX\n"
@@ -184,6 +250,16 @@ class ProjectTemplateGenerator:
             "- DECISIONS.md | Engineering decisions | Active\n"
             "- CODING_STANDARDS.md | Coding conventions | Active\n"
             "- MASTER_INDEX.md | Documentation index | Active\n"
+            "\n"
+            "## Current Status\n"
+            "Template generation foundation is active.\n"
+            "\n"
+            "## Source Tree Outline\n"
+            "- Project documentation is at the repository root.\n"
+            "- Optional additional documents are in docs/.\n"
+            "\n"
+            "## Current Priority\n"
+            "Validate and extend the generated project deliberately.\n"
         ),
     }
 
@@ -199,6 +275,8 @@ class ProjectTemplateGenerator:
         self._ensure_required_metadata(metadata)
         docs = docs or {}
         self._validate_target_directory(target_directory)
+        self._ensure_not_inside_git_repository(target_directory)
+        self._validate_optional_docs(docs, metadata)
         self._create_project_directory(target_directory)
         self._write_required_documents(target_directory, metadata)
         self._write_optional_docs(target_directory, metadata, docs)
@@ -234,8 +312,26 @@ class ProjectTemplateGenerator:
     ) -> None:
         for filename in self.REQUIRED_DOCS:
             content = self.TEMPLATE_CONTENTS[filename]
+            title, separator, body = content.partition("\n")
+            content = (
+                f"{title}\n\n{self._document_metadata(filename)}{body}"
+                if separator
+                else f"{title}\n\n{self._document_metadata(filename)}"
+            )
             rendered = self._render_template(content, metadata)
             self._write_file(target_directory / filename, rendered)
+
+    def _document_metadata(self, filename: str) -> str:
+        purpose, sections, forbidden_content = self.DOCUMENT_METADATA[filename]
+        return (
+            "## Document Metadata\n"
+            f"- Purpose: {purpose}\n"
+            "- Maintained by: project owner or maintainer.\n"
+            "- Created: at project generation time.\n"
+            f"- Mandatory sections: {sections}.\n"
+            f"- Forbidden content: {forbidden_content}.\n"
+            "\n"
+        )
 
     def _write_optional_docs(
         self,
@@ -250,10 +346,24 @@ class ProjectTemplateGenerator:
         docs_dir.mkdir(parents=True, exist_ok=True)
 
         for filename, content in docs.items():
-            if "/" in filename or filename.startswith("."):
-                raise ProjectTemplateError(f"Invalid docs filename: {filename}")
             rendered = self._render_template(content, metadata)
             self._write_file(docs_dir / filename, rendered)
+
+    def _validate_optional_docs(
+        self,
+        docs: Mapping[str, str],
+        metadata: Mapping[str, str],
+    ) -> None:
+        for filename, content in docs.items():
+            if (
+                not filename
+                or "/" in filename
+                or "\\" in filename
+                or filename.startswith(".")
+                or Path(filename).name != filename
+            ):
+                raise ProjectTemplateError(f"Invalid docs filename: {filename}")
+            self._render_template(content, metadata)
 
     def _render_template(
         self,
@@ -286,18 +396,17 @@ class ProjectTemplateGenerator:
             raise ProjectTemplateError(f"File already exists: {path}")
         self._workspace_service.write_file(path, content)
 
-    def _initialize_git_repository(self, target_directory: Path) -> None:
-        # Prevent initializing a git repo inside an existing repository
-        # by checking parent directories for a .git entry.
-        def _check_parent_for_git(path: Path) -> bool:
-            for parent in path.resolve().parents:
-                if (parent / ".git").exists():
-                    return True
-            return False
+    def _ensure_not_inside_git_repository(self, target_directory: Path) -> None:
+        for parent in target_directory.resolve().parents:
+            if (parent / ".git").exists():
+                raise ProjectTemplateError(
+                    "Target directory is inside an existing Git repository"
+                )
 
-        if _check_parent_for_git(target_directory):
+    def _initialize_git_repository(self, target_directory: Path) -> None:
+        if not target_directory.exists():
             raise ProjectTemplateError(
-                "Target directory is inside an existing Git repository"
+                f"Target directory does not exist: {target_directory}"
             )
 
         # Initialize git and ensure default branch is 'main'.

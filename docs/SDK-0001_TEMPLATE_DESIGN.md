@@ -10,7 +10,8 @@ It describes the structure, required files, placeholder mechanism, branch conven
 
 The first version of SDK-0001 focuses on generating a minimal standalone project skeleton with complete engineering documentation and a consistent repository structure.
 
-The template is intentionally limited to specification and documentation output. It does not define a runtime generator, CLI implementation, or code APIs.
+The generated project is intentionally limited to documentation output. It does not include a
+runtime scaffold, CLI implementation, or application code APIs.
 
 ## Required Generated Files
 

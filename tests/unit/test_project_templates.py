@@ -26,6 +26,12 @@ def test_generate_project_creates_required_documents(tmp_path: Path) -> None:
         assert path.exists()
         content = path.read_text()
         assert "{{" not in content
+        assert "## Document Metadata" in content
+        assert "- Purpose:" in content
+        assert "- Maintained by:" in content
+        assert "- Created:" in content
+        assert "- Mandatory sections:" in content
+        assert "- Forbidden content:" in content
 
     readme_content = (target / "README.md").read_text()
     assert metadata["PROJECT_NAME"] in readme_content
@@ -118,6 +124,8 @@ def test_unresolved_placeholder_in_optional_doc_raises(tmp_path: Path) -> None:
     with pytest.raises(ProjectTemplateError, match="Unresolved placeholders found"):
         generator.generate(target, metadata, docs=docs)
 
+    assert not target.exists()
+
 
 def test_non_empty_target_directory_raises(tmp_path: Path) -> None:
     target = tmp_path / "existing-project"
@@ -149,6 +157,25 @@ def test_generate_fails_when_inside_existing_git_repo(tmp_path: Path) -> None:
 
     with pytest.raises(ProjectTemplateError, match="inside an existing Git repository"):
         generator.generate(target, metadata)
+
+    assert not target.exists()
+
+
+def test_optional_doc_filename_must_not_contain_windows_path_separator(
+    tmp_path: Path,
+) -> None:
+    target = tmp_path / "invalid-doc-path"
+    metadata = {
+        "PROJECT_NAME": "invalid-doc-path",
+        "PROJECT_DESCRIPTION": "Project with an invalid optional document path.",
+    }
+
+    generator = ProjectTemplateGenerator()
+
+    with pytest.raises(ProjectTemplateError, match="Invalid docs filename"):
+        generator.generate(target, metadata, docs={"..\\outside.md": "content"})
+
+    assert not target.exists()
 
 
 def test_generate_creates_initial_commit_with_only_generated_files(
