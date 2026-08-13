@@ -1,6 +1,6 @@
 # MCP-0002: SDK Boundary Verification
 
-**Status:** ACTIVE / TEST PLAN
+**Status:** COMPLETE / VERIFIED
 **Scope:** Official Python MCP SDK boundary stabilization.
 
 ## Purpose
@@ -61,7 +61,7 @@ the required evidence is captured and referenced from the SDK audit and migratio
 | Target | Evidence required before verification | Status |
 |---|---|---|
 | Antigravity | Client configuration, successful initialize/list-tools/call-tool transcript, client version, diagnostics or stderr capture, and observed error behavior | MANUAL VERIFICATION REQUIRED |
-| VS Code MCP client | Client configuration, successful initialize/list-tools/call-tool transcript, client version, diagnostics or stderr capture, and observed error behavior | MANUAL VERIFICATION REQUIRED |
+| VS Code MCP client | VS Code 1.132.1; workspace `.vscode/mcp.json`; stdio server `AI-Engineering`; startup and 15-tool discovery; successful `python_version`; controlled `workspace_read_file` failure; clean MCP Output | VERIFIED (2026-08-13) |
 | Other MCP-compatible client | Identified client/version, reproducible configuration, successful initialize/list-tools/call-tool transcript, and observed error behavior | MANUAL VERIFICATION REQUIRED |
 
 ## D. Non-goals
@@ -88,3 +88,27 @@ MCP-0002 is complete only when:
    verified.
 
 Passing repository tests do not by themselves establish compatibility with a specific MCP client.
+
+## F. VS Code interoperability evidence
+
+Manual verification used the built-in MCP support in VS Code 1.132.1 with the workspace
+`.vscode/mcp.json` server `AI-Engineering`. The server used the stdio transport, the workspace-local
+`.venv/Scripts/python.exe` command, `-m ai_engineering.stdio`, and
+`PYTHONPATH=${workspaceFolder}/src`. `AI_ENGINEERING_DEBUG_MCP` was not set.
+
+Observed VS Code MCP Output recorded `Starting server AI-Engineering` at 2026-08-13 22:10:06.436,
+the connection progressing from `Starting` to `Running`, and `Discovered 15 tools` at
+2026-08-13 22:10:07.146. The safe `python_version` tool call returned interpreter `python.exe` and
+version `3.11`. A `workspace_read_file` call with
+`{"path":"MCP-0002-05-does-not-exist.txt"}` returned a controlled missing-file/unable-to-resolve
+failure: there was no crash or traceback, and the server remained `Running`.
+
+No protocol corruption, traceback, or unexpected AI-Engineering MCP server error was observed in
+VS Code MCP Output.
+
+## G. Completion decision
+
+The completion criteria require manual evidence for every client claimed as verified; they do not
+require verification of every listed client category. Automated verification and VS Code manual
+interoperability verification are complete. MCP-0002 is therefore **COMPLETE**. This does not claim
+Antigravity, ChatGPT/OpenAI, Claude Desktop, or other-client interoperability.

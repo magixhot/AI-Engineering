@@ -8,27 +8,27 @@
 
 The core project documentation foundation has been established.
 
-## Implemented / Stabilization
+## Implemented / Verified
 
 ### Sprint 1 — MCP Foundation
 
-**Status:** IMPLEMENTED / STABILIZATION
+**Status:** IMPLEMENTED / VERIFIED
 
 Implemented repository components include MCP bootstrap, the official SDK adapter, Registry and
 Runtime integration, STDIO, diagnostics, and registered Workspace/Git/Python tool subsystems.
 
 ### Official Python MCP SDK Migration
 
-**Status:** ACTIVE / STABILIZATION
+**Status:** COMPLETE
 
-The official Python MCP SDK is integrated as the protocol/server boundary. Ongoing work is limited
-to verified migration documentation, diagnostics, interoperability evidence, and stabilization; it
-does not replace the internal Runtime or Registry architecture.
+The official Python MCP SDK is integrated as the protocol/server boundary. MCP-0002 automated
+contracts and VS Code 1.132.1 manual interoperability are verified. This does not replace the
+internal Runtime or Registry architecture.
 
 ## Current Priority
 
-Synchronize documentation and architecture state with the implemented repository, then record MCP
-client interoperability only when supported by evidence.
+Maintain the verified MCP-0002 implementation and record any additional client interoperability
+only when supported by separately captured evidence.
 
 ## Planned
 
@@ -39,8 +39,8 @@ scope and validation.
 
 ### Client and IDE Interoperability
 
-Validate interoperability with additional MCP clients and the existing IDE integration surfaces,
-including Antigravity and VS Code.
+Validate interoperability with additional MCP clients and IDE integration surfaces, including
+Antigravity. VS Code 1.132.1 is already verified for the MCP-0002 scope.
 
 ### Future Engineering Capabilities
 

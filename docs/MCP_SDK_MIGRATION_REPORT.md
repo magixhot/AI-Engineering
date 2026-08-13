@@ -1,6 +1,6 @@
 # MCP SDK Migration Report
 
-**Status:** ACTIVE / STABILIZATION
+**Status:** COMPLETE / VS CODE VERIFIED
 **Evidence snapshot:** 2026-08-13
 
 ## Goal
@@ -33,11 +33,17 @@ stdout/stderr separation, tool listing, and baseline `python.version`, `git.stat
 `workspace.read_file` operations. The current repository contains unit tests and configured
 pytest, Ruff, and mypy tooling.
 
-## Pending Verification
+## Client Interoperability Evidence
 
-The repository does not provide conclusive evidence that ChatGPT, Antigravity, VS Code, Claude
-Desktop, or other clients have completed interoperability validation. These remain pending until
-tested sessions and diagnostic evidence are recorded.
+VS Code 1.132.1 built-in MCP support was manually verified on 2026-08-13 using the workspace
+stdio server configuration. The server started, reached Running, discovered 15 tools, returned the
+safe `python_version` result, and handled a missing-path `workspace_read_file` call as a controlled
+failure without a traceback or server crash. `AI_ENGINEERING_DEBUG_MCP` was not set, and VS Code MCP
+Output showed no protocol corruption or unexpected AI-Engineering MCP server error.
+
+MCP-0002 is complete because its criteria require evidence for every client claimed as verified,
+not all client categories. ChatGPT/OpenAI, Antigravity, Claude Desktop, and other-client
+interoperability remain unverified and are not claimed.
 
 ## Known Operational Notes
 

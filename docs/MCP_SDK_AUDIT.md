@@ -1,6 +1,6 @@
 # MCP SDK Audit
 
-**Status:** ACTIVE / STABILIZATION
+**Status:** COMPLETE / VS CODE VERIFIED
 **Evidence snapshot:** 2026-08-13
 
 ## Objective
@@ -29,9 +29,12 @@ Record the repository-supported state of the official Python MCP SDK integration
 ## Compatibility Verification
 
 - [ ] Antigravity client interoperability is conclusively verified.
-- [ ] VS Code client interoperability is conclusively verified.
+- [x] VS Code 1.132.1 built-in MCP client interoperability is conclusively verified (2026-08-13;
+  workspace stdio configuration, startup, 15-tool discovery, successful `python_version`, and a
+  controlled missing-file `workspace_read_file` failure with the server remaining Running).
 - [ ] ChatGPT or OpenAI MCP client interoperability is conclusively verified.
 - [ ] Claude Desktop interoperability is conclusively verified.
 
-Client compatibility remains a verification task. Presence of adapters or SDK integration is not
-evidence of completed end-to-end client validation.
+MCP-0002 is complete: its automated contracts pass and the VS Code client is supported by recorded
+end-to-end evidence. Antigravity, ChatGPT/OpenAI, Claude Desktop, and other-client compatibility
+remain unverified and are not claimed.
