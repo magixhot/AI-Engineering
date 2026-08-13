@@ -42,10 +42,10 @@ not asserted as participants in this active path.
 | Unknown tool | Unknown MCP name is handled through the error contract | Unit | `test_mcp_sdk_adapter.py` unknown-tool contract | `CallToolResult.isError` is `True`; no server crash | IMPLEMENTED / VERIFIED |
 | Invalid arguments | Invalid handler arguments are handled through the error contract | Unit | `test_mcp_sdk_adapter.py` invalid-arguments contract | `CallToolResult.isError` is `True`; no server crash | IMPLEMENTED / VERIFIED |
 | Registry dispatch | Adapter dispatches through the composite legacy execution registry | Unit | `test_mcp_sdk_adapter.py` dispatch contract | Registered handler receives mapped name and arguments | IMPLEMENTED / VERIFIED |
-| STDIO entry point | `python -m ai_engineering.stdio` starts the official SDK bootstrap | Integration / subprocess | STDIO startup test | Process starts without non-protocol stdout output | IMPLEMENTED / TEST MISSING |
-| JSON-RPC initialize | Server accepts MCP initialization over STDIO | Integration / subprocess | JSON-RPC handshake test | Valid initialization response is returned | MANUAL RECORD EXISTS / TEST MISSING |
-| Protocol stdout | stdout carries only protocol messages during a session | Integration / subprocess | stdout separation test | No ordinary logs or diagnostics pollute stdout | IMPLEMENTED / TEST MISSING |
-| stderr and logging | Non-protocol logging does not enter stdout | Integration / subprocess | stderr/logging capture test | stderr or configured logs contain non-protocol output; stdout remains protocol-only | TEST MISSING |
+| STDIO entry point | `python -m ai_engineering.stdio` starts the official SDK bootstrap | Integration / subprocess | `test_mcp_stdio.py` startup contract | Process starts without non-protocol stdout output | IMPLEMENTED / VERIFIED |
+| JSON-RPC initialize | Server accepts MCP initialization over STDIO | Integration / subprocess | `test_mcp_stdio.py` initialize handshake | Valid initialization response is returned | IMPLEMENTED / VERIFIED |
+| Protocol stdout | stdout carries only protocol messages during a session | Integration / subprocess | `test_mcp_stdio.py` protocol-only stdout contract | No ordinary logs or diagnostics pollute stdout | IMPLEMENTED / VERIFIED |
+| stderr and logging | Non-protocol logging does not enter stdout | Integration / subprocess | `test_mcp_stdio.py` separate stderr capture | stderr is captured separately; stdout remains protocol-only | IMPLEMENTED / VERIFIED |
 | Diagnostics disabled | Debug mode is opt-in | Unit | Diagnostics default test | `AI_ENGINEERING_DEBUG_MCP` unset yields no runtime logger and no log directory creation | IMPLEMENTED / TEST MISSING |
 | Diagnostics enabled | Debug mode records runtime events explicitly | Unit / integration | Diagnostics enabled test | `AI_ENGINEERING_DEBUG_MCP=1` creates the configured runtime log during a tool call | IMPLEMENTED / TEST MISSING |
 
