@@ -1,57 +1,44 @@
-# PROJECT_CONTEXT.md
-
 # AI-Engineering
 
 ## Project Purpose
 
-AI-Engineering is the engineering platform for the AI Infrastructure ecosystem.
+AI-Engineering is the engineering platform for the AI Infrastructure ecosystem. Its primary
+implementation is the Engineering MCP Server: a standards-based interface through which AI
+assistants can participate in engineering workflows.
 
-Its primary objective is to provide reusable engineering tools, standards and automation that enable humans and AI assistants to collaborate efficiently on software projects.
+## Current Architecture
 
-The first implementation goal is the Engineering MCP Server.
+The official Python `mcp` SDK is the protocol and server boundary. AI-Engineering preserves its
+internal Runtime and Registry architecture behind that boundary. The implemented architecture
+includes:
 
----
+- MCP bootstrap, server integration, configuration, and diagnostics;
+- Runtime, Registry, and Discovery;
+- Workspace, Git, and Python tool subsystems;
+- STDIO entry point; and
+- IDE integration models and adapters for Antigravity and VS Code.
 
 ## Vision
 
-Build an engineering platform where AI assistants can safely participate in the complete software development lifecycle through standardized interfaces.
+Build engineering infrastructure that lets humans and AI assistants collaborate using consistent,
+testable tools, standards, workflows, and project structure.
 
----
+## Current Objectives
 
-## Initial Objectives
-
-* Implement a production-ready Engineering MCP Server.
-* Provide Workspace tools.
-* Provide Git tools.
-* Provide Python development tools.
-* Support Antigravity IDE through the standard MCP protocol.
-* Remain compatible with other MCP clients.
-
----
+- Stabilize the MCP Foundation and official SDK migration.
+- Keep Runtime and Registry boundaries intact while improving interoperability evidence.
+- Maintain diagnostics for protocol and tool-execution investigation.
+- Synchronize project documentation with implemented architecture.
+- Expand automated tests where evidence identifies a gap.
 
 ## Engineering Principles
 
-* Documentation before implementation.
-* Preserve originals.
-* Extend, never replace.
-* Public API only.
-* Dependency Injection.
-* Single Responsibility Principle.
-* Testability first.
-* Atomic development.
-
----
+- Documentation before implementation.
+- Preserve originals; extend, never replace.
+- Public API boundaries and explicit dependencies.
+- Single responsibility and testability first.
+- Small, reviewable, atomic changes.
 
 ## Reference Project
 
-AI-Archive-Server is the official Reference Project for engineering processes and documentation standards.
-
-Successful practices are first validated there before becoming engineering standards.
-
----
-
-## Current Milestone
-
-Sprint 0 — Documentation Foundation.
-
-The project is establishing its engineering documentation before implementing the MCP foundation.
+AI-Archive-Server is the Reference Project for engineering processes and documentation standards.

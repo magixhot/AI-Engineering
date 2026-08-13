@@ -1,10 +1,8 @@
-# AI_CHAT_START.md
-
 # AI-Engineering
 
 ## Chat Bootstrap
 
-If you are continuing work on this project, restore the context in the following order:
+For a new or continued session, restore context in this order:
 
 1. README.md
 2. PROJECT_CONTEXT.md
@@ -15,30 +13,27 @@ If you are continuing work on this project, restore the context in the following
 7. CODING_STANDARDS.md
 8. MASTER_INDEX.md
 
-After reading these documents, continue from the current project status.
+After reading them, continue from `CURRENT_STATUS.md` and the current roadmap.
 
-Do not redesign existing architecture unless explicitly requested.
+## Current Working State
 
-Follow the engineering principles defined by the project.
+AI-Engineering is beyond Sprint 0. The documentation foundation is complete; the Engineering MCP
+Server and its MCP Foundation are implemented and are in SDK migration and stabilization work.
+The current priority is documentation and architecture-state synchronization, followed by evidence-
+based MCP client interoperability verification.
 
-Preserve originals.
+## Engineering Guardrails
 
-Extend, never replace.
+- Preserve originals.
+- Extend, never replace.
+- Documentation before implementation.
+- Keep changes small, testable, and reviewable.
+- Do not redesign existing architecture unless explicitly requested.
 
-Documentation is approved before implementation.
+## Project Context
 
-Implementation follows the documented architecture.
+AI-Engineering is the Engineering MCP Server for the AI Infrastructure ecosystem. It uses the
+official Python MCP SDK at the protocol/server boundary while preserving the internal Runtime and
+Registry architecture.
 
-Every change should be small, testable and reviewable.
-
-Reference Project:
-
-AI-Archive-Server
-
-Current Project:
-
-AI-Engineering
-
-Current Goal:
-
-Build the Engineering MCP Server that enables AI assistants to participate directly in the engineering workflow through the Model Context Protocol (MCP).
+Reference project: AI-Archive-Server.

@@ -1,96 +1,59 @@
-# PROJECT_MAP.md
-
 # AI-Engineering
 
 ## Repository Structure
 
 ```text
 AI-Engineering/
-│
-├── docs/
-│   ├── AI_CHAT_START.md
-│   ├── PROJECT_CONTEXT.md
-│   ├── PROJECT_MAP.md
-│   ├── CURRENT_STATUS.md
-│   ├── ROADMAP.md
-│   ├── DECISIONS.md
-│   ├── CODING_STANDARDS.md
-│   └── MASTER_INDEX.md
-│
-├── scripts/
-│
+├── docs/                 Project, MCP, release, and SDK-0001 documentation
 ├── src/
 │   └── ai_engineering/
-│       ├── mcp/
-│       ├── workspace/
-│       ├── git/
-│       ├── tools/
-│       └── shared/
-│
+│       ├── discovery/    Built-in tool metadata and discovery registry
+│       ├── git/          Git service, models, exceptions, and tools
+│       ├── ide/          IDE models, protocol, sessions, projects, and adapters/
+│       │   └── adapters/ Antigravity and VS Code adapters
+│       ├── mcp/          Official SDK integration, bootstrap, configuration, and debug/
+│       │   └── debug/    MCP diagnostics configuration, logging, and stream helpers
+│       ├── python/       Python service, models, exceptions, and tools
+│       ├── registry/     Composite registry, descriptors, and server integration
+│       ├── runtime/      Runtime context, dispatcher, events, and lifecycle
+│       ├── shared/       Shared package boundary
+│       ├── stdio/        `python -m ai_engineering.stdio` entry point
+│       ├── tools/        Shared tool package boundary
+│       ├── workspace/    Workspace service, models, exceptions, and tools
+│       ├── project_templates.py
+│       └── server.py
 ├── tests/
 │   ├── unit/
 │   └── integration/
-│
 ├── README.md
 ├── LICENSE
 ├── pyproject.toml
-└── .gitignore
+└── uv.lock
 ```
 
----
+`transport/` is not a current source directory and is intentionally not represented above.
 
-# Runtime Architecture
+## Architecture Boundaries
 
 ```text
-Engineering MCP Server
-│
-├── MCP Core
-│
-├── Tool Registry
-│
-├── Workspace Tools
-│
-├── Git Tools
-│
-├── Python Tools
-│
-├── Future Engineering Tools
-│
-└── Shared Infrastructure
+MCP client
+    │ STDIO / official Python MCP SDK boundary
+    ▼
+MCP bootstrap → SDKAdapter → Composite Registry → Runtime and tool subsystems
+                                      ├── Workspace
+                                      ├── Git
+                                      ├── Python
+                                      └── Discovery metadata
 ```
 
----
+The official SDK owns protocol/server handling. The internal Runtime and Registry remain the
+AI-Engineering execution and registration architecture. MCP diagnostics are a separate supporting
+subsystem; IDE adapters represent integration surfaces, not confirmed client interoperability.
 
-# Development Phases
+## Implementation State
 
-Sprint 0 — Documentation Foundation
-
-↓
-
-Sprint 1 — MCP Foundation
-
-↓
-
-Sprint 2 — Workspace Tools
-
-↓
-
-Sprint 3 — Git Tools
-
-↓
-
-Sprint 4 — Python Tools
-
-↓
-
-Sprint 5 — Engineering Automation
-
----
-
-# Current Focus
-
-Current implementation target:
-
-Engineering MCP Foundation.
-
-No implementation begins before Sprint 0 documentation has been completed and approved.
+- Sprint 0 — Documentation Foundation: completed.
+- Sprint 1 — MCP Foundation: implemented; in SDK migration and stabilization.
+- Workspace, Git, Python, Runtime, Registry, Discovery, STDIO, diagnostics, and IDE modules are
+  implemented repository subsystems.
+- Engineering automation and additional validated client interoperability are future work.

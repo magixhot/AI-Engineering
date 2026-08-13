@@ -1,33 +1,47 @@
 # MCP SDK Migration Report
 
-## 1. Goal
-The primary objective of this migration was to replace the custom-built, legacy MCP transport and server implementation in the AI-Engineering project with the official `mcp` Python SDK (version `1.27.x`).
-This ensures full compliance with the Model Context Protocol, better stability, long-term maintainability, and seamless integration with official MCP clients (such as the ChatGPT desktop app).
+**Status:** ACTIVE / STABILIZATION
+**Evidence snapshot:** 2026-08-13
 
-## 2. What was Replaced
-- The legacy custom JSON-RPC parsing and transport mechanisms were entirely removed.
-- The `std_server.py` implementation was replaced.
-- The tool registration and execution lifecycle were bridged to the official SDK using a custom adapter.
+## Goal
 
-## 3. Modules Deleted
-* *(Note: Actual file deletions were performed in earlier stages of this branch, primarily legacy transport and protocol parsing modules that duplicated the official SDK's functionality).*
+Migrate the MCP protocol/server boundary to the official Python `mcp` SDK while preserving the
+AI-Engineering Runtime and Registry architecture.
 
-## 4. Modules Added
-- `src/ai_engineering/mcp/bootstrap.py`: Replaces the legacy entry point. Integrates `anyio` and the official SDK's `stdio_server`, safely isolating `sys.stdout` to prevent JSON-RPC corruption.
-- `src/ai_engineering/mcp/sdk_adapter.py`: A thin adapter layer (`SDKAdapter`) bridging the internal `CompositeRegistry` with the official SDK's `@server.call_tool()` and `@server.list_tools()` decorators.
-- `src/ai_engineering/mcp/debug/`: A completely new, non-invasive **MCP Diagnostics** subsystem.
-  - `config.py`: Environment variable `AI_ENGINEERING_DEBUG_MCP` handling.
-  - `logger.py`: Runtime metrics and traceback logging (`mcp-runtime.log`).
-  - `streams.py`: Raw byte-level wire interception for `stdin`/`stdout` (`mcp-wire.log`).
-- `docs/MCP_DIAGNOSTICS.md`: Documentation for the new telemetry subsystem.
+## Implemented Integration
 
-## 5. Testing Results
-* **SDK Initialization**: `python -m ai_engineering.stdio` starts flawlessly without exceptions.
-* **Initialize Phase**: Returns valid `{"jsonrpc": "2.0", "result": {...}}` handshakes.
-* **ChatGPT Client Integration**:
-  - *Pending final verification from logs.*
-  - We are currently verifying whether the `invalid character '='` error originates from the AI-Engineering server or the ChatGPT Agent integration, utilizing the new MCP Diagnostics module.
+- `pyproject.toml` declares `mcp>=1.27,<1.28`.
+- `src/ai_engineering/mcp/bootstrap.py` creates the SDK server and runs it through the official
+  `stdio_server` transport.
+- `src/ai_engineering/mcp/sdk_adapter.py` bridges `CompositeRegistry` to the SDK's
+  `list_tools` and `call_tool` handlers.
+- Tool execution exceptions are returned as an SDK `CallToolResult` with `isError=True`.
+- `src/ai_engineering/stdio/` provides the `python -m ai_engineering.stdio` entry point.
+- `src/ai_engineering/mcp/debug/` provides diagnostics configuration, runtime logging, and stream
+  helpers; diagnostics are disabled unless explicitly enabled.
 
-## 6. Known Limitations
-- **JSON-RPC Exceptions**: Any exceptions raised during tool execution are caught by `SDKAdapter` and returned as a standard `TextContent` block containing the error message, rather than a JSON-RPC error. This ensures the client receives readable text instead of a hard crash.
-- **Diagnostics Overhead**: Wire logging involves synchronous file appends. It is strictly disabled by default and should only be enabled via `AI_ENGINEERING_DEBUG_MCP=1` during active debugging.
+## Preserved Internal Architecture
+
+The migration does not replace `runtime/`, `registry/`, `discovery/`, `workspace/`, `git/`, or
+`python/`. `SDKAdapter` is the boundary adapter between the official SDK and the existing
+`CompositeRegistry`-based execution model.
+
+## Verified Repository Evidence
+
+The 0.1.0 release checklist records successful MCP initialization, JSON-RPC initialization,
+stdout/stderr separation, tool listing, and baseline `python.version`, `git.status`, and
+`workspace.read_file` operations. The current repository contains unit tests and configured
+pytest, Ruff, and mypy tooling.
+
+## Pending Verification
+
+The repository does not provide conclusive evidence that ChatGPT, Antigravity, VS Code, Claude
+Desktop, or other clients have completed interoperability validation. These remain pending until
+tested sessions and diagnostic evidence are recorded.
+
+## Known Operational Notes
+
+- Tool failures are represented as readable SDK error results rather than unhandled server crashes.
+- Diagnostics can add synchronous logging overhead when enabled and are intended for active
+  investigation.
+- This report documents repository evidence; it does not claim broad production readiness.

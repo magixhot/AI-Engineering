@@ -1,68 +1,37 @@
 # MCP SDK Audit
 
-Status: IN PROGRESS
+**Status:** ACTIVE / STABILIZATION
+**Evidence snapshot:** 2026-08-13
 
----
+## Objective
 
-# Objective
+Record the repository-supported state of the official Python MCP SDK integration.
 
-Evaluate the official Python MCP SDK and determine how it should be
-integrated into AI-Engineering.
+## Server and Transport
 
----
+- [x] Official SDK server is created by `SDKAdapter`.
+- [x] Session run path is implemented through `mcp.server.stdio.stdio_server` in `bootstrap.py`.
+- [x] STDIO entry point is provided by `python -m ai_engineering.stdio`.
+- [x] SDK initialization options are created by the SDK server.
 
-# Questions
+## Tool Registration and Runtime
 
-## Server
+- [x] SDK `list_tools` is backed by `CompositeRegistry.descriptors()`.
+- [x] SDK `call_tool` maps MCP names and invokes the internal registry.
+- [x] Tool execution errors return `CallToolResult(..., isError=True)`.
+- [x] Runtime and Registry remain internal architectural layers.
 
-- [ ] FastMCP
-- [ ] Low-level Server
-- [ ] Session lifecycle
-- [ ] STDIO support
+## Diagnostics
 
----
+- [x] MCP diagnostics package exists with configuration and runtime logging.
+- [x] Diagnostics are opt-in through `AI_ENGINEERING_DEBUG_MCP`.
 
-## Tool Registration
+## Compatibility Verification
 
-- [ ] Tool decorators
-- [ ] Dynamic registration
-- [ ] Tool metadata
+- [ ] Antigravity client interoperability is conclusively verified.
+- [ ] VS Code client interoperability is conclusively verified.
+- [ ] ChatGPT or OpenAI MCP client interoperability is conclusively verified.
+- [ ] Claude Desktop interoperability is conclusively verified.
 
----
-
-## Runtime
-
-Can AI-Engineering Runtime remain unchanged?
-
-- [ ]
-
----
-
-## Registry
-
-Can UnifiedRegistry become the SDK Tool Provider?
-
-- [ ]
-
----
-
-## Transport
-
-Which modules become obsolete?
-
-- [ ]
-
----
-
-## Compatibility
-
-- [ ] Antigravity
-- [ ] Claude Desktop
-- [ ] OpenAI MCP
-- [ ] VS Code
-
----
-
-# Notes
-
-(empty)
+Client compatibility remains a verification task. Presence of adapters or SDK integration is not
+evidence of completed end-to-end client validation.
