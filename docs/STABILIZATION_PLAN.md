@@ -31,7 +31,7 @@ repository but are not part of this active execution path.
 
 `SDKAdapter.call_tool` catches execution exceptions and returns `CallToolResult` with
 `isError=True`. The historical action to change successful error `TextContent` responses is
-therefore obsolete. Automated contract coverage for this behavior is still required.
+therefore obsolete. MCP-0002 automated contract coverage verifies this behavior.
 
 ### Removed legacy entry point — OBSOLETE
 
@@ -44,31 +44,31 @@ current repository; the active entry point is `python -m ai_engineering.stdio`.
 bootstrap uses the official `stdio_server` directly and does not call it. This task does not
 remove the module solely as cleanup; any future decision requires separate scope and tests.
 
-## Still Required for Stabilization
+## MCP-0002 Evidence Recorded
 
-### SDK boundary contract tests — PENDING
+### SDK boundary contract tests — COMPLETED
 
-Add automated evidence for SDK tool listing, name mapping, schema generation, successful and
-failed calls, unknown tools, invalid arguments, and `CallToolResult(isError=True)` semantics.
-The required matrix is defined in `docs/MCP-0002_SDK_BOUNDARY_VERIFICATION.md`.
+MCP-0002 verifies SDK tool listing, name mapping, schema generation, successful and failed calls,
+unknown tools, invalid arguments, and `CallToolResult(isError=True)` semantics. The matrix and
+tests are recorded in `docs/MCP-0002_SDK_BOUNDARY_VERIFICATION.md`.
 
-### STDIO and JSON-RPC verification — PENDING
+### STDIO and JSON-RPC verification — COMPLETED
 
-The current bootstrap runs the official SDK through `mcp.server.stdio.stdio_server`. Add automated
-evidence that the module entry point starts cleanly, accepts initialization, and keeps protocol
-output separate from non-protocol logging.
+MCP-0002 automated tests verify clean module startup, JSON-RPC initialization, and separation of
+protocol stdout from non-protocol logging.
 
-### Diagnostics verification — PENDING
+### Diagnostics verification — COMPLETED
 
-Runtime diagnostics are opt-in through `AI_ENGINEERING_DEBUG_MCP`. When enabled, the current
-runtime logger writes tool-call information to `logs/mcp-runtime.log`; when disabled it returns no
-runtime logger. Verify both modes without redesigning diagnostics or transport.
+MCP-0002 verifies opt-in diagnostics through `AI_ENGINEERING_DEBUG_MCP`: disabled mode creates no
+logger or log directory, while enabled mode lazily records runtime events in `logs/mcp-runtime.log`
+without writing to protocol stdout or stderr.
 
-### Client interoperability — MANUAL VERIFICATION REQUIRED
+### VS Code interoperability — COMPLETED
 
-No repository evidence conclusively verifies Antigravity, VS Code, ChatGPT/OpenAI, Claude
-Desktop, or other MCP-compatible clients. Record client-specific evidence separately after the
-automated SDK boundary contract is in place.
+VS Code 1.132.1 built-in MCP support is manually verified with the workspace stdio configuration,
+tool discovery, a successful safe call, and a controlled error; the server remained Running and
+MCP Output showed no protocol corruption. Antigravity, ChatGPT/OpenAI, Claude Desktop, and other
+clients remain unverified and are not claimed.
 
 ## Deferred Improvements
 

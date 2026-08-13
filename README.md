@@ -33,13 +33,13 @@ Current scope includes:
 * Documentation Templates
 * Engineering Standards
 * Project Bootstrap Tools
+* SDK-0001 Project Templates V1
 
 Future scope may include:
 
 * CLI
 * SDK
 * Code Generators
-* Project Templates
 * Automation Services
 * Additional Engineering Utilities
 
@@ -83,9 +83,11 @@ This document contains everything required to restore the current project contex
 
 Current phase:
 
-**Release Candidate 0.1.0 — Official Python MCP SDK migration active**
+**MCP-0002 complete; preparing the next engineering milestone**
 
-Implementation continues with stabilization and documentation completion for the 0.1.0 release candidate.
+The official Python MCP SDK migration and its MCP-0002 verification are complete. VS Code 1.132.1
+interoperability is verified, and SDK-0001 Project Templates V1 is implemented and verified. This
+does not claim general production readiness or compatibility with other MCP clients.
 
 ---
 

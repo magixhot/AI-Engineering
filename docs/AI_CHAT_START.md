@@ -17,10 +17,10 @@ After reading them, continue from `CURRENT_STATUS.md` and the current roadmap.
 
 ## Current Working State
 
-AI-Engineering is beyond Sprint 0. The documentation foundation is complete; the Engineering MCP
-Server and its MCP Foundation are implemented and are in SDK migration and stabilization work.
-The current priority is documentation and architecture-state synchronization, followed by evidence-
-based MCP client interoperability verification.
+AI-Engineering has completed the documentation foundation, MCP-0002, and SDK-0001 Project
+Templates V1. The official MCP SDK migration and VS Code 1.132.1 interoperability verification are
+complete. The project is preparing its next engineering milestone; quality and documentation claims
+must remain evidence-based. Other MCP clients are not verified or claimed compatible.
 
 ## Engineering Guardrails
 
