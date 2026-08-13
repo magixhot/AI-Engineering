@@ -1,143 +1,49 @@
-# ROADMAP.md
+# AI-Engineering Roadmap
 
-# AI-Engineering
+## Completed
 
-## Project Roadmap
+### Sprint 0 — Documentation Foundation
 
----
+**Status:** COMPLETED
 
-# Sprint 0 — Documentation Foundation
+The core project documentation foundation has been established.
 
-## Goal
+## Implemented / Stabilization
 
-Establish the complete documentation foundation.
+### Sprint 1 — MCP Foundation
 
-### Deliverables
+**Status:** IMPLEMENTED / STABILIZATION
 
-* README
-* AI_CHAT_START
-* PROJECT_CONTEXT
-* PROJECT_MAP
-* CURRENT_STATUS
-* ROADMAP
-* DECISIONS
-* CODING_STANDARDS
-* MASTER_INDEX
+Implemented repository components include MCP bootstrap, the official SDK adapter, Registry and
+Runtime integration, STDIO, diagnostics, and registered Workspace/Git/Python tool subsystems.
 
-**Status:** IN PROGRESS
+### Official Python MCP SDK Migration
 
----
+**Status:** ACTIVE / STABILIZATION
 
-# Sprint 1 — MCP Foundation
+The official Python MCP SDK is integrated as the protocol/server boundary. Ongoing work is limited
+to verified migration documentation, diagnostics, interoperability evidence, and stabilization; it
+does not replace the internal Runtime or Registry architecture.
 
-## Goal
+## Current Priority
 
-Create the Engineering MCP Server foundation.
+Synchronize documentation and architecture state with the implemented repository, then record MCP
+client interoperability only when supported by evidence.
 
-### Deliverables
+## Planned
 
-* MCP lifecycle
-* Configuration
-* Server bootstrap
-* Tool Registry
-* Tool discovery
-* Basic logging
+### Engineering Automation
 
-**Status:** PLANNED
+Project bootstrap, documentation generation, and future engineering automation require separate
+scope and validation.
 
----
+### Client and IDE Interoperability
 
-# Sprint 2 — Workspace Tools
+Validate interoperability with additional MCP clients and the existing IDE integration surfaces,
+including Antigravity and VS Code.
 
-## Goal
+### Future Engineering Capabilities
 
-Provide filesystem operations through MCP.
-
-### Deliverables
-
-* workspace.list
-* workspace.read_file
-* workspace.write_file
-* workspace.create_file
-* workspace.create_directory
-* workspace.move
-* workspace.delete
-
-**Status:** PLANNED
-
----
-
-# Sprint 3 — Git Tools
-
-## Goal
-
-Provide Git operations through MCP.
-
-### Deliverables
-
-* git.status
-* git.diff
-* git.add
-* git.commit
-* git.branch
-* git.checkout
-
-**Status:** PLANNED
-
----
-
-# Sprint 4 — Python Development Tools
-
-## Goal
-
-Provide development automation.
-
-### Deliverables
-
-* python.run
-* pytest.run
-* ruff.run
-* mypy.run
-* uv.run
-
-**Status:** PLANNED
-
----
-
-# Sprint 5 — Engineering Automation
-
-## Goal
-
-Automate engineering workflows.
-
-### Deliverables
-
-* Project bootstrap
-* Documentation generation
-* Runtime generation
-* Feature generation
-* Project update automation
-
-**Status:** PLANNED
-
----
-
-# Sprint 6 — IDE Integration
-
-## Goal
-
-Validate Engineering MCP with IDEs.
-
-### Deliverables
-
-* Antigravity IDE
-* VS Code
-* Additional MCP-compatible clients
-
-**Status:** PLANNED
-
----
-
-# Project Vision
-
-The Engineering MCP Server becomes the primary engineering interface for AI Infrastructure, allowing AI assistants to safely create, modify, test and maintain projects through standardized MCP tools.
+Additional tools and automation are planned only after their design, implementation, and test scope
+are approved. Existing Workspace, Git, and Python subsystems are implemented and are not returned
+to a future-placeholder state.

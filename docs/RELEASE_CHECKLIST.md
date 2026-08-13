@@ -1,32 +1,37 @@
 # Release Checklist v0.1.0
 
-Этот документ содержит финальный чеклист перед выпуском версии 0.1.0 (Release Candidate). Все пункты должны быть проверены перед слиянием.
+This checklist records the release-line verification state. It does not establish general
+production readiness beyond the checks listed here.
 
 ## MCP Server Core
-- [x] Сервер успешно инициализируется и запускается через `bootstrap.py`.
-- [x] Сообщения инициализации JSON-RPC отправляются и обрабатываются без повреждений.
-- [x] Обработка ошибок SDK работает (ошибки инструментов возвращаются с `isError=True`).
-- [x] Stderr не загрязняет stdout (wire протокол защищен).
 
-## Tool Registry & SDK
-- [x] Команда `list_tools()` возвращает список всех инструментов.
-- [x] Все встроенные инструменты (workspace, git, python) зарегистрированы.
-- [x] Схемы аргументов (inputSchema) генерируются автоматически из аннотаций функций-обработчиков.
+- [x] Server initialization and bootstrap path are implemented.
+- [x] JSON-RPC initialization is recorded as verified for the 0.1.0 release line.
+- [x] SDK tool errors are returned with `isError=True`.
+- [x] STDIO protocol output is protected from ordinary stderr logging.
 
-## Tools Verification
-- [x] `python.version` возвращает корректную версию среды.
-- [x] `git.status` корректно читает статус репозитория.
-- [x] `workspace.read_file` успешно читает файлы.
-- [x] Остальные инструменты (`git`, `workspace`, `python`) успешно запускаются без сбоев.
+## Tool Registry and Baseline Operations
 
-## Code Quality & CI
-- [x] Тесты (pytest) успешно проходят.
-- [x] Линтер (ruff) не выдает предупреждений.
-- [x] Статический анализатор (mypy) не выдает ошибок типизации.
-- [x] Мертвый код и устаревшие файлы-заглушки (например, старый `main.py`) удалены из точки входа.
-- [x] Публичные API в `__init__.py` корректно экспортируются через `__all__`.
+- [x] `list_tools()` is recorded as returning registered tools.
+- [x] Workspace, Git, and Python built-in tools are registered.
+- [x] `python.version` is recorded as verified.
+- [x] `git.status` is recorded as verified.
+- [x] `workspace.read_file` is recorded as verified.
+
+## Quality Checks
+
+- [x] pytest is recorded as passing for the 0.1.0 release line.
+- [x] Ruff is recorded as passing for the 0.1.0 release line.
+- [x] mypy is recorded as passing for the 0.1.0 release line.
 
 ## Documentation
-- [x] Описание диагностики обновлено (`MCP_DIAGNOSTICS.md`).
-- [ ] Отчет о миграции актуализирован с учетом исправлений (`MCP_SDK_MIGRATION_REPORT.md`).
-- [x] Корневой `README.md` обновлен до версии 0.1.0 и актуального статуса проекта.
+
+- [x] MCP diagnostics documentation exists.
+- [x] MCP SDK migration report has been synchronized with implemented code and remaining
+  interoperability verification.
+- [x] Root README records the 0.1.0 release line and current status.
+
+## Follow-up Verification
+
+- [ ] Record conclusive end-to-end MCP client interoperability evidence.
+- [ ] Maintain the migration report as SDK behavior and verification evidence change.
