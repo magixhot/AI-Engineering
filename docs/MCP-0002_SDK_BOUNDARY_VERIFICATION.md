@@ -34,14 +34,14 @@ not asserted as participants in this active path.
 
 | Area | Behavior | Evidence type | Automated test | Expected result | Status |
 |---|---|---|---|---|---|
-| Tool listing | SDK handler returns descriptors registered by `CompositeRegistry` | Unit | SDK adapter list-tools contract test | MCP tools match registered descriptors | IMPLEMENTED / TEST MISSING |
-| Name mapping | Internal dotted names map to MCP underscore names and back | Unit | Mapper and adapter contract test | `workspace.read_file` is exposed and invoked as `workspace_read_file` | IMPLEMENTED / TEST MISSING |
-| Input schemas | Descriptor annotations produce usable MCP input schemas | Unit | Descriptor schema test | Required, optional, and primitive parameters are represented as expected | IMPLEMENTED / TEST MISSING |
-| Successful call | Registered handler result becomes MCP text content | Unit | SDK adapter success-call test | Result is returned as expected `TextContent` | IMPLEMENTED / TEST MISSING |
-| Failed call | Handler exception returns an SDK error result | Unit | SDK adapter failure test | `CallToolResult.isError` is `True` and content is readable | IMPLEMENTED / TEST MISSING |
-| Unknown tool | Unknown MCP name is handled through the error contract | Unit | SDK adapter unknown-tool test | `CallToolResult.isError` is `True`; no server crash | IMPLEMENTED / TEST MISSING |
-| Invalid arguments | Invalid handler arguments are handled through the error contract | Unit | SDK adapter invalid-arguments test | `CallToolResult.isError` is `True`; no server crash | IMPLEMENTED / TEST MISSING |
-| Registry dispatch | Adapter dispatches through the composite legacy execution registry | Unit | Composite registry dispatch test | Registered handler receives mapped name and arguments | IMPLEMENTED / TEST MISSING |
+| Tool listing | SDK handler returns descriptors registered by `CompositeRegistry` | Unit | `test_mcp_sdk_adapter.py` list-tools contract | MCP tools match registered descriptors | IMPLEMENTED / VERIFIED |
+| Name mapping | Internal dotted names map to MCP underscore names and back | Unit | `test_mcp_sdk_adapter.py` mapped call contract | `demo.echo` is exposed and invoked as `demo_echo` | IMPLEMENTED / VERIFIED |
+| Input schemas | Descriptor annotations produce usable MCP input schemas | Unit | `test_mcp_sdk_adapter.py` schema contract | Required, optional, and primitive parameters are represented as expected | IMPLEMENTED / VERIFIED |
+| Successful call | Registered handler result becomes MCP text content | Unit | `test_mcp_sdk_adapter.py` success-call contract | Result is returned as expected `TextContent` | IMPLEMENTED / VERIFIED |
+| Failed call | Handler exception returns an SDK error result | Unit | `test_mcp_sdk_adapter.py` failure contract | `CallToolResult.isError` is `True` and content is readable | IMPLEMENTED / VERIFIED |
+| Unknown tool | Unknown MCP name is handled through the error contract | Unit | `test_mcp_sdk_adapter.py` unknown-tool contract | `CallToolResult.isError` is `True`; no server crash | IMPLEMENTED / VERIFIED |
+| Invalid arguments | Invalid handler arguments are handled through the error contract | Unit | `test_mcp_sdk_adapter.py` invalid-arguments contract | `CallToolResult.isError` is `True`; no server crash | IMPLEMENTED / VERIFIED |
+| Registry dispatch | Adapter dispatches through the composite legacy execution registry | Unit | `test_mcp_sdk_adapter.py` dispatch contract | Registered handler receives mapped name and arguments | IMPLEMENTED / VERIFIED |
 | STDIO entry point | `python -m ai_engineering.stdio` starts the official SDK bootstrap | Integration / subprocess | STDIO startup test | Process starts without non-protocol stdout output | IMPLEMENTED / TEST MISSING |
 | JSON-RPC initialize | Server accepts MCP initialization over STDIO | Integration / subprocess | JSON-RPC handshake test | Valid initialization response is returned | MANUAL RECORD EXISTS / TEST MISSING |
 | Protocol stdout | stdout carries only protocol messages during a session | Integration / subprocess | stdout separation test | No ordinary logs or diagnostics pollute stdout | IMPLEMENTED / TEST MISSING |
