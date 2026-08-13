@@ -6,10 +6,13 @@ The MCP Diagnostics subsystem is a core part of the AI-Engineering infrastructur
 
 The diagnostics system is intentionally separated into two distinct layers to avoid buffering issues and to cleanly separate transport logic from business logic.
 
-### 1. Wire Logging (`mcp-wire.log`)
-The wire logger is designed to capture the exact bytes transferred between the MCP client and server.
+### 1. Wire Logging Helper (`mcp-wire.log`)
+The wire logger is existing diagnostic infrastructure designed to capture raw client/server data when
+its stream wrappers are explicitly used.
 - **Bypasses `logging` module**: It uses a raw `open().write(..., "a")` append strategy. This guarantees that Python's logging formatters, encodings, or buffering mechanisms do not alter or hide malformed JSON or illegal characters.
-- **Universal Stream Wrappers**: The subsystem wraps the underlying I/O streams (`stdin` and `stdout`) using `LoggingReadStream` and `LoggingWriteStream`. These generic wrappers can be reused across different transports (Stdio, TCP, SSE, WebSockets) without modification.
+- **Stream Wrappers**: `LoggingReadStream`, `LoggingWriteStream`, and `wrap_stdio()` remain
+  available helpers. They are not invoked by the current bootstrap, which uses the official SDK
+  `stdio_server` directly; MCP-0002 does not treat `mcp-wire.log` as active-path evidence.
 - **Format**: Each line includes a timestamp and a directional arrow (`->` for outgoing to client, `<-` for incoming from client) followed by the exact raw payload.
 
 ### 2. Runtime Logging (`mcp-runtime.log`)
@@ -45,7 +48,7 @@ Diagnostics are disabled by default for performance and security reasons. To ena
 
 ## Log Format Examples
 
-### `logs/mcp-wire.log`
+### `logs/mcp-wire.log` (only if a future explicitly scoped integration invokes the wrappers)
 ```text
 10:43:12.123 <- {"jsonrpc":"2.0","id":0,"method":"initialize", ...}
 10:43:12.128 -> {"jsonrpc":"2.0","id":0,"result":{...}}
@@ -65,9 +68,9 @@ Serialized length: 124 bytes
 
 ## Troubleshooting
 
-- **Malformed JSON-RPC (`invalid character '=' looking for beginning of value`)**:
-  Check `logs/mcp-wire.log`. If you see a line containing `=` or raw text from an LLM Agent (e.g., `Prioritizing Tool Specificity...`) *before* or *instead of* a valid JSON object, the client or agent is generating malformed payloads.
-- **Client Hangs / Timeouts**:
-  Compare the timestamps in `mcp-wire.log`. If a `<- tools/call` request comes in but the `-> result` takes too long, check `mcp-runtime.log` to see if the tool execution is hanging or producing a silent exception.
+- **Malformed JSON-RPC or client hangs**:
+  The active SDK stdio path does not create `mcp-wire.log`. Use MCP client output and
+  `mcp-runtime.log` when diagnostics are enabled; introduce wire-wrapper use only through a
+  separately approved and tested integration.
 - **Logs Not Appearing**:
   Ensure all zombie `python.exe` processes are killed before testing, and confirm `AI_ENGINEERING_DEBUG_MCP=1` is correctly passed in the parent process's environment variables.

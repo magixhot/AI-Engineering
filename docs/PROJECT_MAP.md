@@ -33,27 +33,34 @@ AI-Engineering/
 
 `transport/` is not a current source directory and is intentionally not represented above.
 
-## Architecture Boundaries
+## Existing Repository Subsystems
+
+Runtime, Registry, Discovery, diagnostics, and IDE adapters are implemented repository subsystems.
+Their presence does not by itself make each subsystem part of every MCP request.
+
+## Active MCP SDK Execution Path
 
 ```text
 MCP client
     │ STDIO / official Python MCP SDK boundary
     ▼
-MCP bootstrap → SDKAdapter → Composite Registry → Runtime and tool subsystems
-                                      ├── Workspace
-                                      ├── Git
-                                      ├── Python
-                                      └── Discovery metadata
+`python -m ai_engineering.stdio`
+    → `ai_engineering.mcp.bootstrap`
+    → `EngineeringMCPServer`
+    → `CompositeRegistry` + `SDKAdapter`
+    → official `mcp.server.stdio.stdio_server`
+    → official SDK handlers
 ```
 
-The official SDK owns protocol/server handling. The internal Runtime and Registry remain the
-AI-Engineering execution and registration architecture. MCP diagnostics are a separate supporting
-subsystem; IDE adapters represent integration surfaces, not confirmed client interoperability.
+The official SDK owns protocol/server handling. `MCPRuntime`, `DiscoveryRegistry`, and diagnostic
+`wrap_stdio()` exist but are not invoked by this active path. MCP diagnostics are a separate
+supporting subsystem; IDE adapters represent integration surfaces, not confirmed client
+interoperability.
 
 ## Implementation State
 
 - Sprint 0 — Documentation Foundation: completed.
-- Sprint 1 — MCP Foundation: implemented; in SDK migration and stabilization.
+- Sprint 1 — MCP Foundation: implemented and verified by MCP-0002.
 - Workspace, Git, Python, Runtime, Registry, Discovery, STDIO, diagnostics, and IDE modules are
   implemented repository subsystems.
 - Engineering automation and additional validated client interoperability are future work.

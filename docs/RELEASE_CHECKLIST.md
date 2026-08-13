@@ -20,9 +20,10 @@ production readiness beyond the checks listed here.
 
 ## Quality Checks
 
-- [x] pytest is recorded as passing for the 0.1.0 release line.
-- [x] Ruff is recorded as passing for the 0.1.0 release line.
-- [x] mypy is recorded as passing for the 0.1.0 release line.
+- [x] Historical 0.1.0 release evidence recorded pytest, Ruff, and mypy as passing.
+- [x] Current DOC-0002 verification: pytest passed (34 tests) and `git diff --check` passed.
+- [ ] Current DOC-0002 verification: Ruff has 5 tracked-path findings.
+- [ ] Current DOC-0002 verification: mypy has 7 findings.
 
 ## Documentation
 
@@ -33,5 +34,7 @@ production readiness beyond the checks listed here.
 
 ## Follow-up Verification
 
-- [ ] Record conclusive end-to-end MCP client interoperability evidence.
+- [x] VS Code 1.132.1 built-in MCP interoperability is recorded as verified for MCP-0002.
+- [ ] Record client-specific evidence before claiming Antigravity, ChatGPT/OpenAI, Claude Desktop,
+  or other-client interoperability.
 - [ ] Maintain the migration report as SDK behavior and verification evidence change.

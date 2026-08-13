@@ -14,28 +14,34 @@ The core project documentation foundation has been established.
 
 **Status:** IMPLEMENTED / VERIFIED
 
-Implemented repository components include MCP bootstrap, the official SDK adapter, Registry and
-Runtime integration, STDIO, diagnostics, and registered Workspace/Git/Python tool subsystems.
+Implemented repository components include MCP bootstrap, the official SDK adapter, Composite
+Registry, Runtime, Discovery, STDIO, diagnostics, and registered Workspace/Git/Python tool
+subsystems. Runtime and Discovery remain repository subsystems, not steps in the active SDK request
+path.
 
 ### Official Python MCP SDK Migration
 
 **Status:** COMPLETE
 
-The official Python MCP SDK is integrated as the protocol/server boundary. MCP-0002 automated
-contracts and VS Code 1.132.1 manual interoperability are verified. This does not replace the
-internal Runtime or Registry architecture.
+The official Python MCP SDK is integrated as the protocol/server boundary. The active path is
+`python -m ai_engineering.stdio` through bootstrap, `EngineeringMCPServer`,
+`CompositeRegistry`/`SDKAdapter`, and the official `mcp.server.stdio.stdio_server`. MCP-0002
+automated contracts and VS Code 1.132.1 manual interoperability are verified. This does not
+replace the internal Runtime, Registry, or Discovery subsystems.
 
 ## Current Priority
 
-Maintain the verified MCP-0002 implementation and record any additional client interoperability
-only when supported by separately captured evidence.
+Maintain the verified MCP-0002 implementation and prepare the next engineering capability from the
+SDK-0001 Project Templates V1 baseline. Record additional client interoperability only when
+supported by separately captured evidence; it is not a blocker for completed MCP-0002.
 
 ## Planned
 
 ### Engineering Automation
 
 Project bootstrap, documentation generation, and future engineering automation require separate
-scope and validation.
+scope and validation. A future SDK-0001.x scaffold capability may be considered only after its
+documentation-first design is approved.
 
 ### Client and IDE Interoperability
 

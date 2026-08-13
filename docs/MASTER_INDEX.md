@@ -12,22 +12,23 @@
 | ROADMAP.md | Delivery state and future direction | Active |
 | DECISIONS.md | Accepted engineering decisions | Active |
 | CODING_STANDARDS.md | Engineering standards | Active |
-| MCP_SDK_AUDIT.md | SDK integration audit record | Active / stabilization update needed |
-| MCP_SDK_MIGRATION_REPORT.md | SDK migration evidence and open verification | Active |
-| MCP-0002_SDK_BOUNDARY_VERIFICATION.md | MCP SDK boundary contract and verification matrix | Active / test plan |
+| MCP_SDK_AUDIT.md | SDK integration audit record | Complete / VS Code verified |
+| MCP_SDK_MIGRATION_REPORT.md | SDK migration evidence and client verification record | Complete / VS Code verified |
+| MCP-0002_SDK_BOUNDARY_VERIFICATION.md | MCP SDK boundary contract and verification matrix | Complete / verified |
 | MCP_DIAGNOSTICS.md | MCP diagnostics operation | Active |
 | STABILIZATION_PLAN.md | Historical stabilization plan | Active / historical context |
 | RELEASE_CHECKLIST.md | 0.1.0 release checklist | Active |
-| SDK-0001_TEMPLATE_DESIGN.md | SDK-0001 authoritative template design | Active |
-| SDK-0001_PROJECT_TEMPLATES.md | SDK-0001 framework reference | Active |
+| SDK-0001_TEMPLATE_DESIGN.md | SDK-0001 V1 authoritative template design | Implemented / verified |
+| SDK-0001_PROJECT_TEMPLATES.md | SDK-0001 V1 framework reference | Implemented / verified |
 
 ## Active Engineering Work
 
 | Area | Status |
 |---|---|
-| Documentation and architecture-state synchronization | CURRENT PRIORITY |
-| Official Python MCP SDK migration | ACTIVE / STABILIZATION |
-| MCP client interoperability verification | PLANNED / VERIFICATION |
+| MCP-0002 evidence maintenance | COMPLETE |
+| Official Python MCP SDK migration | COMPLETE |
+| Next engineering milestone preparation | CURRENT PRIORITY |
+| Additional MCP client interoperability | OPTIONAL / FUTURE EVIDENCE |
 | Diagnostics maintenance | ACTIVE |
 
 ## Delivery State
@@ -35,8 +36,9 @@
 | Sprint / Area | Status |
 |---|---|
 | Sprint 0 — Documentation Foundation | COMPLETED |
-| Sprint 1 — MCP Foundation | IMPLEMENTED / STABILIZATION |
+| Sprint 1 — MCP Foundation | IMPLEMENTED / VERIFIED |
 | Workspace, Git, and Python tool subsystems | IMPLEMENTED |
+| SDK-0001 Project Templates V1 | IMPLEMENTED / VERIFIED |
 | Engineering automation | PLANNED |
 | Additional client and IDE interoperability | PLANNED |
 

@@ -25,11 +25,12 @@ testable tools, standards, workflows, and project structure.
 
 ## Current Objectives
 
-- Stabilize the MCP Foundation and official SDK migration.
-- Keep Runtime and Registry boundaries intact while improving interoperability evidence.
-- Maintain diagnostics for protocol and tool-execution investigation.
-- Synchronize project documentation with implemented architecture.
-- Expand automated tests where evidence identifies a gap.
+- Maintain the completed MCP Foundation, official SDK migration, and MCP-0002 evidence.
+- Keep Runtime and Registry boundaries intact while maintaining diagnostics for investigation.
+- Prepare separately approved engineering automation and scaffold work from the verified SDK-0001
+  Project Templates V1 baseline.
+- Record additional client interoperability only when separately scoped and supported by evidence.
+- Expand automated tests where verification identifies a gap.
 
 ## Engineering Principles
 
