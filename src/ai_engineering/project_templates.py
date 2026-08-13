@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import re
 import subprocess
+from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Dict, Mapping, Optional
 
@@ -14,7 +15,31 @@ class ProjectTemplateError(Exception):
     pass
 
 
+@dataclass(frozen=True)
+class StandaloneProjectRequest:
+    """Typed input for a standalone document-first project generation."""
+
+    target_directory: Path
+    project_name: str
+    project_description: str
+    project_id: str | None = None
+    author: str | None = None
+    created_date: str | None = None
+    additional_documents: Mapping[str, str] = field(default_factory=dict)
+
+
+@dataclass(frozen=True)
+class StandaloneProject:
+    """Result of generating a standalone document-first project."""
+
+    target_directory: Path
+    generated_files: tuple[Path, ...]
+    default_branch: str = "main"
+
+
 class ProjectTemplateGenerator:
+    """Implementation layer for the SDK-0001 document-first template."""
+
     REQUIRED_PLACEHOLDERS = {"PROJECT_NAME", "PROJECT_DESCRIPTION"}
     OPTIONAL_PLACEHOLDERS = {"PROJECT_ID", "AUTHOR", "CREATED_DATE"}
     ALLOWED_PLACEHOLDERS = REQUIRED_PLACEHOLDERS | OPTIONAL_PLACEHOLDERS
@@ -488,5 +513,50 @@ def create_project_template(
     metadata: Mapping[str, str],
     docs: Optional[Dict[str, str]] = None,
 ) -> None:
+    """Compatibility-level API for the original mapping-based generator call."""
+
     generator = ProjectTemplateGenerator()
     generator.generate(target_directory, metadata, docs)
+
+
+def create_standalone_project(
+    request: StandaloneProjectRequest,
+) -> StandaloneProject:
+    """Create a standalone SDK-0001 document-first project from typed input."""
+
+    metadata = {
+        "PROJECT_NAME": request.project_name,
+        "PROJECT_DESCRIPTION": request.project_description,
+    }
+    optional_metadata = {
+        "PROJECT_ID": request.project_id,
+        "AUTHOR": request.author,
+        "CREATED_DATE": request.created_date,
+    }
+    metadata.update(
+        {
+            key: value
+            for key, value in optional_metadata.items()
+            if value is not None
+        }
+    )
+
+    additional_documents = dict(request.additional_documents)
+    generator = ProjectTemplateGenerator()
+    generator.generate(
+        request.target_directory,
+        metadata,
+        docs=additional_documents,
+    )
+
+    generated_files = tuple(
+        request.target_directory / filename
+        for filename in generator.REQUIRED_DOCS
+    ) + tuple(
+        request.target_directory / "docs" / filename
+        for filename in sorted(additional_documents)
+    )
+    return StandaloneProject(
+        target_directory=request.target_directory,
+        generated_files=generated_files,
+    )

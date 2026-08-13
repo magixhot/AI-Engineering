@@ -13,6 +13,22 @@ The first version of SDK-0001 focuses on generating a minimal standalone project
 The generated project is intentionally limited to documentation output. It does not include a
 runtime scaffold, CLI implementation, or application code APIs.
 
+## Public Creation API
+
+SDK-0001 exposes a typed Python API for creating a standalone document-first project:
+
+- `StandaloneProjectRequest` supplies the target directory, required project name and
+  description, optional project metadata, and optional additional documents.
+- `create_standalone_project(request)` is the recommended public entry point.
+- `StandaloneProject` reports the target directory, generated files, and default branch.
+
+`ProjectTemplateGenerator` is the internal implementation layer. The existing
+`create_project_template()` mapping-based function remains a compatibility-level API and is not
+the recommended interface for new callers.
+
+The public creation API does not add a generated CLI, runtime or code scaffold, `LICENSE`, remote
+Git operations, or any files beyond the document-first template defined here.
+
 ## Required Generated Files
 
 Every generated project must contain the following files:

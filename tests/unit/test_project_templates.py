@@ -8,6 +8,9 @@ import pytest
 from ai_engineering.project_templates import (
     ProjectTemplateError,
     ProjectTemplateGenerator,
+    StandaloneProjectRequest,
+    create_project_template,
+    create_standalone_project,
 )
 
 
@@ -214,3 +217,103 @@ def test_generate_creates_initial_commit_with_only_generated_files(
     files = {line.strip() for line in res2.stdout.splitlines() if line.strip()}
     expected = set(generator.REQUIRED_DOCS)
     assert files == expected
+
+
+def test_standalone_project_request_requires_core_fields() -> None:
+    with pytest.raises(TypeError):
+        StandaloneProjectRequest()  # type: ignore[call-arg]
+
+
+def test_create_standalone_project_uses_optional_metadata_and_documents(
+    tmp_path: Path,
+) -> None:
+    target = tmp_path / "typed-project"
+    request = StandaloneProjectRequest(
+        target_directory=target,
+        project_name="typed-project",
+        project_description="A typed SDK-0001 project.",
+        project_id="SDK-0001",
+        author="Template Author",
+        created_date="2026-08-12",
+        additional_documents={
+            "provenance.md": (
+                "{{PROJECT_ID}} | {{AUTHOR}} | {{CREATED_DATE}}\n"
+            ),
+        },
+    )
+
+    project = create_standalone_project(request)
+
+    assert project.target_directory == target
+    assert project.default_branch == "main"
+    assert project.generated_files == (
+        *(target / filename for filename in ProjectTemplateGenerator.REQUIRED_DOCS),
+        target / "docs" / "provenance.md",
+    )
+    provenance = (target / "docs" / "provenance.md").read_text()
+    assert provenance == "SDK-0001 | Template Author | 2026-08-12\n"
+    assert "{{" not in provenance
+
+
+def test_create_standalone_project_preserves_nested_git_protection(
+    tmp_path: Path,
+) -> None:
+    subprocess.run(["git", "init"], cwd=tmp_path, check=True)
+    request = StandaloneProjectRequest(
+        target_directory=tmp_path / "nested-project",
+        project_name="nested-project",
+        project_description="Must not be generated in a parent Git repository.",
+    )
+
+    with pytest.raises(ProjectTemplateError, match="inside an existing Git repository"):
+        create_standalone_project(request)
+
+    assert not request.target_directory.exists()
+
+
+def test_create_standalone_project_preserves_initial_commit_semantics(
+    tmp_path: Path,
+) -> None:
+    target = tmp_path / "typed-commit-project"
+    request = StandaloneProjectRequest(
+        target_directory=target,
+        project_name="typed-commit-project",
+        project_description="A typed project with an initial commit.",
+        additional_documents={"architecture.md": "# Architecture\n"},
+    )
+
+    create_standalone_project(request)
+
+    commit_message = subprocess.run(
+        ["git", "log", "-1", "--pretty=%B"],
+        cwd=target,
+        capture_output=True,
+        text=True,
+        check=True,
+    ).stdout.strip()
+    assert commit_message == (
+        "Initial project scaffold: typed-commit-project (Standalone template)"
+    )
+    committed_files = subprocess.run(
+        ["git", "ls-tree", "--name-only", "-r", "HEAD"],
+        cwd=target,
+        capture_output=True,
+        text=True,
+        check=True,
+    ).stdout.splitlines()
+    assert set(committed_files) == {
+        *ProjectTemplateGenerator.REQUIRED_DOCS,
+        "docs/architecture.md",
+    }
+
+
+def test_create_project_template_remains_compatible(tmp_path: Path) -> None:
+    target = tmp_path / "compatibility-project"
+    metadata = {
+        "PROJECT_NAME": "compatibility-project",
+        "PROJECT_DESCRIPTION": "A mapping-based compatibility project.",
+    }
+
+    create_project_template(target, metadata)
+
+    assert (target / "README.md").exists()

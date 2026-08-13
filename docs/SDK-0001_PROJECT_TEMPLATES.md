@@ -19,6 +19,21 @@ SDK-0001 v1 implements a minimal standalone, documentation-first project templat
 generator produces only the doc-first skeleton and enforces the conventions described in
 `SDK-0001_TEMPLATE_DESIGN.md`.
 
+### Public creation API
+
+The recommended SDK-0001 entry point is the typed Python API:
+
+- `StandaloneProjectRequest` defines the target directory, required project name and description,
+  optional project metadata, and optional additional documents.
+- `create_standalone_project(request)` creates the standalone project.
+- `StandaloneProject` returns the target directory, generated files, and the `main` default
+  branch.
+
+`ProjectTemplateGenerator` is the implementation layer for this API. The pre-existing
+`create_project_template()` function remains available as a compatibility-level mapping-based API.
+Neither public API expands v1 beyond the document-first template: v1 has no CLI, runtime or code
+scaffold, generated `LICENSE`, or remote Git operations.
+
 ### Mandatory engineering documents (exact set for v1)
 
 Every generated project in SDK-0001 v1 MUST include the following nine documents at project root:
