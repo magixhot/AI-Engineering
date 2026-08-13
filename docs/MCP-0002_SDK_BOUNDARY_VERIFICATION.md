@@ -46,8 +46,8 @@ not asserted as participants in this active path.
 | JSON-RPC initialize | Server accepts MCP initialization over STDIO | Integration / subprocess | `test_mcp_stdio.py` initialize handshake | Valid initialization response is returned | IMPLEMENTED / VERIFIED |
 | Protocol stdout | stdout carries only protocol messages during a session | Integration / subprocess | `test_mcp_stdio.py` protocol-only stdout contract | No ordinary logs or diagnostics pollute stdout | IMPLEMENTED / VERIFIED |
 | stderr and logging | Non-protocol logging does not enter stdout | Integration / subprocess | `test_mcp_stdio.py` separate stderr capture | stderr is captured separately; stdout remains protocol-only | IMPLEMENTED / VERIFIED |
-| Diagnostics disabled | Debug mode is opt-in | Unit | Diagnostics default test | `AI_ENGINEERING_DEBUG_MCP` unset yields no runtime logger and no log directory creation | IMPLEMENTED / TEST MISSING |
-| Diagnostics enabled | Debug mode records runtime events explicitly | Unit / integration | Diagnostics enabled test | `AI_ENGINEERING_DEBUG_MCP=1` creates the configured runtime log during a tool call | IMPLEMENTED / TEST MISSING |
+| Diagnostics disabled | Debug mode is opt-in | Unit | `test_mcp_diagnostics.py` default diagnostics contract | `AI_ENGINEERING_DEBUG_MCP` unset yields no runtime logger or log directory; bootstrap does not invoke `wrap_stdio()` | IMPLEMENTED / VERIFIED |
+| Diagnostics enabled | Debug mode records runtime events explicitly | Unit | `test_mcp_diagnostics.py` enabled diagnostics contract | `AI_ENGINEERING_DEBUG_MCP=1` lazily creates `logs/mcp-runtime.log` when requested and records a runtime event without writing to captured stdout/stderr | IMPLEMENTED / VERIFIED |
 
 The 0.1.0 release checklist records prior manual verification of initialization, tool listing, and
 stdout/stderr protection. Those records do not replace the automated evidence required by
