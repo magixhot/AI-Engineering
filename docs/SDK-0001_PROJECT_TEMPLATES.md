@@ -128,6 +128,13 @@ test to the V1 document baseline. It does not add a CLI, application logic, fram
 remote Git operations, dependency installation, or a generated `LICENSE`. The V1 exclusions
 above remain historical V1 boundaries; they do not describe the separately scoped opt-in feature.
 
+## SDK-0001.2 Project Template CLI
+
+The implemented `ai-engineering project create` command is a thin adapter over
+`create_standalone_project()`. It accepts project name, destination, description, optional author,
+and the opt-in `--python-scaffold` flag; it does not add remote Git operations or a second
+generation path. See `docs/SDK-0001_2_PROJECT_TEMPLATE_CLI_DESIGN.md` for its full contract.
+
 ## Documentation housekeeping
 
 - This framework-level document is intended to remain in the AI-Engineering repository as a
