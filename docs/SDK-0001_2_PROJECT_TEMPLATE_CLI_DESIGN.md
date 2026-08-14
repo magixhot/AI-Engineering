@@ -1,6 +1,6 @@
 # SDK-0001.2 — Project Template CLI Contract
 
-**Status:** DESIGN / IMPLEMENTATION PENDING
+**Status:** IMPLEMENTED / VERIFIED
 **Scope:** additive CLI adapter over the verified SDK-0001 project-template API
 
 ## Objective
@@ -118,23 +118,24 @@ output, keeps the Python scaffold opt-in, and leaves
 
 ## Planned Test Matrix
 
-All tests are **PLANNED / TEST MISSING** for implementation.
+The implemented CLI coverage verifies the command contract directly, and the
+installed console script is smoke-tested from the project venv.
 
 | Test | Level |
 |---|---|
-| CLI help | Subprocess/integration |
-| Missing required arguments | Subprocess/integration |
-| Successful V1 project generation | Subprocess/integration |
-| Successful Python scaffold generation | Subprocess/integration |
-| Existing-target error | Subprocess/integration |
-| Nested-Git error | Subprocess/integration |
-| Invalid project/package input | Unit and subprocess/integration |
-| Success stdout contract | Subprocess/integration |
-| Expected error stderr contract | Subprocess/integration |
-| Exit-code contract | Subprocess/integration |
-| No traceback for expected errors | Subprocess/integration |
-| Generated initial-commit behavior | Subprocess/integration |
-| Existing SDK API behavior remains unchanged | Unit |
+| CLI help | IMPLEMENTED / VERIFIED by unit test and console-script smoke test |
+| Missing required arguments | IMPLEMENTED / VERIFIED (unit) |
+| Successful V1 project generation | IMPLEMENTED / VERIFIED (unit) |
+| Successful Python scaffold generation | IMPLEMENTED / VERIFIED (unit) |
+| Existing-target error | IMPLEMENTED / VERIFIED (unit) |
+| Nested-Git error | IMPLEMENTED / VERIFIED (unit) |
+| Invalid project/package input | IMPLEMENTED / VERIFIED (unit) |
+| Success stdout contract | IMPLEMENTED / VERIFIED (unit) |
+| Expected error stderr contract | IMPLEMENTED / VERIFIED (unit) |
+| Exit-code contract | IMPLEMENTED / VERIFIED (unit) |
+| No traceback for expected errors | IMPLEMENTED / VERIFIED (unit) |
+| Generated initial-commit behavior | IMPLEMENTED / VERIFIED (unit) |
+| Existing SDK API behavior remains unchanged | VERIFIED by existing SDK test suite |
 
 ## Non-Goals
 
