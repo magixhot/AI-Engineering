@@ -21,9 +21,10 @@ production readiness beyond the checks listed here.
 ## Quality Checks
 
 - [x] Historical 0.1.0 release evidence recorded pytest, Ruff, and mypy as passing.
-- [x] Current DOC-0002 verification: pytest passed (34 tests) and `git diff --check` passed.
-- [ ] Current DOC-0002 verification: Ruff has 5 tracked-path findings.
-- [ ] Current DOC-0002 verification: mypy has 7 findings.
+- [x] Current DOC-0003 verification: pytest passed (47 tests).
+- [x] Current DOC-0003 verification: Ruff passed (0 findings).
+- [x] Current DOC-0003 verification: mypy passed (0 findings).
+- [x] Current DOC-0003 verification: `git diff --check` passed.
 
 ## Documentation
 
