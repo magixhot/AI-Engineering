@@ -35,10 +35,10 @@ Current scope includes:
 * Project Bootstrap Tools
 * SDK-0001 Project Templates V1
 * SDK-0001.1 Standalone Python Project Scaffold
+* SDK-0001.2 Project Template CLI (`ai-engineering project create`)
 
 Future scope may include:
 
-* CLI
 * SDK
 * Code Generators
 * Automation Services
@@ -88,9 +88,10 @@ Current phase:
 
 The official Python MCP SDK migration and its MCP-0002 verification are complete. VS Code 1.132.1
 interoperability is verified, and SDK-0001 Project Templates V1 plus the optional SDK-0001.1
-Standalone Python Project Scaffold are implemented and verified. CLI and broader automation remain
-future, separately approved work. This does not claim general production readiness or compatibility
-with other MCP clients.
+Standalone Python Project Scaffold are implemented and verified. SDK-0001.2 adds the implemented
+`ai-engineering project create` CLI over that public API, including the optional scaffold flow.
+Broader automation remains future, separately approved work. This does not claim general production
+readiness or compatibility with other MCP clients.
 
 ---
 
