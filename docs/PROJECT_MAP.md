@@ -20,6 +20,7 @@ AI-Engineering/
 │       ├── stdio/        `python -m ai_engineering.stdio` entry point
 │       ├── tools/        Shared tool package boundary
 │       ├── workspace/    Workspace service, models, exceptions, and tools
+│       ├── cli.py        `ai-engineering project create` console-script frontend
 │       ├── project_templates.py
 │       └── server.py
 ├── tests/
@@ -64,5 +65,6 @@ interoperability.
 - Workspace, Git, Python, Runtime, Registry, Discovery, STDIO, diagnostics, and IDE modules are
   implemented repository subsystems.
 - SDK-0001 Project Templates V1 and the optional SDK-0001.1 Python scaffold are implemented
-  through `project_templates.py`; a CLI is not present. Broader automation and additional validated
-  client interoperability remain future work.
+  through `project_templates.py`. SDK-0001.2 provides the `cli.py` frontend and installed
+  `ai-engineering project create` console script. Broader automation and additional validated client
+  interoperability remain future work.

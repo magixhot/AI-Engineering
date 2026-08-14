@@ -27,8 +27,9 @@ testable tools, standards, workflows, and project structure.
 
 - Maintain the completed MCP Foundation, official SDK migration, and MCP-0002 evidence.
 - Keep Runtime and Registry boundaries intact while maintaining diagnostics for investigation.
-- Maintain the verified SDK-0001 Project Templates V1 and optional SDK-0001.1 Standalone Python
-  Project Scaffold baseline; consider CLI and broader automation only through separate approval.
+- Maintain the verified SDK-0001 Project Templates V1 public Python API, optional SDK-0001.1
+  Standalone Python Project Scaffold, and SDK-0001.2 CLI frontend (`ai-engineering project create`).
+- Consider additional automation and client interoperability only through separate approval.
 - Record additional client interoperability only when separately scoped and supported by evidence.
 - Expand automated tests where verification identifies a gap.
 

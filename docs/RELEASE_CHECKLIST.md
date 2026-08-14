@@ -21,10 +21,10 @@ production readiness beyond the checks listed here.
 ## Quality Checks
 
 - [x] Historical 0.1.0 release evidence recorded pytest, Ruff, and mypy as passing.
-- [x] Current DOC-0003 verification: pytest passed (47 tests).
-- [x] Current DOC-0003 verification: Ruff passed (0 findings).
-- [x] Current DOC-0003 verification: mypy passed (0 findings).
-- [x] Current DOC-0003 verification: `git diff --check` passed.
+- [x] Current DOC-0004 verification: pytest passed (54 tests).
+- [x] Current DOC-0004 verification: Ruff passed (0 findings).
+- [x] Current DOC-0004 verification: mypy passed (0 findings).
+- [x] Current DOC-0004 verification: `git diff --check` passed.
 
 ## Documentation
 
@@ -32,6 +32,7 @@ production readiness beyond the checks listed here.
 - [x] MCP SDK migration report has been synchronized with implemented code and remaining
   interoperability verification.
 - [x] Root README records the 0.1.0 release line and current status.
+- [x] SDK-0001.2 `ai-engineering project create` CLI is recorded as implemented and verified.
 
 ## Follow-up Verification
 
