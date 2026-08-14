@@ -34,6 +34,7 @@ Current scope includes:
 * Engineering Standards
 * Project Bootstrap Tools
 * SDK-0001 Project Templates V1
+* SDK-0001.1 Standalone Python Project Scaffold
 
 Future scope may include:
 
@@ -86,8 +87,10 @@ Current phase:
 **MCP-0002 complete; preparing the next engineering milestone**
 
 The official Python MCP SDK migration and its MCP-0002 verification are complete. VS Code 1.132.1
-interoperability is verified, and SDK-0001 Project Templates V1 is implemented and verified. This
-does not claim general production readiness or compatibility with other MCP clients.
+interoperability is verified, and SDK-0001 Project Templates V1 plus the optional SDK-0001.1
+Standalone Python Project Scaffold are implemented and verified. CLI and broader automation remain
+future, separately approved work. This does not claim general production readiness or compatibility
+with other MCP clients.
 
 ---
 

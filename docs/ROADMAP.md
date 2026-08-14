@@ -29,19 +29,33 @@ The official Python MCP SDK is integrated as the protocol/server boundary. The a
 automated contracts and VS Code 1.132.1 manual interoperability are verified. This does not
 replace the internal Runtime, Registry, or Discovery subsystems.
 
+### SDK-0001 Project Templates V1 and SDK-0001.1 Python Scaffold
+
+**Status:** COMPLETE / VERIFIED
+
+The document-first standalone project template and its optional generic Python scaffold are
+implemented and verified. SDK-0001.1 adds portable packaging metadata, a Python package, a smoke
+test, and a generic `.gitignore` while preserving V1 output by default.
+
 ## Current Priority
 
-Maintain the verified MCP-0002 implementation and prepare the next engineering capability from the
-SDK-0001 Project Templates V1 baseline. Record additional client interoperability only when
-supported by separately captured evidence; it is not a blocker for completed MCP-0002.
+Maintain the verified MCP-0002 implementation and the SDK-0001 V1/SDK-0001.1 project-template
+baseline. Record additional client interoperability only when supported by separately captured
+evidence; it is not a blocker for completed MCP-0002.
 
 ## Planned
 
 ### Engineering Automation
 
 Project bootstrap, documentation generation, and future engineering automation require separate
-scope and validation. A future SDK-0001.x scaffold capability may be considered only after its
-documentation-first design is approved.
+scope and validation. The SDK-0001.1 scaffold is complete; no broader automation is implied.
+
+### SDK-0001.2 Project Template CLI
+
+**Status:** PLANNED / CANDIDATE NEXT MILESTONE
+
+A CLI over the verified project-template API may be considered only after documentation-first scope
+and validation are approved. This is not active or approved implementation work.
 
 ### Client and IDE Interoperability
 

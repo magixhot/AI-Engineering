@@ -63,4 +63,6 @@ interoperability.
 - Sprint 1 — MCP Foundation: implemented and verified by MCP-0002.
 - Workspace, Git, Python, Runtime, Registry, Discovery, STDIO, diagnostics, and IDE modules are
   implemented repository subsystems.
-- Engineering automation and additional validated client interoperability are future work.
+- SDK-0001 Project Templates V1 and the optional SDK-0001.1 Python scaffold are implemented
+  through `project_templates.py`; a CLI is not present. Broader automation and additional validated
+  client interoperability remain future work.

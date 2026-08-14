@@ -20,7 +20,7 @@
 | RELEASE_CHECKLIST.md | 0.1.0 release checklist | Active |
 | SDK-0001_TEMPLATE_DESIGN.md | SDK-0001 V1 authoritative template design | Implemented / verified |
 | SDK-0001_PROJECT_TEMPLATES.md | SDK-0001 V1 framework reference | Implemented / verified |
-| SDK-0001_1_PYTHON_SCAFFOLD_DESIGN.md | SDK-0001.1 Python scaffold contract | Approved design / implementation pending |
+| SDK-0001_1_PYTHON_SCAFFOLD_DESIGN.md | SDK-0001.1 Python scaffold contract | Implemented / verified |
 
 ## Active Engineering Work
 
@@ -40,7 +40,8 @@
 | Sprint 1 — MCP Foundation | IMPLEMENTED / VERIFIED |
 | Workspace, Git, and Python tool subsystems | IMPLEMENTED |
 | SDK-0001 Project Templates V1 | IMPLEMENTED / VERIFIED |
-| Engineering automation | PLANNED |
+| SDK-0001.1 Standalone Python Project Scaffold | COMPLETE / VERIFIED |
+| Engineering automation | PLANNED / SDK-0001.2 CLI candidate |
 | Additional client and IDE interoperability | PLANNED |
 
 ## Source Tree
