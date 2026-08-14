@@ -1,6 +1,6 @@
 # SDK-0001.1 — Standalone Python Scaffold Contract
 
-**Status:** APPROVED DESIGN / IMPLEMENTATION PENDING  
+**Status:** IMPLEMENTED / VERIFIED
 **Scope:** additive follow-up to SDK-0001 V1
 
 ## Objective
@@ -196,20 +196,20 @@ environment nor dependencies.
 
 ## Automated Test Matrix
 
-All items below are **PLANNED / TEST MISSING** for the implementation task.
+All items below are **IMPLEMENTED / VERIFIED** by the SDK-0001.1 test suite.
 
 | Test | Status |
 |---|---|
-| Scaffold disabled preserves exact V1 output | PLANNED / TEST MISSING |
-| Scaffold enabled generates the exact required file set | PLANNED / TEST MISSING |
-| Package-name normalization, leading digit, keyword, and empty-result cases | PLANNED / TEST MISSING |
-| `pyproject.toml` metadata and tool configuration | PLANNED / TEST MISSING |
-| Generated package is importable | PLANNED / TEST MISSING |
-| Generated smoke test is valid under pytest | PLANNED / TEST MISSING |
-| Initial commit includes scaffold files | PLANNED / TEST MISSING |
-| Nested-Git protection remains enforced | PLANNED / TEST MISSING |
-| Invalid package-name behavior | PLANNED / TEST MISSING |
-| Existing typed and compatibility APIs remain backward compatible | PLANNED / TEST MISSING |
+| Scaffold disabled preserves exact V1 output | IMPLEMENTED / VERIFIED |
+| Scaffold enabled generates the exact required file set | IMPLEMENTED / VERIFIED |
+| Package-name normalization, leading digit, keyword, and empty-result cases | IMPLEMENTED / VERIFIED |
+| `pyproject.toml` metadata and tool configuration | IMPLEMENTED / VERIFIED |
+| Generated package is importable | IMPLEMENTED / VERIFIED |
+| Generated smoke test is valid under pytest | IMPLEMENTED / VERIFIED |
+| Initial commit includes scaffold files | IMPLEMENTED / VERIFIED |
+| Nested-Git protection remains enforced | IMPLEMENTED / VERIFIED |
+| Invalid package-name behavior | IMPLEMENTED / VERIFIED |
+| Existing typed and compatibility APIs remain backward compatible | IMPLEMENTED / VERIFIED |
 
 ## Non-Goals
 
@@ -221,6 +221,5 @@ scaffold.
 
 ## Completion Criteria
 
-The future implementation is complete only when it implements this opt-in
-contract, preserves disabled V1 behavior, adds the planned tests, includes all
-generated files in the initial commit, and passes the repository quality gates.
+The implementation preserves disabled V1 behavior, includes all generated files
+in the initial commit, and passes the repository quality gates.

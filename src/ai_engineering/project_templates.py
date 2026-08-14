@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import json
+import keyword
 import re
 import subprocess
 from dataclasses import dataclass, field
@@ -26,6 +28,7 @@ class StandaloneProjectRequest:
     author: str | None = None
     created_date: str | None = None
     additional_documents: Mapping[str, str] = field(default_factory=dict)
+    include_python_scaffold: bool = False
 
 
 @dataclass(frozen=True)
@@ -299,16 +302,27 @@ class ProjectTemplateGenerator:
         target_directory: Path,
         metadata: Mapping[str, str],
         docs: Optional[Dict[str, str]] = None,
+        include_python_scaffold: bool = False,
     ) -> None:
         self._ensure_required_metadata(metadata)
         docs = docs or {}
+        self._validate_scaffold_option(include_python_scaffold)
         self._validate_target_directory(target_directory)
         self._ensure_not_inside_git_repository(target_directory)
         self._validate_optional_docs(docs, metadata)
+        scaffold_files = (
+            self._build_python_scaffold(metadata) if include_python_scaffold else {}
+        )
+        self._validate_generated_file_paths(
+            target_directory,
+            docs,
+            scaffold_files,
+        )
         self._create_project_directory(target_directory)
         self._write_required_documents(target_directory, metadata)
         self._write_optional_docs(target_directory, metadata, docs)
-        self._initialize_git_repository(target_directory)
+        self._write_scaffold_files(target_directory, scaffold_files)
+        self._initialize_git_repository(target_directory, scaffold_files)
 
     def _ensure_required_metadata(self, metadata: Mapping[str, str]) -> None:
         missing = [
@@ -329,6 +343,119 @@ class ProjectTemplateGenerator:
                 raise ProjectTemplateError(
                     f"Target directory is not empty: {target_directory}"
                 )
+
+    def _validate_scaffold_option(self, include_python_scaffold: bool) -> None:
+        if not isinstance(include_python_scaffold, bool):
+            raise ProjectTemplateError("include_python_scaffold must be a boolean")
+
+    @staticmethod
+    def _derive_package_name(project_name: str) -> str:
+        normalized = project_name.strip().lower()
+        normalized = re.sub(r"[ -]+", "_", normalized)
+        normalized = re.sub(r"[^a-z0-9_]", "_", normalized)
+        normalized = re.sub(r"_+", "_", normalized).strip("_")
+
+        if normalized and normalized[0].isdigit():
+            normalized = f"project_{normalized}"
+        if keyword.iskeyword(normalized):
+            normalized = f"project_{normalized}"
+
+        if (
+            not normalized
+            or not normalized.isascii()
+            or not normalized.isidentifier()
+            or keyword.iskeyword(normalized)
+        ):
+            raise ProjectTemplateError(
+                f"Invalid package name derived from project name: {project_name!r}"
+            )
+        return normalized
+
+    def _build_python_scaffold(self, metadata: Mapping[str, str]) -> dict[str, str]:
+        package_name = self._derive_package_name(metadata["PROJECT_NAME"])
+        distribution_name = package_name.replace("_", "-")
+        author = metadata.get("AUTHOR")
+        authors = (
+            f"authors = [{{ name = {json.dumps(author)} }}]\n" if author else ""
+        )
+        pyproject = (
+            "[build-system]\n"
+            'requires = ["setuptools>=68"]\n'
+            'build-backend = "setuptools.build_meta"\n'
+            "\n"
+            "[project]\n"
+            f"name = {json.dumps(distribution_name)}\n"
+            'version = "0.1.0"\n'
+            f"description = {json.dumps(metadata['PROJECT_DESCRIPTION'])}\n"
+            'requires-python = ">=3.11"\n'
+            "dependencies = []\n"
+            f"{authors}"
+            "\n"
+            "[project.optional-dependencies]\n"
+            'dev = ["pytest>=8", "ruff>=0.6", "mypy>=1.11"]\n'
+            "\n"
+            "[tool.pytest.ini_options]\n"
+            'testpaths = ["tests"]\n'
+            "\n"
+            "[tool.ruff]\n"
+            "line-length = 88\n"
+            'target-version = "py311"\n'
+            "\n"
+            "[tool.ruff.lint]\n"
+            'select = ["E", "F", "I"]\n'
+            "\n"
+            "[tool.mypy]\n"
+            'python_version = "3.11"\n'
+            'files = ["src", "tests"]\n'
+            "warn_unused_configs = true\n"
+        )
+        return {
+            "pyproject.toml": pyproject,
+            ".gitignore": (
+                "__pycache__/\n"
+                "*.py[cod]\n"
+                ".venv/\n"
+                "venv/\n"
+                ".coverage\n"
+                "htmlcov/\n"
+                "build/\n"
+                "dist/\n"
+                "*.egg-info/\n"
+                ".idea/\n"
+                ".vscode/\n"
+            ),
+            f"src/{package_name}/__init__.py": f'"""{package_name} package."""\n',
+            "tests/test_smoke.py": (
+                '"""Smoke test for the generated package."""\n'
+                "\n"
+                "from importlib import import_module\n"
+                "\n"
+                "\n"
+                "def test_package_is_importable() -> None:\n"
+                f'    module = import_module("{package_name}")\n'
+                "    assert module is not None\n"
+            ),
+        }
+
+    def _validate_generated_file_paths(
+        self,
+        target_directory: Path,
+        docs: Mapping[str, str],
+        scaffold_files: Mapping[str, str],
+    ) -> None:
+        generated_paths = [
+            *self.REQUIRED_DOCS,
+            *(str(Path("docs") / filename) for filename in docs),
+            *scaffold_files,
+        ]
+        normalized_paths = [
+            Path(path).as_posix().casefold() for path in generated_paths
+        ]
+        if len(normalized_paths) != len(set(normalized_paths)):
+            raise ProjectTemplateError("Generated file paths must not collide")
+        for path in generated_paths:
+            if (target_directory / path).exists():
+                raise ProjectTemplateError(f"Generated file already exists: {path}")
 
     def _create_project_directory(self, path: Path) -> None:
         path.mkdir(parents=True, exist_ok=True)
@@ -376,6 +503,16 @@ class ProjectTemplateGenerator:
         for filename, content in docs.items():
             rendered = self._render_template(content, metadata)
             self._write_file(docs_dir / filename, rendered)
+
+    def _write_scaffold_files(
+        self,
+        target_directory: Path,
+        scaffold_files: Mapping[str, str],
+    ) -> None:
+        for relative_path, content in scaffold_files.items():
+            path = target_directory / relative_path
+            path.parent.mkdir(parents=True, exist_ok=True)
+            self._write_file(path, content)
 
     def _validate_optional_docs(
         self,
@@ -431,7 +568,11 @@ class ProjectTemplateGenerator:
                     "Target directory is inside an existing Git repository"
                 )
 
-    def _initialize_git_repository(self, target_directory: Path) -> None:
+    def _initialize_git_repository(
+        self,
+        target_directory: Path,
+        scaffold_files: Mapping[str, str],
+    ) -> None:
         if not target_directory.exists():
             raise ProjectTemplateError(
                 f"Target directory does not exist: {target_directory}"
@@ -475,6 +616,7 @@ class ProjectTemplateGenerator:
                 if p.is_file():
                     # add relative path like docs/filename
                     to_add.append(str(Path("docs") / p.name))
+        to_add.extend(scaffold_files)
 
         if to_add:
             subprocess.run(
@@ -550,6 +692,7 @@ def create_standalone_project(
         request.target_directory,
         metadata,
         docs=additional_documents,
+        include_python_scaffold=request.include_python_scaffold,
     )
 
     generated_files = tuple(
@@ -559,6 +702,11 @@ def create_standalone_project(
         request.target_directory / "docs" / filename
         for filename in sorted(additional_documents)
     )
+    if request.include_python_scaffold:
+        generated_files += tuple(
+            request.target_directory / filename
+            for filename in generator._build_python_scaffold(metadata)
+        )
     return StandaloneProject(
         target_directory=request.target_directory,
         generated_files=generated_files,

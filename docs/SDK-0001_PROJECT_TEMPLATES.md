@@ -116,6 +116,18 @@ features for a subsequent version and place them on the roadmap:
 Items in this section are NOT IMPLEMENTED in v1 and must be agreed and scoped before being
 implemented in a future SDK-0001.x release.
 
+## SDK-0001.1 Optional Python Scaffold
+
+SDK-0001.1 implements the separately approved, opt-in Python scaffold described in
+`docs/SDK-0001_1_PYTHON_SCAFFOLD_DESIGN.md`. It is enabled only through
+`StandaloneProjectRequest.include_python_scaffold`, which defaults to `False` and therefore
+preserves the V1 document-only output for existing callers.
+
+When enabled, it adds the approved `pyproject.toml`, `.gitignore`, source package, and smoke
+test to the V1 document baseline. It does not add a CLI, application logic, framework templates,
+remote Git operations, dependency installation, or a generated `LICENSE`. The V1 exclusions
+above remain historical V1 boundaries; they do not describe the separately scoped opt-in feature.
+
 ## Documentation housekeeping
 
 - This framework-level document is intended to remain in the AI-Engineering repository as a
