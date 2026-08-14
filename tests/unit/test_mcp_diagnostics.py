@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import inspect
 from pathlib import Path
+from typing import Generator
 
 import pytest
 
@@ -22,7 +23,7 @@ def _reset_runtime_logger() -> None:
 
 
 @pytest.fixture(autouse=True)
-def reset_diagnostics_state() -> None:
+def reset_diagnostics_state() -> Generator[None, None, None]:
     """Keep the module-level diagnostics logger isolated between tests."""
 
     _reset_runtime_logger()

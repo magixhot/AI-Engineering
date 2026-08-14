@@ -64,7 +64,8 @@ class ProjectTemplateGenerator:
         ),
         "AI_CHAT_START.md": (
             "Bootstrap context for a new project chat session.",
-            "document purpose, bootstrap order, core documents, current status, continuation guidance",
+            "document purpose, bootstrap order, core documents, current status, "
+            "continuation guidance",
             "AI-Engineering operational history or code-generation instructions",
         ),
         "PROJECT_CONTEXT.md": (
@@ -94,7 +95,8 @@ class ProjectTemplateGenerator:
         ),
         "CODING_STANDARDS.md": (
             "Code and design conventions for the project.",
-            "general principles, architecture guidance, naming, testing and documentation",
+            "general principles, architecture guidance, naming, testing and "
+            "documentation",
             "project-specific implementation details",
         ),
         "MASTER_INDEX.md": (
@@ -149,7 +151,8 @@ class ProjectTemplateGenerator:
             "The bootstrap order lists the required project documents.\n"
             "\n"
             "## Current Project Status\n"
-            "The generated project begins in the template generation foundation phase.\n"
+            "The generated project begins in the template generation foundation "
+            "phase.\n"
             "\n"
             "## Project context\n"
             "The generated project is `{{PROJECT_NAME}}` and should be understood\n"

@@ -17,7 +17,11 @@ from ai_engineering.registry.composite import CompositeRegistry
 async def connected_session(adapter: SDKAdapter) -> AsyncIterator[ClientSession]:
     """Run an SDK server and client session over public in-memory streams."""
 
+    client_send: Any
+    server_receive: Any
     client_send, server_receive = anyio.create_memory_object_stream(16)
+    server_send: Any
+    client_receive: Any
     server_send, client_receive = anyio.create_memory_object_stream(16)
 
     async with anyio.create_task_group() as task_group:
@@ -155,7 +159,9 @@ async def test_unknown_tool_returns_a_deterministic_mcp_error_result() -> None:
 
     assert result.isError is True
     assert result.content == [
-        TextContent(type="text", text="Error executing tool: 'Unknown tool: demo.missing'")
+        TextContent(
+            type="text", text="Error executing tool: 'Unknown tool: demo.missing'"
+        )
     ]
 
 
