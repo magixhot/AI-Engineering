@@ -8,7 +8,7 @@ import sys
 import threading
 import time
 from pathlib import Path
-from typing import Any, BinaryIO
+from typing import Any, BinaryIO, cast
 
 import pytest
 from mcp.types import LATEST_PROTOCOL_VERSION
@@ -102,8 +102,8 @@ def test_stdio_initialize_is_protocol_only_and_exits_cleanly() -> None:
     assert process.stdout is not None
     assert process.stderr is not None
 
-    stdout = PipeCapture(process.stdout)
-    stderr = PipeCapture(process.stderr)
+    stdout = PipeCapture(cast(BinaryIO, process.stdout))
+    stderr = PipeCapture(cast(BinaryIO, process.stderr))
     stdout.start()
     stderr.start()
 

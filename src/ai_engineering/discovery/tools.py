@@ -9,7 +9,6 @@ from .models import (
     ToolParameter,
 )
 
-
 BUILTIN_TOOLS: tuple[ToolMetadata, ...] = (
 
     # ------------------------------------------------------------------
