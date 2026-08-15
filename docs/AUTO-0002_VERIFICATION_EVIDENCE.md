@@ -1,6 +1,6 @@
 # AUTO-0002 — Verification Evidence
 
-**Status:** IMPLEMENTED / EXTERNAL VERIFICATION REQUIRED
+**Status:** COMPLETE / VERIFIED
 
 ## Verified Contract Surface
 
@@ -63,7 +63,22 @@ AUTO-0002-04 extends that evidence to prove installed `project docs` command dis
 behavior on an unmarked bootstrap project, deterministic planning on a marked fixture, guarded apply,
 subsequent clean check, and unchanged Git HEAD/staging semantics.
 
-## External Verification Gate
+## GitHub Actions Evidence
 
-This evidence record becomes **COMPLETE / VERIFIED** only after the implementation PR Quality run and
-the post-merge `master` Quality run both pass Ruff, mypy, and the full pytest suite.
+Implementation PR #46 completed the Quality workflow successfully on Linux/Python 3.11:
+
+- pytest: **142 passed**;
+- Ruff: **0 findings**;
+- mypy: **0 issues in 77 source files**.
+
+The PR was squash-merged as commit `a33a2861cd5519db8c62a144c48406a27adb5c31`.
+Post-merge Quality run #59 (`31895093547`) also completed successfully with Ruff, mypy, full pytest,
+and cleanup all passing.
+
+## Completion Boundary
+
+AUTO-0002 is **COMPLETE / VERIFIED** for the approved V1 scope.
+
+This does not imply marker initialization, free-form documentation rewriting, additional writable
+documents, Git staging/commit/push, remote services, project execution, dependency installation,
+release publication, or PyPI support.

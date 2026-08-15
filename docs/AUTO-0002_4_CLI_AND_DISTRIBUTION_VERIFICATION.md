@@ -1,14 +1,14 @@
 # AUTO-0002-04 — CLI and Installed-Distribution Verification
 
-**Status:** CONTRACT / APPROVED FOR IMPLEMENTATION
+**Status:** COMPLETE / VERIFIED
 **Parent:** AUTO-0002 — Project Documentation Synchronization
 
 ## Purpose
 
-Freeze the exact V1 CLI contract required by AUTO-0002 before implementation of the CLI adapter.
+Freeze and verify the exact V1 CLI contract required by AUTO-0002.
 
 The CLI is an adapter over the existing public inspection, drift, planning, and guarded-apply APIs.
-It must not duplicate synchronization logic.
+It does not duplicate synchronization logic.
 
 ## Command Surface
 
@@ -42,7 +42,7 @@ drift=<document>:<category>
 status=<clean|drift>
 ```
 
-`drift=` lines are emitted in the deterministic report order and are omitted when there is no drift.
+`drift=` lines are emitted in deterministic report order and are omitted when there is no drift.
 
 Exit codes:
 
@@ -69,8 +69,8 @@ update=<document>:<original_sha256>
 status=<clean|ready|manual_review>
 ```
 
-`update=` lines follow the deterministic plan order and never include replacement Markdown content.
-The SHA-256 value is the digest already stored in the public plan object.
+`update=` lines follow deterministic plan order and never include replacement Markdown content. The
+SHA-256 value is the digest already stored in the public plan object.
 
 Status meanings:
 
@@ -107,7 +107,7 @@ changed_document=<document>
 verification=passed
 ```
 
-`changed_document=` lines follow the result order. A clean project produces `changed_count=0`, no
+`changed_document=` lines follow result order. A clean project produces `changed_count=0`, no
 `changed_document=` lines, and `verification=passed`.
 
 Exit codes:
@@ -132,7 +132,7 @@ Marker initialization remains a separate future design decision.
 
 ## Safety Boundary
 
-The CLI must preserve all AUTO-0002 V1 constraints:
+The CLI preserves all AUTO-0002 V1 constraints:
 
 - writable documents remain exactly `CURRENT_STATUS.md`, `MASTER_INDEX.md`, and `PROJECT_MAP.md`;
 - `check` and `plan` perform no writes;
@@ -146,11 +146,10 @@ The CLI must preserve all AUTO-0002 V1 constraints:
 
 ## Installed-Distribution Verification
 
-The existing REL-0001 isolated-wheel release test must be extended to prove that the installed
-console script exposes `project docs` and that installed-wheel behavior does not rely on the source
-checkout or `PYTHONPATH`.
+The REL-0001 isolated-wheel release test verifies the installed console script without source-checkout
+or `PYTHONPATH` reliance.
 
-Required evidence:
+Recorded evidence proves:
 
 1. installed `ai-engineering project --help` lists `docs`;
 2. installed `ai-engineering project docs --help` lists `check`, `plan`, and `apply`;
@@ -158,9 +157,15 @@ Required evidence:
 4. an isolated local fixture with valid ownership markers produces a deterministic ready plan;
 5. installed `apply` updates only the three approved documents and reports `verification=passed`;
 6. a subsequent installed `check` reports `status=clean`;
-7. the fixture Git HEAD is unchanged by synchronization and no Git staging/commit/push behavior is introduced.
+7. the fixture Git HEAD is unchanged and no Git staging/commit/push behavior is introduced.
+
+## Verification Evidence
+
+Implementation PR #46 passed Linux/Python 3.11 Quality with pytest **142 passed**, Ruff **0 findings**,
+and mypy **0 issues in 77 source files**. The squash merge commit is
+`a33a2861cd5519db8c62a144c48406a27adb5c31`. Post-merge Quality run #59 (`31895093547`) also passed.
 
 ## Completion Criteria
 
-AUTO-0002-04 is complete only when the CLI adapter, unit tests, isolated installed-wheel evidence,
-repository quality gates, and status documentation all match this frozen contract.
+AUTO-0002-04 is complete: the CLI adapter, unit tests, isolated installed-wheel evidence, repository
+quality gates, and status documentation match this frozen contract.

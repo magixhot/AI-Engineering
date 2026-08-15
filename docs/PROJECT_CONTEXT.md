@@ -17,8 +17,10 @@ includes:
 - Workspace, Git, and Python tool subsystems;
 - STDIO entry point;
 - IDE integration models and adapters for Antigravity and VS Code;
-- SDK-0001 standalone project templates, Python scaffold, and installed create CLI; and
-- AUTO-0001 typed engineering bootstrap API, verification, and installed bootstrap CLI.
+- SDK-0001 standalone project templates, Python scaffold, and installed create CLI;
+- AUTO-0001 typed engineering bootstrap API, verification, and installed bootstrap CLI; and
+- AUTO-0002 read-only project inspection, deterministic documentation drift/planning, guarded apply,
+  and installed documentation synchronization CLI.
 
 ## Vision
 
@@ -33,9 +35,11 @@ testable tools, standards, workflows, and project structure.
   Standalone Python Project Scaffold, and SDK-0001.2 CLI frontend (`ai-engineering project create`).
 - Maintain AUTO-0001's bounded `python-engineering` bootstrap API and installed
   `ai-engineering project bootstrap` workflow without changing SDK-0001 default behavior.
+- Maintain AUTO-0002's exact three-document writable set, ownership-marker boundary, deterministic
+  inspection/planning, guarded apply, and installed `project docs check/plan/apply` behavior.
 - Preserve CI-0001, SAFE-0001, REL-0001/0002, and installed-distribution evidence.
-- Scope AUTO-0002 Project Documentation Synchronization through a separate design contract before
-  implementation.
+- Keep marker initialization, broader document synchronization, Git automation, and project migration
+  behind separate approved contracts.
 - Record additional client interoperability only when separately scoped and supported by evidence.
 
 ## Engineering Principles
@@ -49,8 +53,8 @@ testable tools, standards, workflows, and project structure.
 ## Release Boundary
 
 Git tag `v0.1.0` and GitHub Release `AI-Engineering 0.1.0` are published for the approved historical
-release commit. AUTO-0001 was implemented later on `master` and is not retroactively part of that
-immutable release. PyPI remains not approved and not published.
+release commit. AUTO-0001 and AUTO-0002 were implemented later on `master` and are not retroactively
+part of that immutable release. PyPI remains not approved and not published.
 
 ## Reference Project
 

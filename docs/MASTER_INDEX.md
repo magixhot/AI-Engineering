@@ -32,7 +32,9 @@
 | SAFE-0001_VERIFICATION_EVIDENCE.md | Compact Linux/Windows SAFE-0001 verification record | Complete / Verified |
 | AUTO-0001_ENGINEERING_PROJECT_BOOTSTRAP_DESIGN.md | Additive engineering bootstrap API/profile/verification/CLI contract over SDK-0001 | Complete / Verified |
 | AUTO-0001_VERIFICATION_EVIDENCE.md | Core API, CLI, installed-wheel, CI, and publication-boundary evidence | Complete / Verified |
-| AUTO-0002_PROJECT_DOCUMENTATION_SYNCHRONIZATION_DESIGN.md | Bounded project-state inspection, documentation drift, deterministic planning, guarded apply, and verification contract | Design / Proposed |
+| AUTO-0002_PROJECT_DOCUMENTATION_SYNCHRONIZATION_DESIGN.md | Bounded inspection, drift, deterministic planning, guarded apply, and ownership contract | Implemented / Verified |
+| AUTO-0002_4_CLI_AND_DISTRIBUTION_VERIFICATION.md | Exact installed `project docs check/plan/apply` CLI and isolated-distribution contract | Implemented / Verified |
+| AUTO-0002_VERIFICATION_EVIDENCE.md | Inspection, drift, apply, CLI, installed-wheel, and CI evidence | Complete / Verified |
 
 ## Active Engineering Work
 
@@ -46,7 +48,8 @@
 | SAFE-0001 workspace path safety | COMPLETE / VERIFIED |
 | REL-0002 v0.1.0 GitHub publication | COMPLETE / VERIFIED |
 | AUTO-0001 engineering project bootstrap | COMPLETE / VERIFIED |
-| AUTO-0002 project documentation synchronization | DESIGN / CURRENT PRIORITY |
+| AUTO-0002 project documentation synchronization | COMPLETE / VERIFIED |
+| Post-AUTO-0002 roadmap selection | NEXT |
 | Additional MCP client interoperability | OPTIONAL / FUTURE EVIDENCE |
 | Diagnostics maintenance | ACTIVE |
 
@@ -67,7 +70,7 @@
 | SAFE-0001 workspace path safety | COMPLETE / VERIFIED |
 | REL-0002 release publication governance and v0.1.0 GitHub publication | COMPLETE / VERIFIED |
 | M3 / AUTO-0001 Engineering Project Bootstrap | COMPLETE / VERIFIED |
-| M3 / AUTO-0002 Project Documentation Synchronization | DESIGN |
+| M3 / AUTO-0002 Project Documentation Synchronization | COMPLETE / VERIFIED |
 | Additional client and IDE interoperability | PLANNED |
 
 ## Published Release
@@ -75,13 +78,13 @@
 - GitHub Release: `AI-Engineering 0.1.0`
 - Tag: `v0.1.0`
 - Tagged commit: `73929bd15fa7637db8162aac199697582bb25e67`
-- AUTO-0001: completed after the immutable v0.1.0 tag; not part of that published artifact
+- AUTO-0001 and AUTO-0002: completed after the immutable v0.1.0 tag; not part of that published artifact
 - PyPI: not approved / not published
 
 ## Current Quality Baseline
 
-- Current Linux GitHub Actions / Python 3.11: pytest 112 passed, Ruff 0 findings, mypy 0 findings in 71 source files.
-- Installed-wheel verification covers both `ai-engineering project create` and `ai-engineering project bootstrap` outside the source checkout.
+- Current Linux GitHub Actions / Python 3.11: pytest 142 passed, Ruff 0 findings, mypy 0 findings in 77 source files.
+- Installed-wheel verification covers `ai-engineering project create`, `project bootstrap`, and `project docs check/plan/apply` outside the source checkout.
 - Windows-local SAFE evidence: pytest 98 passed, 1 permitted symlink-fixture skip due to `WinError 1314`; Ruff 0; mypy 0.
 
 ## Source Tree
@@ -90,7 +93,10 @@
 src/ai_engineering/
 ├── discovery/   ├── git/       ├── ide/adapters/  ├── mcp/debug/
 ├── python/      ├── registry/  ├── runtime/       ├── shared/
-├── stdio/       ├── tools/     └── workspace/
+├── stdio/       ├── tools/     ├── workspace/
+├── project_inspection.py
+├── documentation_sync.py
+└── documentation_apply.py
 ```
 
 The repository has no `transport/` package.
