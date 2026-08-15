@@ -25,9 +25,12 @@ This checklist records the release-line verification state. It does not establis
 - [x] CI-0001 GitHub Actions baseline: Linux/Python 3.11, pytest 90 passed when CI was introduced; Ruff and mypy passed.
 - [x] SAFE-0001 Linux baseline: pytest 99 passed, Ruff 0 findings, mypy 0 findings in 69 source files.
 - [x] SAFE-0001 Windows-local baseline: pytest 98 passed, 1 skipped; Ruff 0; mypy 0 in 69 source files.
-- [x] The Windows skip is limited to the symlink-escape fixture because the process lacked symlink-creation privilege (`WinError 1314`).
+- [x] The SAFE-0001 Windows skip is limited to the symlink-escape fixture because the process lacked symlink-creation privilege (`WinError 1314`).
 - [x] AUTO-0001 Linux CI baseline: pytest 112 passed, Ruff 0 findings, mypy 0 findings in 71 source files.
-- [x] AUTO-0002 current Linux CI baseline: pytest **142 passed**, Ruff 0 findings, mypy 0 findings in 77 source files.
+- [x] AUTO-0002 Linux CI baseline: pytest 142 passed, Ruff 0 findings, mypy 0 findings in 77 source files.
+- [x] SAFE-0002 Linux CI baseline: pytest **155 passed**, Ruff 0 findings, mypy 0 findings in 79 source files.
+- [x] SAFE-0002 final Windows-local baseline: pytest **153 passed, 2 skipped**, Ruff 0, mypy 0 in 79 source files; `git diff --check` passed; working tree clean.
+- [x] The two final Windows skips are limited to SAFE-0001 Workspace and SAFE-0002 Python symlink fixtures because the process lacked symlink-creation privilege (`WinError 1314`); equivalent coverage executes in Linux CI.
 
 ## Local Distribution Verification
 
@@ -51,7 +54,7 @@ This checklist records the release-line verification state. It does not establis
 
 - [x] Git tag `v0.1.0` was created for approved commit `73929bd15fa7637db8162aac199697582bb25e67`.
 - [x] GitHub Release `AI-Engineering 0.1.0` was published for `v0.1.0`.
-- [x] AUTO-0001 and AUTO-0002 were implemented after `v0.1.0` and are not claimed as part of that immutable published tag/artifact.
+- [x] AUTO-0001, AUTO-0002, and SAFE-0002 were implemented after `v0.1.0` and are not claimed as part of that immutable published tag/artifact.
 - [ ] PyPI publishing remains not approved and not performed.
 
 ## CI Verification
@@ -62,6 +65,8 @@ This checklist records the release-line verification state. It does not establis
 - [x] REL-0001 distribution verification remains part of the full pytest suite.
 - [x] CI-0001 has successful PR and post-merge `master` evidence.
 - [x] AUTO-0002 implementation PR #46 and post-merge Quality run #59 both passed the full quality workflow.
+- [x] SAFE-0002 Python link-escape PR #51 passed Quality run #70; post-merge Quality run #71 passed the full suite with 155 tests.
+- [x] The Windows-discovered AUTO-0002 newline assertion portability repair PR #52 passed Quality run #72; post-merge Quality run #73 passed.
 
 ## Workspace Path Safety Verification
 
@@ -74,8 +79,23 @@ This checklist records the release-line verification state. It does not establis
 - [x] Workspace-root move and delete are rejected.
 - [x] Boundary violations use controlled `WorkspacePermissionError` behavior.
 - [x] Linux CI executes link-escape coverage successfully.
-- [x] Windows-local verification passed with the single privilege-dependent symlink fixture explicitly skipped.
-- [x] SAFE-0001 is recorded as a Workspace path-authorization boundary, not an OS-level sandbox or Git/Python subprocess sandbox.
+- [x] Windows-local verification passed with the privilege-dependent symlink fixture explicitly skipped.
+- [x] SAFE-0001 is recorded as a Workspace path-authorization boundary, not an OS-level sandbox.
+
+## Git/Python Execution Safety Verification
+
+- [x] Active MCP Git handlers use a bounded service rooted at `MCPConfig.workspace_root`.
+- [x] MCP Git operations succeed when the configured root is the exact Git repository top level.
+- [x] A configured root inside a parent Git repository is rejected rather than allowing discovery above the authority root.
+- [x] Git command scope remains limited to the existing read-only tool families plus repository-top-level verification.
+- [x] Active MCP Python path-taking operations are rooted at `MCPConfig.workspace_root`.
+- [x] Relative and absolute in-root syntax/package targets succeed.
+- [x] Traversal and absolute outside-root syntax/package/test targets are rejected with controlled Python permission errors.
+- [x] Python link-escape coverage executes on Linux and records only privilege-dependent fixture skips on Windows.
+- [x] `python.run_tests` rejects unauthorized targets before subprocess launch.
+- [x] Authorized pytest execution uses `sys.executable -m pytest`, workspace-root cwd, `shell=False`, `stdin=DEVNULL`, captured output, and a bounded timeout.
+- [x] Representative MCP SDK-session Git/Python success and controlled boundary errors are verified.
+- [x] SAFE-0002 is recorded as an active-MCP authority-root/subprocess boundary, not an OS sandbox or containment of malicious code already authorized to run in-root.
 
 ## Engineering Bootstrap Verification
 
@@ -94,6 +114,7 @@ This checklist records the release-line verification state. It does not establis
 - [x] Missing/malformed ownership markers are manual-review conditions, not destructive normalization.
 - [x] Plans contain SHA-256 original-content guards; stale plans fail closed before writes.
 - [x] Guarded apply preserves human-owned prefix/suffix content and verifies exact written replacement content.
+- [x] Source document line endings are preserved; tests are portable across LF and CRLF.
 - [x] Post-apply reinspection proves resolved drift is cleared.
 - [x] AUTO-0002 performs no Git stage/commit/push behavior.
 - [x] Installed `project docs check/plan/apply` behavior is verified from an isolated wheel outside the source checkout.
@@ -102,7 +123,7 @@ This checklist records the release-line verification state. It does not establis
 
 - [x] MCP diagnostics documentation exists.
 - [x] MCP SDK migration report is synchronized with implemented code and bounded client-verification claims.
-- [x] Root README records the current verified milestone state and published v0.1.0 boundary.
+- [x] Root README records the published v0.1.0 boundary.
 - [x] SDK-0001.2 `ai-engineering project create` CLI is recorded as implemented and verified.
 - [x] MCP-0003 Antigravity interoperability evidence is recorded.
 - [x] TOOL-0001 verification and the Git porcelain parsing repair are recorded.
@@ -112,6 +133,7 @@ This checklist records the release-line verification state. It does not establis
 - [x] REL-0002 v0.1.0 GitHub publication evidence is recorded.
 - [x] AUTO-0001 API, CLI, and isolated installed-wheel verification evidence is recorded.
 - [x] AUTO-0002 inspection, drift, guarded apply, CLI, isolated installed-wheel, and CI evidence is recorded.
+- [x] SAFE-0002 Linux/Windows Git/Python boundary and subprocess evidence is recorded.
 
 ## Follow-up Verification
 

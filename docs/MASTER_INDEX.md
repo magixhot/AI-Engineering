@@ -30,7 +30,8 @@
 | CI-0001_QUALITY_GATE_AUTOMATION_DESIGN.md | GitHub Actions quality-gate automation contract | Complete / Verified |
 | SAFE-0001_WORKSPACE_PATH_SAFETY_DESIGN.md | Workspace root, containment, link-escape, and controlled-error security contract/evidence | Complete / Verified |
 | SAFE-0001_VERIFICATION_EVIDENCE.md | Compact Linux/Windows SAFE-0001 verification record | Complete / Verified |
-| SAFE-0002_GIT_PYTHON_EXECUTION_SAFETY_DESIGN.md | Active MCP Git/Python authority-root, subprocess, path, and compatibility security contract | Design / Proposed |
+| SAFE-0002_GIT_PYTHON_EXECUTION_SAFETY_DESIGN.md | Active MCP Git/Python authority-root, subprocess, path, and compatibility security contract | Implemented / Verified |
+| SAFE-0002_VERIFICATION_EVIDENCE.md | Linux/Windows Git/Python boundary, link-escape, subprocess, and regression evidence | Complete / Verified |
 | AUTO-0001_ENGINEERING_PROJECT_BOOTSTRAP_DESIGN.md | Additive engineering bootstrap API/profile/verification/CLI contract over SDK-0001 | Complete / Verified |
 | AUTO-0001_VERIFICATION_EVIDENCE.md | Core API, CLI, installed-wheel, CI, and publication-boundary evidence | Complete / Verified |
 | AUTO-0002_PROJECT_DOCUMENTATION_SYNCHRONIZATION_DESIGN.md | Bounded inspection, drift, deterministic planning, guarded apply, and ownership contract | Implemented / Verified |
@@ -47,10 +48,11 @@
 | REL-0001 local distribution verification | COMPLETE / VERIFIED |
 | CI-0001 quality gate automation | COMPLETE / VERIFIED |
 | SAFE-0001 workspace path safety | COMPLETE / VERIFIED |
-| SAFE-0002 Git/Python execution safety | DESIGN / CURRENT PRIORITY |
+| SAFE-0002 Git/Python execution safety | COMPLETE / VERIFIED |
 | REL-0002 v0.1.0 GitHub publication | COMPLETE / VERIFIED |
 | AUTO-0001 engineering project bootstrap | COMPLETE / VERIFIED |
 | AUTO-0002 project documentation synchronization | COMPLETE / VERIFIED |
+| Post-SAFE-0002 roadmap selection | NEXT |
 | Additional MCP client interoperability | OPTIONAL / FUTURE EVIDENCE |
 | Diagnostics maintenance | ACTIVE |
 
@@ -69,7 +71,7 @@
 | REL-0001 local distribution verification | COMPLETE / VERIFIED |
 | CI-0001 quality gate automation | COMPLETE / VERIFIED |
 | SAFE-0001 workspace path safety | COMPLETE / VERIFIED |
-| SAFE-0002 Git/Python execution safety | DESIGN |
+| SAFE-0002 Git/Python execution safety | COMPLETE / VERIFIED |
 | REL-0002 release publication governance and v0.1.0 GitHub publication | COMPLETE / VERIFIED |
 | M3 / AUTO-0001 Engineering Project Bootstrap | COMPLETE / VERIFIED |
 | M3 / AUTO-0002 Project Documentation Synchronization | COMPLETE / VERIFIED |
@@ -80,14 +82,14 @@
 - GitHub Release: `AI-Engineering 0.1.0`
 - Tag: `v0.1.0`
 - Tagged commit: `73929bd15fa7637db8162aac199697582bb25e67`
-- AUTO-0001 and AUTO-0002: completed after the immutable v0.1.0 tag; not part of that published artifact
+- AUTO-0001, AUTO-0002, and SAFE-0002: completed after the immutable v0.1.0 tag; not part of that published artifact
 - PyPI: not approved / not published
 
 ## Current Quality Baseline
 
-- Current Linux GitHub Actions / Python 3.11: pytest 142 passed, Ruff 0 findings, mypy 0 findings in 77 source files.
+- Current Linux GitHub Actions / Python 3.11: pytest 155 passed, Ruff 0 findings, mypy 0 findings in 79 source files.
 - Installed-wheel verification covers `ai-engineering project create`, `project bootstrap`, and `project docs check/plan/apply` outside the source checkout.
-- Windows-local SAFE evidence: pytest 98 passed, 1 permitted symlink-fixture skip due to `WinError 1314`; Ruff 0; mypy 0.
+- Final Windows-local SAFE-0002 evidence: pytest 153 passed, 2 permitted symlink-fixture skips due to `WinError 1314`; Ruff 0; mypy 0 in 79 source files; `git diff --check` passed; working tree clean.
 
 ## Source Tree
 
