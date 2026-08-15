@@ -12,7 +12,7 @@ AI-Engineering is the engineering foundation of the AI Infrastructure ecosystem.
 
 Its purpose is to provide the tools, standards, workflows and automation required to build, maintain and evolve AI projects in a consistent, reproducible and scalable way.
 
-The first major component of this repository is the **Engineering MCP Server**, which enables AI assistants to interact with engineering projects through the Model Context Protocol (MCP) and now uses the official Python `mcp` SDK.
+The first major component of this repository is the **Engineering MCP Server**, which enables AI assistants to interact with engineering projects through the Model Context Protocol (MCP) and uses the official Python `mcp` SDK.
 
 ---
 
@@ -36,10 +36,13 @@ Current scope includes:
 * SDK-0001 Project Templates V1
 * SDK-0001.1 Standalone Python Project Scaffold
 * SDK-0001.2 Project Template CLI (`ai-engineering project create`)
+* Local distribution verification
+* Automated quality gates
+* MCP Workspace path safety boundary
 
 Future scope may include:
 
-* SDK
+* Additional SDK capabilities
 * Code Generators
 * Automation Services
 * Additional Engineering Utilities
@@ -65,7 +68,7 @@ Future scope may include:
 docs/          Project documentation
 scripts/       Utility scripts
 src/           Source code
-tests/         Unit and integration tests
+tests/         Unit, integration, and release verification tests
 ```
 
 ---
@@ -84,19 +87,15 @@ This document contains everything required to restore the current project contex
 
 Current phase:
 
-**MCP-0002, MCP-0003, SDK-0001, TOOL-0001, and REL-0001 complete; planning CI**
+**MCP-0002/0003, SDK-0001, TOOL-0001, REL-0001, CI-0001, and SAFE-0001 complete / verified for their approved scopes**
 
-The official Python MCP SDK migration and its MCP-0002 verification are complete. VS Code 1.132.1
-and Antigravity interoperability are verified for their recorded stdio contracts. SDK-0001 Project
-Templates V1 plus the optional SDK-0001.1 Standalone Python Project Scaffold are implemented and
-verified. SDK-0001.2 adds the implemented `ai-engineering project create` CLI over that public API,
-including the optional scaffold flow. TOOL-0001 Core Tool Operation Verification is COMPLETE /
-VERIFIED for all 15 existing Workspace, Git, and Python operations. Current quality gates are
-pytest: 90 passed, Ruff: 0 findings, and mypy: 0 findings. REL-0001 local distribution verification
-is COMPLETE / VERIFIED: wheel and sdist contracts, an isolated wheel install, and the installed CLI
-are verified for release line 0.1.0. GitHub Release creation, PyPI publishing, and CI have not been
-performed. The next direction is CI planning only. This does not claim general production readiness
-or compatibility with ChatGPT/OpenAI, Claude Desktop, or other MCP clients.
+The official Python MCP SDK migration is complete. VS Code 1.132.1 and Antigravity interoperability are verified only for their recorded contracts. SDK-0001 Project Templates V1, the optional Python scaffold, and the installed `ai-engineering project create` CLI are implemented and verified. TOOL-0001 verifies all 15 existing Workspace, Git, and Python operations. REL-0001 verifies local wheel/sdist artifacts and isolated installed CLI behavior. CI-0001 runs Ruff, mypy, and full pytest on GitHub Actions/Linux/Python 3.11.
+
+SAFE-0001 enforces `MCPConfig.workspace_root` for the active MCP Workspace handlers. Relative and in-root absolute paths are supported; traversal, outside-root absolute paths, link escapes, move escapes, and workspace-root move/delete are rejected according to the verified contract. This is a Workspace path-authorization boundary, not an OS-level sandbox or Git/Python subprocess sandbox.
+
+Current Linux CI baseline: **pytest 99 passed, Ruff 0 findings, mypy 0 findings**. Windows-local SAFE verification: **pytest 98 passed, 1 permitted symlink-fixture skip**, Ruff 0, mypy 0.
+
+GitHub Release creation and PyPI publishing have not been performed. This project does not claim general production readiness or compatibility with ChatGPT/OpenAI, Claude Desktop, or other MCP clients without separate evidence.
 
 ---
 
