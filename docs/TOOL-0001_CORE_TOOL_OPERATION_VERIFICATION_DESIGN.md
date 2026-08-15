@@ -1,6 +1,6 @@
 # TOOL-0001 — Core Tool Operation Verification
 
-**Status:** DESIGN / IMPLEMENTATION PENDING
+**Status:** COMPLETE / VERIFIED
 
 ## Objective
 
@@ -17,21 +17,21 @@ preserved (for example, `workspace.read_file` ↔ `workspace_read_file`).
 
 | Group | Canonical internal name | Exposed MCP name | Arguments | Current return shape | Safety class | Current automated evidence |
 |---|---|---|---|---|---|---|
-| Workspace | `workspace.list` | `workspace_list` | `path: str` | `list[{path, is_file, is_directory, size}]` | READ_ONLY | Registration only; SDK missing-path error coverage |
-| Workspace | `workspace.read_file` | `workspace_read_file` | `path: str` | `{path, content}` | READ_ONLY | SDK missing-path error and name-dispatch coverage |
-| Workspace | `workspace.write_file` | `workspace_write_file` | `path: str`, `content: str` | `{success: True, path}` | LOCAL_MUTATION | TEST MISSING |
-| Workspace | `workspace.create_file` | `workspace_create_file` | `path: str` | `{success: True, path}` | LOCAL_MUTATION | TEST MISSING |
-| Workspace | `workspace.create_directory` | `workspace_create_directory` | `path: str` | `{success: True, path}` | LOCAL_MUTATION | TEST MISSING |
-| Workspace | `workspace.move` | `workspace_move` | `source: str`, `destination: str` | `{success: True, source, destination}` | LOCAL_MUTATION | TEST MISSING |
-| Workspace | `workspace.delete` | `workspace_delete` | `path: str` | `{success: True, path}` | LOCAL_MUTATION | TEST MISSING |
-| Git | `git.status` | `git_status` | none | `{branch, is_clean, staged, modified, untracked}` | SUBPROCESS_EXECUTION | Service tests with mocked subprocess output |
-| Git | `git.branch` | `git_branch` | none | `{branch}` | SUBPROCESS_EXECUTION | Service tests with mocked success/error |
-| Git | `git.log` | `git_log` | `limit: int = 10` | `{commits: list[str]}` | SUBPROCESS_EXECUTION | Service test with mocked output |
-| Git | `git.diff` | `git_diff` | none | `{diff: str}` | SUBPROCESS_EXECUTION | Service test with mocked output |
-| Python | `python.version` | `python_version` | none | `{executable, version}` | READ_ONLY | Manual client evidence only; focused automated evidence missing |
-| Python | `python.run_tests` | `python_run_tests` | `path: str | None = None` | `{command, success, exit_code, output}` | SUBPROCESS_EXECUTION | TEST MISSING |
-| Python | `python.check_syntax` | `python_check_syntax` | `file: str` | `{file, valid, error}` | READ_ONLY | TEST MISSING |
-| Python | `python.inspect_package` | `python_inspect_package` | `path: str` | `{path, modules: list[str]}` | READ_ONLY | TEST MISSING |
+| Workspace | `workspace.list` | `workspace_list` | `path: str` | `list[{path, is_file, is_directory, size}]` | READ_ONLY | Isolated service tests |
+| Workspace | `workspace.read_file` | `workspace_read_file` | `path: str` | `{path, content}` | READ_ONLY | Isolated service and SDK-session tests |
+| Workspace | `workspace.write_file` | `workspace_write_file` | `path: str`, `content: str` | `{success: True, path}` | LOCAL_MUTATION | Isolated service and SDK-session tests |
+| Workspace | `workspace.create_file` | `workspace_create_file` | `path: str` | `{success: True, path}` | LOCAL_MUTATION | Isolated service tests |
+| Workspace | `workspace.create_directory` | `workspace_create_directory` | `path: str` | `{success: True, path}` | LOCAL_MUTATION | Isolated service and mapping tests |
+| Workspace | `workspace.move` | `workspace_move` | `source: str`, `destination: str` | `{success: True, source, destination}` | LOCAL_MUTATION | Isolated service tests |
+| Workspace | `workspace.delete` | `workspace_delete` | `path: str` | `{success: True, path}` | LOCAL_MUTATION | Isolated service tests |
+| Git | `git.status` | `git_status` | none | `{branch, is_clean, staged, modified, untracked}` | SUBPROCESS_EXECUTION | Isolated real-repository and SDK-session tests |
+| Git | `git.branch` | `git_branch` | none | `{branch}` | SUBPROCESS_EXECUTION | Isolated real-repository tests |
+| Git | `git.log` | `git_log` | `limit: int = 10` | `{commits: list[str]}` | SUBPROCESS_EXECUTION | Isolated real-repository tests |
+| Git | `git.diff` | `git_diff` | none | `{diff: str}` | SUBPROCESS_EXECUTION | Isolated real-repository tests |
+| Python | `python.version` | `python_version` | none | `{executable, version}` | READ_ONLY | Service and SDK-session tests |
+| Python | `python.run_tests` | `python_run_tests` | `path: str | None = None` | `{command, success, exit_code, output}` | SUBPROCESS_EXECUTION | Isolated passing/failing fixture tests |
+| Python | `python.check_syntax` | `python_check_syntax` | `file: str` | `{file, valid, error}` | READ_ONLY | Isolated valid/error fixture tests and mapping test |
+| Python | `python.inspect_package` | `python_inspect_package` | `path: str` | `{path, modules: list[str]}` | READ_ONLY | Isolated package/error fixture tests and mapping test |
 
 The inventory is all 15 registered operations. Tool-wrapper return shapes are documented above;
 service methods return their current domain models or primitive values. The SDK adapter serializes a
@@ -70,13 +70,13 @@ requires separately approved production scope.
 
 | Tool | Required success evidence | Controlled current-error evidence | Status |
 |---|---|---|---|
-| `workspace_list` | List a fixture directory and preserve entry metadata/order. | Missing path and a file path raise `WorkspaceNotFoundError` with the existing directory/not-directory semantics. | PARTIALLY VERIFIED |
-| `workspace_read_file` | Read fixture UTF-8 text and return path/content through the wrapper. | Missing path raises `WorkspaceNotFoundError`; a non-file path follows current `Path.read_text()` behavior and must be recorded without asserting a new domain error. | PARTIALLY VERIFIED |
-| `workspace_write_file` | Write and overwrite a fixture file; wrapper returns success/path. | Invalid target follows current filesystem exception behavior; validation failure must leave the target unchanged when applicable. | TEST MISSING |
-| `workspace_create_file` | Create a new file, including currently supported missing parents. | Existing file raises `WorkspaceAlreadyExistsError`. | TEST MISSING |
-| `workspace_create_directory` | Create a new directory, including currently supported parent creation. | Existing path raises `WorkspaceAlreadyExistsError`; invalid parent follows current filesystem behavior. | TEST MISSING |
-| `workspace_move` | Move a fixture file or directory and verify source/destination state. | Missing source raises `WorkspaceNotFoundError`; destination-conflict behavior is platform/filesystem behavior and must be captured, not redefined. | TEST MISSING |
-| `workspace_delete` | Delete a fixture file and an empty fixture directory. | Missing target raises `WorkspaceNotFoundError`; non-empty directory behavior follows current `Path.rmdir()` behavior and must be captured without adding recursive deletion. | TEST MISSING |
+| `workspace_list` | List a fixture directory and preserve entry metadata/order. | Missing path and a file path raise `WorkspaceNotFoundError` with the existing directory/not-directory semantics. | VERIFIED |
+| `workspace_read_file` | Read fixture UTF-8 text and return path/content through the wrapper. | Missing path raises `WorkspaceNotFoundError`; a non-file path follows current `Path.read_text()` behavior without a new domain error. | VERIFIED |
+| `workspace_write_file` | Write and overwrite a fixture file; wrapper returns success/path. | Invalid target follows current filesystem exception behavior and leaves the fixture parent absent. | VERIFIED |
+| `workspace_create_file` | Create a new file, including currently supported missing parents. | Existing file raises `WorkspaceAlreadyExistsError`. | VERIFIED |
+| `workspace_create_directory` | Create a new directory, including currently supported parent creation. | Existing path raises `WorkspaceAlreadyExistsError`. | VERIFIED |
+| `workspace_move` | Move a fixture file or directory and verify source/destination state. | Missing source raises `WorkspaceNotFoundError`; current destination conflict raises `FileExistsError` on the verified platform. | VERIFIED |
+| `workspace_delete` | Delete a fixture file and an empty fixture directory. | Missing target raises `WorkspaceNotFoundError`; non-empty directory follows current `Path.rmdir()` error behavior. | VERIFIED |
 
 No path-escape rejection test is required because no protection exists. Mutation tests establish
 safety by fixture isolation, not by claiming an unimplemented public boundary.
@@ -90,19 +90,19 @@ must not contact remotes.
 
 | Tool | Required success evidence | Controlled current-error evidence | Status |
 |---|---|---|---|
-| `git_status` | Clean temporary repo, then modified and untracked fixture state with current counters. | Existing service subprocess/command failure contract remains covered; add a real isolated-repo path only. | PARTIALLY VERIFIED |
-| `git_branch` | Return the current temporary-repo branch. | Non-repository maps current Git command failure to `GitRepositoryNotFoundError`. | PARTIALLY VERIFIED |
-| `git_log` | Return one or more committed entries in a temporary repo. | Empty/no-commit repository behavior is the current Git command error and must be recorded as such; do not invent an empty-list API. | PARTIALLY VERIFIED |
-| `git_diff` | Clean repo returns an empty diff; modified tracked fixture returns a diff containing the change. | Existing Git command failure contract remains covered; no remote operation is allowed. | PARTIALLY VERIFIED |
+| `git_status` | Clean temporary repo, then modified and untracked fixture state with current counters. | Existing service subprocess/command failure contract remains covered. | VERIFIED |
+| `git_branch` | Return the current temporary-repo branch. | Non-repository maps current Git command failure to `GitRepositoryNotFoundError`. | VERIFIED |
+| `git_log` | Return one or more committed entries in a temporary repo. | Empty/no-commit repository behavior is the current Git command error; no empty-list API is claimed. | VERIFIED |
+| `git_diff` | Clean repo returns an empty diff; modified tracked fixture returns a diff containing the change. | Existing Git command failure contract remains covered; no remote operation is used. | VERIFIED |
 
 ## Python Verification Contract
 
 | Tool | Required success evidence | Controlled current-error evidence | Status |
 |---|---|---|---|
-| `python_version` | Wrapper returns the current interpreter executable and non-empty version. | No separate application-level error path exists. | TEST MISSING |
-| `python_run_tests` | Run a deterministic passing fixture test target and assert command, success, exit code, and captured output. | Run a deterministic failing fixture target only if the installed pytest is available; assert a safe result (`success=False`, nonzero exit code), not an exception. | TEST MISSING |
-| `python_check_syntax` | Validate a fixture Python file. | Syntax-error fixture returns `valid=False` with an error; unreadable/missing-path behavior remains `SyntaxValidationError`. | TEST MISSING |
-| `python_inspect_package` | List sorted `*.py` module filenames in a fixture package directory. | Missing path raises `PythonExecutionError`; a non-directory existing path follows current `Path.glob()` behavior and must be captured before any claim. | TEST MISSING |
+| `python_version` | Wrapper returns the current interpreter executable and non-empty version. | No separate application-level error path exists. | VERIFIED |
+| `python_run_tests` | Run a deterministic passing fixture test target and assert command, success, exit code, and captured output. | A deterministic failing fixture target returns `success=False` and a nonzero exit code. | VERIFIED |
+| `python_check_syntax` | Validate a fixture Python file. | Syntax-error fixture returns `valid=False` with an error; missing path raises `SyntaxValidationError`. | VERIFIED |
+| `python_inspect_package` | List sorted `*.py` module filenames in a fixture package directory. | Missing path raises `PythonExecutionError`; existing non-directory path returns the current empty result. | VERIFIED |
 
 Focused tests must never invoke the project-wide suite through `python_run_tests`; fixture targets
 keep subprocess work deterministic and bounded. No dependency installation, network access, or
@@ -118,34 +118,33 @@ TOOL-0001 uses the smallest layer that proves each behavior.
 | Registry/tool-handler | Prove all 15 canonical descriptors are registered, wrappers preserve documented return shapes, and descriptor/MCP names remain correct. | Full inventory and mapping coverage; avoid duplicating every service case. |
 | MCP SDK-session | Prove adapter serialization, controlled errors, and reversible public-name dispatch. | Representative operations: `workspace_read_file`, one workspace mutation in `tmp_path`, `git_status` in an isolated repo, and `python_version` or `python_check_syntax`. |
 
-Existing `test_mcp_sdk_adapter.py` already verifies mapping round trips, a multiword operation
-dispatch, and the `workspace_read_file` missing-file MCP error. TOOL-0001 extends that evidence
-only where representative real built-ins are needed. It does not require all operations at all
-three layers.
+`test_mcp_sdk_adapter.py` verifies mapping round trips, multiword dispatch, the
+`workspace_read_file` missing-file MCP error, representative Workspace read/write dispatch,
+isolated-repository `git_status`, and `python_version`. It does not test every operation through
+all three layers.
 
 ## Operation Verification Matrix
 
 | Tool | Safety class | Success evidence required | Controlled-error evidence required | Unit/service test? | SDK-session test? | Current status |
 |---|---|---|---|---|---|---|
-| `workspace_list` | READ_ONLY | Fixture directory listing | Missing/not-directory | Yes | No | PARTIALLY VERIFIED |
-| `workspace_read_file` | READ_ONLY | Fixture text read | Missing and current non-file behavior | Yes | Yes | PARTIALLY VERIFIED |
-| `workspace_write_file` | LOCAL_MUTATION | Fixture write/overwrite | Current invalid-target behavior | Yes | Yes (representative mutation) | TEST MISSING |
-| `workspace_create_file` | LOCAL_MUTATION | New fixture file | Existing conflict | Yes | No | TEST MISSING |
-| `workspace_create_directory` | LOCAL_MUTATION | New fixture directory | Existing conflict/current invalid parent | Yes | No | TEST MISSING |
-| `workspace_move` | LOCAL_MUTATION | Fixture move | Missing source/current destination conflict | Yes | No | TEST MISSING |
-| `workspace_delete` | LOCAL_MUTATION | Fixture file and empty directory delete | Missing/current non-empty directory behavior | Yes | No | TEST MISSING |
-| `git_status` | SUBPROCESS_EXECUTION | Clean and dirty temporary repo | Existing command error | Yes | Yes | PARTIALLY VERIFIED |
-| `git_branch` | SUBPROCESS_EXECUTION | Temporary repo branch | Non-repository | Yes | No | PARTIALLY VERIFIED |
-| `git_log` | SUBPROCESS_EXECUTION | Committed temporary repo | Empty repo current error | Yes | No | PARTIALLY VERIFIED |
-| `git_diff` | SUBPROCESS_EXECUTION | Clean and modified temporary repo | Existing command error | Yes | No | PARTIALLY VERIFIED |
-| `python_version` | READ_ONLY | Interpreter/version result | None exposed | Yes | Yes | TEST MISSING |
-| `python_run_tests` | SUBPROCESS_EXECUTION | Passing fixture target | Failing fixture target | Yes | No | TEST MISSING |
-| `python_check_syntax` | READ_ONLY | Valid fixture | Syntax-error/missing fixture | Yes | No | TEST MISSING |
-| `python_inspect_package` | READ_ONLY | Fixture package modules | Missing path/current non-directory behavior | Yes | No | TEST MISSING |
+| `workspace_list` | READ_ONLY | Fixture directory listing | Missing/not-directory | Yes | No | VERIFIED |
+| `workspace_read_file` | READ_ONLY | Fixture text read | Missing and current non-file behavior | Yes | Yes | VERIFIED |
+| `workspace_write_file` | LOCAL_MUTATION | Fixture write/overwrite | Current invalid-target behavior | Yes | Yes (representative mutation) | VERIFIED |
+| `workspace_create_file` | LOCAL_MUTATION | New fixture file | Existing conflict | Yes | No | VERIFIED |
+| `workspace_create_directory` | LOCAL_MUTATION | New fixture directory | Existing conflict | Yes | No | VERIFIED |
+| `workspace_move` | LOCAL_MUTATION | Fixture move | Missing source/current destination conflict | Yes | No | VERIFIED |
+| `workspace_delete` | LOCAL_MUTATION | Fixture file and empty directory delete | Missing/current non-empty directory behavior | Yes | No | VERIFIED |
+| `git_status` | SUBPROCESS_EXECUTION | Clean and dirty temporary repo | Existing command error | Yes | Yes | VERIFIED |
+| `git_branch` | SUBPROCESS_EXECUTION | Temporary repo branch | Non-repository | Yes | No | VERIFIED |
+| `git_log` | SUBPROCESS_EXECUTION | Committed temporary repo | Empty repo current error | Yes | No | VERIFIED |
+| `git_diff` | SUBPROCESS_EXECUTION | Clean and modified temporary repo | Existing command error | Yes | No | VERIFIED |
+| `python_version` | READ_ONLY | Interpreter/version result | None exposed | Yes | Yes | VERIFIED |
+| `python_run_tests` | SUBPROCESS_EXECUTION | Passing fixture target | Failing fixture target | Yes | No | VERIFIED |
+| `python_check_syntax` | READ_ONLY | Valid fixture | Syntax-error/missing fixture | Yes | No | VERIFIED |
+| `python_inspect_package` | READ_ONLY | Fixture package modules | Missing path/current non-directory behavior | Yes | No | VERIFIED |
 
-All missing implementation tests remain planned in this design phase. The matrix deliberately does
-not upgrade any tool to VERIFIED solely because it is registered, manually exercised, or covered
-by a generic adapter test.
+All matrix tests now pass. The matrix distinguishes service, registry, and representative SDK
+evidence; no tool is marked VERIFIED solely because it is registered or manually exercised.
 
 ## Isolation Rules
 
@@ -193,3 +192,11 @@ TOOL-0001 is complete only when:
 5. existing tool behavior and public names remain unchanged;
 6. full pytest, Ruff, mypy, and `git diff --check` pass; and
 7. documentation is updated to VERIFIED only where the implemented evidence supports it.
+
+## Completion Evidence
+
+The focused service/registry/SDK-session suite is isolated under pytest `tmp_path` fixtures and
+temporary Git repositories. The complete repository suite passed with 89 tests, with Ruff and mypy
+reporting no findings. TOOL-0001 changes tests and verification documentation only; it does not
+change public tool behavior. The earlier Git porcelain status parsing repair is recorded separately
+in merged PR #22.

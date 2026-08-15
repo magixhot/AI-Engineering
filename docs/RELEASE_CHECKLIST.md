@@ -29,6 +29,10 @@ production readiness beyond the checks listed here.
 - [x] Current post-MCP-0003 verification: Ruff passed (0 findings).
 - [x] Current post-MCP-0003 verification: mypy passed (0 findings).
 - [x] Current post-MCP-0003 verification: `git diff --check` passed.
+- [x] Current TOOL-0001 verification: pytest passed (89 tests).
+- [x] Current TOOL-0001 verification: Ruff passed (0 findings).
+- [x] Current TOOL-0001 verification: mypy passed (0 findings).
+- [x] Current TOOL-0001 verification: `git diff --check` passed.
 
 ## Documentation
 
@@ -39,6 +43,9 @@ production readiness beyond the checks listed here.
 - [x] SDK-0001.2 `ai-engineering project create` CLI is recorded as implemented and verified.
 - [x] MCP-0003 Antigravity interoperability evidence is recorded in
   `MCP-0003_ANTIGRAVITY_INTEROPERABILITY_VERIFICATION.md`.
+- [x] TOOL-0001 isolated verification covers all 15 existing Workspace, Git, and Python tool
+  operations without changing their public behavior. The Git porcelain parsing repair is separately
+  recorded in merged PR #22.
 
 ## Follow-up Verification
 

@@ -3,7 +3,7 @@
 **Snapshot date:** 2026-08-14
 **Status:** ACTIVE
 **Release line:** 0.1.0
-**Current phase:** MCP-0002, MCP-0003 Antigravity Verification, and SDK-0001 Complete / Next Milestone Selection
+**Current phase:** MCP-0002, MCP-0003, SDK-0001, and TOOL-0001 Complete / Next Milestone Selection
 
 ## State by Delivery Area
 
@@ -18,7 +18,8 @@
 | SDK-0001 Project Templates V1 | COMPLETE / VERIFIED | The document-first standalone template API and Git safety behavior are covered by template tests. |
 | SDK-0001.1 Standalone Python Project Scaffold | COMPLETE / VERIFIED | The opt-in scaffold generates packaging, source, and smoke-test files while preserving V1 output by default. |
 | SDK-0001.2 Project Template CLI | COMPLETE / VERIFIED | `ai-engineering project create` is an installed console-script frontend over the public template API, with V1/scaffold, stdout/stderr, and exit-code behavior verified. |
-| Quality gates | PASS | pytest: 59 passed; Ruff: 0 findings; mypy: 0 findings. |
+| TOOL-0001 Core Tool Operation Verification | COMPLETE / VERIFIED | All 15 existing Workspace, Git, and Python operations have isolated service/registry/representative SDK-session verification. |
+| Quality gates | PASS | pytest: 89 passed; Ruff: 0 findings; mypy: 0 findings. |
 
 ## Current Priorities
 
