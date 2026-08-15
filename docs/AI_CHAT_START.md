@@ -17,15 +17,17 @@ After reading them, continue from `CURRENT_STATUS.md` and the current roadmap.
 
 ## Current Working State
 
-AI-Engineering has completed and verified the documentation foundation, MCP-0002, MCP-0003, SDK-0001 Project Templates V1, SDK-0001.1 Standalone Python Project Scaffold, SDK-0001.2 Project Template CLI, TOOL-0001 Core Tool Operation Verification, REL-0001 Local Distribution Verification, CI-0001 Quality Gate Automation, SAFE-0001 Workspace Path Safety Boundary, REL-0002 GitHub publication governance, and AUTO-0001 Engineering Project Bootstrap for their approved scopes.
+AI-Engineering has completed and verified the documentation foundation, MCP-0002, MCP-0003, SDK-0001 Project Templates V1, SDK-0001.1 Standalone Python Project Scaffold, SDK-0001.2 Project Template CLI, TOOL-0001 Core Tool Operation Verification, REL-0001 Local Distribution Verification, CI-0001 Quality Gate Automation, SAFE-0001 Workspace Path Safety Boundary, REL-0002 GitHub publication governance, AUTO-0001 Engineering Project Bootstrap, and AUTO-0002 Project Documentation Synchronization for their approved scopes.
 
-The installed `ai-engineering project create` and `ai-engineering project bootstrap` commands are verified. AUTO-0001 V1 exposes the single exact profile `python-engineering`, delegates generation to the existing SDK-0001 public API, and performs fail-closed read-only post-generation verification. All 15 existing Workspace, Git, and Python operations retain isolated service/registry/representative SDK-session coverage. VS Code 1.132.1 and Antigravity are verified only for their recorded MCP contracts.
+The installed `ai-engineering` console script now verifies three bounded project workflows: `project create`, `project bootstrap`, and AUTO-0002 `project docs check/plan/apply`. AUTO-0002 V1 inspects project state locally, detects drift only for `CURRENT_STATUS.md`, `MASTER_INDEX.md`, and `PROJECT_MAP.md`, builds deterministic plans with SHA-256 original-content guards, and applies only valid machine-owned marked sections. Missing or malformed markers require manual review; marker initialization is not part of V1.
 
-Current Linux CI quality baseline is pytest **112 passed**, Ruff **0 findings**, and mypy **0 findings**. The release/distribution test builds the wheel and sdist, installs the wheel into a fresh external virtual environment, verifies package isolation and metadata, and now executes both installed project-create and engineering-bootstrap smoke workflows outside the source checkout.
+Current Linux CI quality baseline is pytest **142 passed**, Ruff **0 findings**, and mypy **0 findings in 77 source files**. The release/distribution test builds wheel and sdist, installs the wheel into a fresh external virtual environment, verifies package isolation and metadata, and executes installed create, bootstrap, and documentation synchronization workflows outside the source checkout.
+
+AUTO-0002 `check` and `plan` are read-only. `apply` refuses mutation when manual review is required and otherwise delegates to the public guarded apply API. AUTO-0002 does not stage, commit, push, execute project code, install project dependencies, contact remote services, or rewrite human-owned Markdown outside ownership markers.
 
 Windows-local SAFE verification remains pytest **98 passed, 1 skipped**; the single skip is the symlink escape fixture because the Windows process lacked symlink-creation privilege (`WinError 1314`). Ruff and mypy were green for that Windows evidence.
 
-Git tag `v0.1.0` and GitHub Release `AI-Engineering 0.1.0` are published for commit `73929bd15fa7637db8162aac199697582bb25e67`. AUTO-0001 was completed after that immutable tag and must not be described as part of the published v0.1.0 artifact. PyPI remains not approved and not published.
+Git tag `v0.1.0` and GitHub Release `AI-Engineering 0.1.0` are published for commit `73929bd15fa7637db8162aac199697582bb25e67`. AUTO-0001 and AUTO-0002 were completed after that immutable tag and must not be described as part of the published v0.1.0 artifact. PyPI remains not approved and not published.
 
 SAFE-0001 is a Workspace path-authorization boundary, not an OS-level sandbox or a Git/Python subprocess sandbox. ChatGPT/OpenAI, Claude Desktop, and other MCP clients remain unverified unless separately recorded.
 
@@ -39,6 +41,7 @@ SAFE-0001 is a Workspace path-authorization boundary, not an OS-level sandbox or
 - Keep environment-specific absolute paths out of project code and documentation contracts.
 - Make compatibility and security claims only from recorded evidence.
 - Treat published tags/releases as immutable historical evidence; post-release `master` work does not retroactively change them.
+- Do not expand AUTO-0002 writable documents or initialize ownership markers without a separate approved contract.
 
 ## Project Context
 
