@@ -32,6 +32,7 @@
 | SAFE-0001_VERIFICATION_EVIDENCE.md | Compact Linux/Windows SAFE-0001 verification record | Complete / Verified |
 | AUTO-0001_ENGINEERING_PROJECT_BOOTSTRAP_DESIGN.md | Additive engineering bootstrap API/profile/verification/CLI contract over SDK-0001 | Complete / Verified |
 | AUTO-0001_VERIFICATION_EVIDENCE.md | Core API, CLI, installed-wheel, CI, and publication-boundary evidence | Complete / Verified |
+| AUTO-0002_PROJECT_DOCUMENTATION_SYNCHRONIZATION_DESIGN.md | Bounded project-state inspection, documentation drift, deterministic planning, guarded apply, and verification contract | Design / Proposed |
 
 ## Active Engineering Work
 
@@ -45,7 +46,7 @@
 | SAFE-0001 workspace path safety | COMPLETE / VERIFIED |
 | REL-0002 v0.1.0 GitHub publication | COMPLETE / VERIFIED |
 | AUTO-0001 engineering project bootstrap | COMPLETE / VERIFIED |
-| Post-AUTO-0001 roadmap selection | NEXT |
+| AUTO-0002 project documentation synchronization | DESIGN / CURRENT PRIORITY |
 | Additional MCP client interoperability | OPTIONAL / FUTURE EVIDENCE |
 | Diagnostics maintenance | ACTIVE |
 
@@ -66,6 +67,7 @@
 | SAFE-0001 workspace path safety | COMPLETE / VERIFIED |
 | REL-0002 release publication governance and v0.1.0 GitHub publication | COMPLETE / VERIFIED |
 | M3 / AUTO-0001 Engineering Project Bootstrap | COMPLETE / VERIFIED |
+| M3 / AUTO-0002 Project Documentation Synchronization | DESIGN |
 | Additional client and IDE interoperability | PLANNED |
 
 ## Published Release
