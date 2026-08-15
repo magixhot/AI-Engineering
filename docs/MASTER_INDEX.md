@@ -27,7 +27,7 @@
 | REL-0001_DISTRIBUTION_AND_RELEASE_VERIFICATION_DESIGN.md | Distribution and release verification contract | Complete / Verified |
 | REL-0002_RELEASE_PUBLICATION_DECISION_CONTRACT.md | Git tag, GitHub Release, PyPI, evidence, and publication-approval governance | Complete / Verified for v0.1.0 GitHub scope |
 | REL-0002_POST_RELEASE_RECONCILIATION.md | Actual v0.1.0 tag/release publication evidence and post-release scope reconciliation | Complete / Verified |
-| REL-0003_NEXT_RELEASE_LINE_DESIGN.md | Next release version decision, candidate freeze, artifact/evidence, release-note, and publication boundary | Design / Decision Contract |
+| REL-0003_NEXT_RELEASE_LINE_DESIGN.md | Next release version decision, candidate freeze, artifact/evidence, release-note, and publication boundary | Design Approved / 0.2.0 Selected |
 | CI-0001_QUALITY_GATE_AUTOMATION_DESIGN.md | GitHub Actions quality-gate automation contract | Complete / Verified |
 | SAFE-0001_WORKSPACE_PATH_SAFETY_DESIGN.md | Workspace root, containment, link-escape, and controlled-error security contract/evidence | Complete / Verified |
 | SAFE-0001_VERIFICATION_EVIDENCE.md | Compact Linux/Windows SAFE-0001 verification record | Complete / Verified |
@@ -51,7 +51,7 @@
 | SAFE-0001 workspace path safety | COMPLETE / VERIFIED |
 | SAFE-0002 Git/Python execution safety | COMPLETE / VERIFIED |
 | REL-0002 v0.1.0 GitHub publication | COMPLETE / VERIFIED |
-| REL-0003 next release line decision/readiness | DESIGN / DECISION CONTRACT |
+| REL-0003 next release line decision/readiness | 0.2.0 CANDIDATE PREPARATION / IN PROGRESS |
 | AUTO-0001 engineering project bootstrap | COMPLETE / VERIFIED |
 | AUTO-0002 project documentation synchronization | COMPLETE / VERIFIED |
 | Additional MCP client interoperability | OPTIONAL / FUTURE EVIDENCE |
@@ -74,7 +74,7 @@
 | SAFE-0001 workspace path safety | COMPLETE / VERIFIED |
 | SAFE-0002 Git/Python execution safety | COMPLETE / VERIFIED |
 | REL-0002 release publication governance and v0.1.0 GitHub publication | COMPLETE / VERIFIED |
-| REL-0003 next release line decision and readiness | DESIGN |
+| REL-0003 next release line decision and readiness | 0.2.0 CANDIDATE PREPARATION |
 | M3 / AUTO-0001 Engineering Project Bootstrap | COMPLETE / VERIFIED |
 | M3 / AUTO-0002 Project Documentation Synchronization | COMPLETE / VERIFIED |
 | Additional client and IDE interoperability | PLANNED |
@@ -84,14 +84,16 @@
 - GitHub Release: `AI-Engineering 0.1.0`
 - Tag: `v0.1.0`
 - Tagged commit: `73929bd15fa7637db8162aac199697582bb25e67`
-- AUTO-0001, AUTO-0002, and SAFE-0002: completed after the immutable v0.1.0 tag; not part of that published artifact
+- Next selected candidate version: `0.2.0` — not tagged, not released
+- AUTO-0001, AUTO-0002, and SAFE-0002: completed after the immutable v0.1.0 tag; intended for the 0.2.0 candidate scope after fresh verification
 - PyPI: not approved / not published
 
 ## Current Quality Baseline
 
-- Current Linux GitHub Actions / Python 3.11: pytest 155 passed, Ruff 0 findings, mypy 0 findings in 79 source files.
+- Pre-candidate Linux GitHub Actions / Python 3.11: pytest 155 passed, Ruff 0 findings, mypy 0 findings in 79 source files.
 - Installed-wheel verification covers `ai-engineering project create`, `project bootstrap`, and `project docs check/plan/apply` outside the source checkout.
-- Final Windows-local SAFE-0002 evidence: pytest 153 passed, 2 permitted symlink-fixture skips due to `WinError 1314`; Ruff 0; mypy 0 in 79 source files; `git diff --check` passed; working tree clean.
+- Pre-candidate Windows-local SAFE-0002 evidence: pytest 153 passed, 2 permitted symlink-fixture skips due to `WinError 1314`; Ruff 0; mypy 0 in 79 source files; `git diff --check` passed; working tree clean.
+- Fresh 0.2.0 candidate Linux, Windows, distribution, and installed-wheel evidence is pending.
 
 ## Source Tree
 

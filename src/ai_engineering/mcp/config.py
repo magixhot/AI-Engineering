@@ -17,7 +17,7 @@ class MCPConfig:
     """
 
     server_name: str = "ai-engineering"
-    server_version: str = "0.1.0"
+    server_version: str = "0.2.0"
 
     workspace_root: Path = Path.cwd()
 
