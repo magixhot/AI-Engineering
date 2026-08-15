@@ -59,7 +59,7 @@ class GitService:
                 "Git executable not found."
             ) from exc
 
-        return result.stdout.strip()
+        return result.stdout.rstrip("\r\n")
 
     def status(self) -> GitStatus:
         """
