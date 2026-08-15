@@ -53,6 +53,22 @@ def _run(
     )
 
 
+def _run_unchecked(
+    command: list[str],
+    *,
+    cwd: Path,
+    environment: dict[str, str],
+) -> subprocess.CompletedProcess[str]:
+    return subprocess.run(
+        command,
+        cwd=cwd,
+        env=environment,
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+
+
 def _assert_no_forbidden_paths(names: list[str]) -> None:
     for name in names:
         path = Path(name)
@@ -66,6 +82,17 @@ def _venv_executable(venv_directory: Path, name: str) -> Path:
     scripts = venv_directory / ("Scripts" if os.name == "nt" else "bin")
     suffix = ".exe" if os.name == "nt" and name == "ai-engineering" else ""
     return scripts / f"{name}{suffix}"
+
+
+def _append_managed_section(path: Path, marker: str, body: str) -> None:
+    original = path.read_text(encoding="utf-8")
+    path.write_text(
+        original
+        + f"\n<!-- ai-engineering:auto0002:{marker}:start -->"
+        + body
+        + f"<!-- ai-engineering:auto0002:{marker}:end -->\n",
+        encoding="utf-8",
+    )
 
 
 def test_distribution_artifacts_and_isolated_wheel_install(tmp_path: Path) -> None:
@@ -195,6 +222,15 @@ def test_distribution_artifacts_and_isolated_wheel_install(tmp_path: Path) -> No
     )
     assert "create" in project_help.stdout
     assert "bootstrap" in project_help.stdout
+    assert "docs" in project_help.stdout
+    docs_help = _run(
+        [str(installed_cli), "project", "docs", "--help"],
+        cwd=isolated_working_directory,
+        environment=environment,
+    )
+    assert "check" in docs_help.stdout
+    assert "plan" in docs_help.stdout
+    assert "apply" in docs_help.stdout
 
     generated_project = tmp_path / "installed-artifact-project"
     _run(
@@ -268,3 +304,110 @@ def test_distribution_artifacts_and_isolated_wheel_install(tmp_path: Path) -> No
         cwd=bootstrapped_project,
         environment=environment,
     ).stdout.strip()
+
+    unmarked_check = _run_unchecked(
+        [
+            str(installed_cli),
+            "project",
+            "docs",
+            "check",
+            "--project",
+            str(bootstrapped_project),
+        ],
+        cwd=isolated_working_directory,
+        environment=environment,
+    )
+    assert unmarked_check.returncode == 1
+    assert "manual_review_count=3" in unmarked_check.stdout
+    assert "status=drift" in unmarked_check.stdout
+    assert unmarked_check.stderr == ""
+
+    _append_managed_section(
+        bootstrapped_project / "CURRENT_STATUS.md",
+        "current-status",
+        "\n- stale: value\n",
+    )
+    _append_managed_section(
+        bootstrapped_project / "PROJECT_MAP.md",
+        "project-map",
+        "\n- `gone.txt` (file)\n",
+    )
+    _append_managed_section(
+        bootstrapped_project / "MASTER_INDEX.md",
+        "master-index",
+        "\n- `OLD.md` — observed\n",
+    )
+    _run(
+        ["git", "add", "CURRENT_STATUS.md", "PROJECT_MAP.md", "MASTER_INDEX.md"],
+        cwd=bootstrapped_project,
+        environment=environment,
+    )
+    _run(
+        ["git", "commit", "-m", "add AUTO-0002 ownership markers"],
+        cwd=bootstrapped_project,
+        environment=environment,
+    )
+    sync_head = _run(
+        ["git", "rev-parse", "HEAD"],
+        cwd=bootstrapped_project,
+        environment=environment,
+    ).stdout.strip()
+
+    plan_result = _run(
+        [
+            str(installed_cli),
+            "project",
+            "docs",
+            "plan",
+            "--project",
+            str(bootstrapped_project),
+        ],
+        cwd=isolated_working_directory,
+        environment=environment,
+    )
+    assert "update_count=3" in plan_result.stdout
+    assert "manual_review_count=0" in plan_result.stdout
+    assert plan_result.stdout.count("update=") == 3
+    assert "status=ready" in plan_result.stdout
+
+    apply_result = _run(
+        [
+            str(installed_cli),
+            "project",
+            "docs",
+            "apply",
+            "--project",
+            str(bootstrapped_project),
+        ],
+        cwd=isolated_working_directory,
+        environment=environment,
+    )
+    assert "changed_count=3" in apply_result.stdout
+    assert "verification=passed" in apply_result.stdout
+    assert apply_result.stdout.count("changed_document=") == 3
+    assert _run(
+        ["git", "rev-parse", "HEAD"],
+        cwd=bootstrapped_project,
+        environment=environment,
+    ).stdout.strip() == sync_head
+    assert _run(
+        ["git", "diff", "--cached", "--name-only"],
+        cwd=bootstrapped_project,
+        environment=environment,
+    ).stdout == ""
+
+    clean_check = _run(
+        [
+            str(installed_cli),
+            "project",
+            "docs",
+            "check",
+            "--project",
+            str(bootstrapped_project),
+        ],
+        cwd=isolated_working_directory,
+        environment=environment,
+    )
+    assert "drift_count=0" in clean_check.stdout
+    assert "manual_review_count=0" in clean_check.stdout
+    assert "status=clean" in clean_check.stdout
