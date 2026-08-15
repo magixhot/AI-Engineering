@@ -6,12 +6,18 @@ import shutil
 import subprocess
 import sys
 import tarfile
+import tomllib
 import venv
 import zipfile
 from email import message_from_bytes
 from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
+PROJECT_VERSION = tomllib.loads(
+    (PROJECT_ROOT / "pyproject.toml").read_text(encoding="utf-8")
+)["project"]["version"]
+DIST_INFO_ROOT = f"ai_engineering-{PROJECT_VERSION}.dist-info"
+SDIST_ROOT = f"ai_engineering-{PROJECT_VERSION}/"
 FORBIDDEN_ARTIFACT_PARTS = {
     ".git",
     ".venv",
@@ -124,8 +130,10 @@ def test_distribution_artifacts_and_isolated_wheel_install(tmp_path: Path) -> No
         environment=environment,
     )
 
-    wheel_path = next(distribution_directory.glob("ai_engineering-0.1.0-*.whl"))
-    sdist_path = distribution_directory / "ai_engineering-0.1.0.tar.gz"
+    wheel_path = next(
+        distribution_directory.glob(f"ai_engineering-{PROJECT_VERSION}-*.whl")
+    )
+    sdist_path = distribution_directory / f"ai_engineering-{PROJECT_VERSION}.tar.gz"
     assert sdist_path.is_file()
 
     with zipfile.ZipFile(wheel_path) as wheel:
@@ -133,15 +141,13 @@ def test_distribution_artifacts_and_isolated_wheel_install(tmp_path: Path) -> No
         _assert_no_forbidden_paths(wheel_names)
         assert "ai_engineering/__init__.py" in wheel_names
         assert "ai_engineering/cli.py" in wheel_names
-        assert "ai_engineering-0.1.0.dist-info/METADATA" in wheel_names
-        assert "ai_engineering-0.1.0.dist-info/entry_points.txt" in wheel_names
+        assert f"{DIST_INFO_ROOT}/METADATA" in wheel_names
+        assert f"{DIST_INFO_ROOT}/entry_points.txt" in wheel_names
         assert not any(name.startswith(("tests/", "docs/")) for name in wheel_names)
 
-        metadata = message_from_bytes(
-            wheel.read("ai_engineering-0.1.0.dist-info/METADATA")
-        )
+        metadata = message_from_bytes(wheel.read(f"{DIST_INFO_ROOT}/METADATA"))
         assert metadata["Name"] == "ai-engineering"
-        assert metadata["Version"] == "0.1.0"
+        assert metadata["Version"] == PROJECT_VERSION
         assert metadata["Requires-Python"] == ">=3.11"
         assert any(
             requirement.startswith("mcp")
@@ -151,21 +157,20 @@ def test_distribution_artifacts_and_isolated_wheel_install(tmp_path: Path) -> No
         )
         assert (
             "ai-engineering = ai_engineering.cli:main"
-            in wheel.read("ai_engineering-0.1.0.dist-info/entry_points.txt").decode()
+            in wheel.read(f"{DIST_INFO_ROOT}/entry_points.txt").decode()
         )
 
     with tarfile.open(sdist_path) as sdist:
         sdist_names = sdist.getnames()
         _assert_no_forbidden_paths(sdist_names)
-        root = "ai_engineering-0.1.0/"
-        assert f"{root}pyproject.toml" in sdist_names
-        assert f"{root}README.md" in sdist_names
-        assert f"{root}LICENSE" in sdist_names
+        assert f"{SDIST_ROOT}pyproject.toml" in sdist_names
+        assert f"{SDIST_ROOT}README.md" in sdist_names
+        assert f"{SDIST_ROOT}LICENSE" in sdist_names
         assert any(
-            name.startswith(f"{root}src/ai_engineering/") for name in sdist_names
+            name.startswith(f"{SDIST_ROOT}src/ai_engineering/") for name in sdist_names
         )
-        assert any(name.startswith(f"{root}tests/") for name in sdist_names)
-        assert any(name.startswith(f"{root}docs/") for name in sdist_names)
+        assert any(name.startswith(f"{SDIST_ROOT}tests/") for name in sdist_names)
+        assert any(name.startswith(f"{SDIST_ROOT}docs/") for name in sdist_names)
 
     venv_directory = tmp_path / "isolated-venv"
     venv.create(venv_directory, with_pip=True)
@@ -198,7 +203,7 @@ def test_distribution_artifacts_and_isolated_wheel_install(tmp_path: Path) -> No
     installed_path = Path(installed_metadata["module_path"]).resolve()
     assert installed_path.is_relative_to(venv_directory.resolve())
     assert installed_metadata["name"] == "ai-engineering"
-    assert installed_metadata["version"] == "0.1.0"
+    assert installed_metadata["version"] == PROJECT_VERSION
     assert installed_metadata["requires_python"] == ">=3.11"
     assert any(
         requirement.startswith("mcp")
