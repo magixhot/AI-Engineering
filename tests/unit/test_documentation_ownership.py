@@ -41,9 +41,21 @@ def test_classifies_required_marker_states() -> None:
 
     assert classify_document_ownership("PROJECT_MAP.md", "human\n").state == "missing"
     assert classify_document_ownership("PROJECT_MAP.md", start).state == "partial"
-    assert classify_document_ownership("PROJECT_MAP.md", start + start + end).state == "duplicate"
-    assert classify_document_ownership("PROJECT_MAP.md", end + start).state == "malformed"
-    assert classify_document_ownership("PROJECT_MAP.md", start + end).state == "initialized"
+    duplicate = classify_document_ownership(
+        "PROJECT_MAP.md",
+        start + start + end,
+    )
+    malformed = classify_document_ownership(
+        "PROJECT_MAP.md",
+        end + start,
+    )
+    initialized = classify_document_ownership(
+        "PROJECT_MAP.md",
+        start + end,
+    )
+    assert duplicate.state == "duplicate"
+    assert malformed.state == "malformed"
+    assert initialized.state == "initialized"
 
 
 def test_marker_like_unknown_content_is_unsupported() -> None:
