@@ -2,7 +2,7 @@
 
 **Status:** Active
 
-**Version:** 0.1.0
+**Version:** 0.2.0 (candidate / not yet published)
 
 ---
 
@@ -90,7 +90,7 @@ This document contains everything required to restore the current project contex
 
 Current phase:
 
-**MCP-0002/0003, SDK-0001, TOOL-0001, REL-0001/0002, CI-0001, SAFE-0001/0002, AUTO-0001, and AUTO-0002 complete / verified for their approved scopes**
+**REL-0003 0.2.0 candidate preparation over the complete / verified MCP, SDK-0001, TOOL-0001, REL-0001/0002, CI-0001, SAFE-0001/0002, AUTO-0001, and AUTO-0002 baseline**
 
 The official Python MCP SDK migration is complete. VS Code 1.132.1 and Antigravity interoperability are verified only for their recorded contracts. SDK-0001 Project Templates V1, the optional Python scaffold, and the installed `ai-engineering project create` CLI are implemented and verified. AUTO-0001 adds the bounded `python-engineering` bootstrap API and installed `ai-engineering project bootstrap` CLI with fail-closed post-generation verification.
 
@@ -104,9 +104,11 @@ SAFE-0002 extends the active MCP authority-root policy to Git and path-taking Py
 
 SAFE-0001 and SAFE-0002 are bounded authorization/execution contracts, not an operating-system sandbox. SAFE-0002 does not contain malicious code that is already authorized to execute inside the workspace.
 
-Current Linux CI baseline: **pytest 155 passed, Ruff 0 findings, mypy 0 findings in 79 source files**. Final Windows-local SAFE-0002 verification: **pytest 153 passed, 2 permitted symlink-fixture skips**, Ruff 0, mypy 0 in 79 source files; `git diff --check` passed and the working tree was clean. The Windows skips are limited to symlink fixtures blocked by process privilege (`WinError 1314`); equivalent link-escape coverage executes in Linux CI.
+The next package version has been explicitly selected as **0.2.0** under REL-0003. This is a candidate line only: no `v0.2.0` tag or GitHub Release has been created, no assets have been uploaded, and PyPI remains not approved/not published. Fresh candidate-specific Linux, Windows, distribution, installed-wheel, and release-note evidence is required before any publication proposal.
 
-Git tag `v0.1.0` and GitHub Release `AI-Engineering 0.1.0` are published for the approved release commit. Post-release AUTO-0001, AUTO-0002, and SAFE-0002 work is verified on `master` but is not retroactively part of the immutable `v0.1.0` tag. PyPI remains not approved and not published. This project does not claim general production readiness or compatibility with ChatGPT/OpenAI, Claude Desktop, or other MCP clients without separate evidence.
+Current pre-candidate Linux CI baseline: **pytest 155 passed, Ruff 0 findings, mypy 0 findings in 79 source files**. Final pre-candidate Windows-local SAFE-0002 verification: **pytest 153 passed, 2 permitted symlink-fixture skips**, Ruff 0, mypy 0 in 79 source files; `git diff --check` passed and the working tree was clean. The Windows skips are limited to symlink fixtures blocked by process privilege (`WinError 1314`); equivalent link-escape coverage executes in Linux CI.
+
+Git tag `v0.1.0` and GitHub Release `AI-Engineering 0.1.0` remain the latest published historical release for the approved release commit. Post-release AUTO-0001, AUTO-0002, SAFE-0002, and the 0.2.0 candidate preparation are not retroactively part of the immutable `v0.1.0` tag. PyPI remains not approved and not published. This project does not claim general production readiness or compatibility with ChatGPT/OpenAI, Claude Desktop, or other MCP clients without separate evidence.
 
 ---
 
