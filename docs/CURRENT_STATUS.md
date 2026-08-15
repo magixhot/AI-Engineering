@@ -3,7 +3,7 @@
 **Snapshot date:** 2026-08-15
 **Status:** ACTIVE
 **Release line:** 0.1.0
-**Current phase:** AUTO-0001 Complete / Verified — Engineering Project Bootstrap
+**Current phase:** AUTO-0002 Complete / Verified — Project Documentation Synchronization
 
 ## State by Delivery Area
 
@@ -14,38 +14,38 @@
 | Official Python MCP SDK migration | COMPLETE | `mcp` is a project dependency; the SDK bootstrap and adapter are implemented and verified by MCP-0002. |
 | Workspace, Git, and Python tools | IMPLEMENTED / VERIFIED | All 15 registered operations have isolated service/registry/representative SDK-session verification. |
 | Client interoperability | VS CODE AND ANTIGRAVITY VERIFIED | VS Code 1.132.1 and Antigravity are specifically verified for their recorded contracts; other client categories remain unverified and are not claimed. |
-| MCP-0003 Antigravity interoperability | VERIFIED | The current stdio server completed connection, 15-tool discovery, successful safe/workspace calls, and a controlled missing-file error after the snake_case dispatch fix. |
-| SDK-0001 Project Templates V1 | COMPLETE / VERIFIED | The document-first standalone template API and Git safety behavior are covered by template tests. |
-| SDK-0001.1 Standalone Python Project Scaffold | COMPLETE / VERIFIED | The opt-in scaffold generates packaging, source, and smoke-test files while preserving V1 output by default. |
-| SDK-0001.2 Project Template CLI | COMPLETE / VERIFIED | `ai-engineering project create` is an installed console-script frontend over the public template API, with V1/scaffold, stdout/stderr, and exit-code behavior verified. |
+| SDK-0001 Project Templates V1 / Python Scaffold / CLI | COMPLETE / VERIFIED | Standalone templates, optional Python scaffold, and installed `ai-engineering project create` behavior are verified. |
 | TOOL-0001 Core Tool Operation Verification | COMPLETE / VERIFIED | All 15 existing Workspace, Git, and Python operations have isolated service/registry/representative SDK-session verification. |
-| REL-0001 Local Distribution Verification | COMPLETE / VERIFIED | Wheel and sdist artifact policy, isolated wheel install, installed metadata/import, and installed CLI smoke are verified. |
-| CI-0001 Quality Gate Automation | COMPLETE / VERIFIED | GitHub Actions covers Ruff, mypy, full pytest, and REL-0001 on Linux/Python 3.11 with successful PR and post-merge runs. |
-| SAFE-0001 Workspace Path Safety Boundary | COMPLETE / VERIFIED | Active MCP Workspace handlers enforce `MCPConfig.workspace_root`; outside traversal/absolute/link escapes are rejected; Linux CI and Windows-local verification are recorded. |
-| REL-0002 Release Publication | COMPLETE / VERIFIED | Tag `v0.1.0` points to approved commit `73929bd15fa7637db8162aac199697582bb25e67`; GitHub Release `AI-Engineering 0.1.0` is published. PyPI remains not approved/not published. |
-| AUTO-0001 Engineering Project Bootstrap | COMPLETE / VERIFIED | Typed `python-engineering` bootstrap API, fail-closed verification, additive installed CLI command, and isolated-wheel bootstrap smoke are verified. |
-| Quality gates | PASS | Current Linux CI: pytest 112 passed, Ruff 0, mypy 0 in 71 source files. Windows-local SAFE evidence remains pytest 98 passed / 1 permitted symlink-fixture skip, Ruff 0, mypy 0. |
+| REL-0001 Local Distribution Verification | COMPLETE / VERIFIED | Wheel/sdist contents, isolated wheel install, installed metadata/import, and installed CLI behavior are verified. |
+| CI-0001 Quality Gate Automation | COMPLETE / VERIFIED | GitHub Actions covers Ruff, mypy, full pytest, and REL-0001 on Linux/Python 3.11. |
+| SAFE-0001 Workspace Path Safety Boundary | COMPLETE / VERIFIED | Active MCP Workspace handlers enforce `MCPConfig.workspace_root` with verified traversal/absolute/link escape rejection. |
+| REL-0002 Release Publication | COMPLETE / VERIFIED | Tag `v0.1.0` and GitHub Release `AI-Engineering 0.1.0` are published for approved commit `73929bd15fa7637db8162aac199697582bb25e67`; PyPI is not published. |
+| AUTO-0001 Engineering Project Bootstrap | COMPLETE / VERIFIED | Typed bootstrap API, fail-closed verification, installed bootstrap CLI, and isolated-wheel smoke are verified. |
+| AUTO-0002 Project Documentation Synchronization | COMPLETE / VERIFIED | Read-only inspection, bounded drift detection/planning, SHA-256 guarded apply, ownership preservation, installed `project docs check/plan/apply`, and isolated-wheel verification are complete. |
+| Quality gates | PASS | Current Linux CI: pytest 142 passed, Ruff 0, mypy 0 in 77 source files. Windows-local SAFE evidence remains pytest 98 passed / 1 permitted symlink-fixture skip, Ruff 0, mypy 0. |
 
 ## Current Priorities
 
-1. Preserve the verified AUTO-0001 API/CLI and installed-distribution contract without changing SDK-0001 default behavior.
-2. Preserve the published `v0.1.0` release evidence and the verified SAFE-0001, CI-0001, REL-0001/0002, MCP-0002/0003, and SDK-0001 contracts.
-3. Keep PyPI and future release publication behind separate explicit approval decisions.
-4. Preserve the verified MCP Workspace root boundary without expanding it implicitly to Git/Python subprocess semantics.
-5. Select the next engineering milestone from a fresh post-AUTO-0001 roadmap audit.
+1. Preserve AUTO-0002's exact V1 writable set and ownership-marker safety model.
+2. Preserve the verified AUTO-0001, SDK-0001, MCP, CI, SAFE, distribution, and release contracts.
+3. Keep marker initialization, broader document ownership, project migration/update behavior, and Git automation behind separate design decisions.
+4. Keep PyPI and future release publication behind separate explicit approval decisions.
+5. Select the next engineering milestone from a fresh post-AUTO-0002 roadmap audit.
 
 ## Implemented Baseline
 
-The current `master` baseline includes the official Python MCP SDK boundary, 15 registered tool operations, SDK project template/scaffold/create CLI, AUTO-0001 engineering bootstrap API and CLI, local wheel/sdist verification, automated GitHub Actions quality gates, and a fail-closed MCP Workspace path boundary rooted at `MCPConfig.workspace_root`.
+The current `master` baseline includes the official Python MCP SDK boundary, 15 registered tool operations, SDK project creation/scaffold CLI, AUTO-0001 project bootstrap, AUTO-0002 deterministic documentation synchronization, local wheel/sdist verification, automated GitHub Actions quality gates, and the SAFE-0001 MCP Workspace path boundary.
 
-AUTO-0001 V1 has exactly one profile, `python-engineering`. It delegates project creation to the existing SDK-0001 public API, verifies the generated project read-only, and exposes the same workflow through installed `ai-engineering project bootstrap`. The isolated-wheel release test proves the installed command works outside the source checkout with no editable-install or `PYTHONPATH` reliance.
+AUTO-0002 V1 inspects local project state, reports drift for exactly `CURRENT_STATUS.md`, `MASTER_INDEX.md`, and `PROJECT_MAP.md`, builds deterministic replacement plans with SHA-256 original-content guards, and applies only ownership-marker-bounded changes. Missing or malformed markers require manual review. The installed CLI exposes `ai-engineering project docs check`, `plan`, and `apply`; `check` and `plan` are read-only, while `apply` refuses partial mutation when manual review is required.
 
-Git tag `v0.1.0` and GitHub Release `AI-Engineering 0.1.0` remain verified historical publication evidence for commit `73929bd15fa7637db8162aac199697582bb25e67`. AUTO-0001 was implemented after that immutable tag and is not retroactively part of the published v0.1.0 artifact. PyPI remains not approved and not published.
+The isolated-wheel release test proves installed create, bootstrap, and documentation synchronization commands operate outside the source checkout without editable-install or `PYTHONPATH` reliance. AUTO-0002 does not stage, commit, push, initialize markers, execute project code, install project dependencies, or contact remote services.
+
+Git tag `v0.1.0` and GitHub Release `AI-Engineering 0.1.0` remain immutable historical publication evidence for commit `73929bd15fa7637db8162aac199697582bb25e67`. AUTO-0001 and AUTO-0002 were implemented after that tag and are not retroactively part of the published v0.1.0 artifact. PyPI remains not approved and not published.
 
 ## Active Work
 
-MCP-0002, MCP-0003, SDK-0001 V1/1.1/1.2, TOOL-0001, REL-0001, CI-0001, SAFE-0001, REL-0002, and AUTO-0001 are complete and verified for their approved scopes.
+MCP-0002, MCP-0003, SDK-0001 V1/1.1/1.2, TOOL-0001, REL-0001, CI-0001, SAFE-0001, REL-0002, AUTO-0001, and AUTO-0002 are complete and verified for their approved scopes.
 
 ## Planned Work
 
-The next milestone is intentionally not preselected. Additional engineering automation, project synchronization/update behavior, additional client/IDE interoperability, PyPI/publication expansion, and future cross-tool security boundaries remain planned until separately scoped and validated.
+The next milestone is intentionally not preselected. Marker initialization, broader engineering automation, additional client/IDE interoperability, future cross-tool security boundaries, additional bootstrap profiles, and publication expansion remain future work until separately scoped and validated.
