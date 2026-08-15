@@ -131,7 +131,9 @@ def test_list_directory_rejects_missing_and_file_paths(tmp_path: Path) -> None:
         service.list_directory(Path("file.txt"))
 
 
-def test_read_file_returns_utf8_content_and_rejects_missing_path(tmp_path: Path) -> None:
+def test_read_file_returns_utf8_content_and_rejects_missing_path(
+    tmp_path: Path,
+) -> None:
     service = service_for(tmp_path)
     file_path = tmp_path / "message.txt"
     file_path.write_text("Tere, maailm", encoding="utf-8")
@@ -162,7 +164,9 @@ def test_write_file_invalid_target_preserves_current_os_error(tmp_path: Path) ->
     assert not (tmp_path / "missing-parent").exists()
 
 
-def test_create_file_creates_missing_parents_and_rejects_existing_file(tmp_path: Path) -> None:
+def test_create_file_creates_missing_parents_and_rejects_existing_file(
+    tmp_path: Path,
+) -> None:
     service = service_for(tmp_path)
     file_path = Path("nested/new.txt")
     service.create_file(file_path)
@@ -171,7 +175,9 @@ def test_create_file_creates_missing_parents_and_rejects_existing_file(tmp_path:
         service.create_file(file_path)
 
 
-def test_create_directory_creates_missing_parents_and_rejects_existing_path(tmp_path: Path) -> None:
+def test_create_directory_creates_missing_parents_and_rejects_existing_path(
+    tmp_path: Path,
+) -> None:
     service = service_for(tmp_path)
     directory = Path("nested/directory")
     service.create_directory(directory)
