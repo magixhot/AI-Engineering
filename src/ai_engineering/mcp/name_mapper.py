@@ -29,4 +29,4 @@ class ToolNameMapper:
         Convert MCP name into internal name.
         """
 
-        return name.replace("_", ".")
+        return name.replace("_", ".", 1)
