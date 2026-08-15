@@ -72,9 +72,13 @@ def _read_document(root: Path, document: str) -> str:
     try:
         return path.read_bytes().decode("utf-8")
     except FileNotFoundError as error:
-        raise DocumentationSyncError(f"Required document missing: {document}") from error
+        raise DocumentationSyncError(
+            f"Required document missing: {document}"
+        ) from error
     except (OSError, UnicodeDecodeError) as error:
-        raise DocumentationSyncError(f"Document could not be read: {document}") from error
+        raise DocumentationSyncError(
+            f"Document could not be read: {document}"
+        ) from error
 
 
 def _owned_section(content: str, document: str) -> _OwnedSection | None:
