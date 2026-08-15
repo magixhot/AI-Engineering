@@ -126,11 +126,8 @@ def _verify_bootstrap(
         )
 
     _run_git(target, "rev-parse", "--verify", "HEAD")
-    committed_files = {
-        line
-        for line in _run_git(target, "ls-tree", "--name-only", "-r", "HEAD").splitlines()
-        if line
-    }
+    committed_output = _run_git(target, "ls-tree", "--name-only", "-r", "HEAD")
+    committed_files = {line for line in committed_output.splitlines() if line}
     if not expected_relative_files.issubset(committed_files):
         missing_committed = sorted(expected_relative_files - committed_files)
         raise EngineeringBootstrapError(
@@ -138,13 +135,15 @@ def _verify_bootstrap(
             "commit: " + ", ".join(missing_committed)
         )
 
+    package_file = target / "src" / package_name / "__init__.py"
+    smoke_test = target / "tests" / "test_smoke.py"
     return EngineeringBootstrapVerification(
         required_files_present=True,
         git_repository=True,
         default_branch=default_branch,
         initial_commit_present=True,
-        python_package_present=(target / "src" / package_name / "__init__.py").is_file(),
-        smoke_test_present=(target / "tests" / "test_smoke.py").is_file(),
+        python_package_present=package_file.is_file(),
+        smoke_test_present=smoke_test.is_file(),
     )
 
 
