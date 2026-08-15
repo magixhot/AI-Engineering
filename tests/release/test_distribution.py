@@ -194,6 +194,7 @@ def test_distribution_artifacts_and_isolated_wheel_install(tmp_path: Path) -> No
         environment=environment,
     )
     assert "create" in project_help.stdout
+    assert "bootstrap" in project_help.stdout
 
     generated_project = tmp_path / "installed-artifact-project"
     _run(
@@ -221,5 +222,49 @@ def test_distribution_artifacts_and_isolated_wheel_install(tmp_path: Path) -> No
     assert _run(
         ["git", "log", "-1", "--format=%s"],
         cwd=generated_project,
+        environment=environment,
+    ).stdout.strip()
+
+    bootstrapped_project = tmp_path / "installed-bootstrap-project"
+    bootstrap_result = _run(
+        [
+            str(installed_cli),
+            "project",
+            "bootstrap",
+            "--name",
+            "Installed Bootstrap Project",
+            "--destination",
+            str(bootstrapped_project),
+            "--description",
+            "An engineering project bootstrapped by the installed wheel.",
+        ],
+        cwd=isolated_working_directory,
+        environment=environment,
+    )
+    bootstrap_output = bootstrap_result.stdout.splitlines()
+    assert f"bootstrapped_project={bootstrapped_project.resolve()}" in bootstrap_output
+    assert "project_name=Installed Bootstrap Project" in bootstrap_output
+    assert "profile=python-engineering" in bootstrap_output
+    assert "package_name=installed_bootstrap_project" in bootstrap_output
+    assert "git_branch=main" in bootstrap_output
+    assert "initial_commit=created" in bootstrap_output
+    assert "verification=passed" in bootstrap_output
+    assert (bootstrapped_project / ".git").is_dir()
+    assert (bootstrapped_project / "pyproject.toml").is_file()
+    assert (
+        bootstrapped_project
+        / "src"
+        / "installed_bootstrap_project"
+        / "__init__.py"
+    ).is_file()
+    assert (bootstrapped_project / "tests" / "test_smoke.py").is_file()
+    assert _run(
+        ["git", "branch", "--show-current"],
+        cwd=bootstrapped_project,
+        environment=environment,
+    ).stdout.strip() == "main"
+    assert _run(
+        ["git", "log", "-1", "--format=%s"],
+        cwd=bootstrapped_project,
         environment=environment,
     ).stdout.strip()
