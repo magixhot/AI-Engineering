@@ -15,6 +15,7 @@
 | MCP_SDK_AUDIT.md | SDK integration audit record | Complete / VS Code verified |
 | MCP_SDK_MIGRATION_REPORT.md | SDK migration evidence and client verification record | Complete / VS Code verified |
 | MCP-0002_SDK_BOUNDARY_VERIFICATION.md | MCP SDK boundary contract and verification matrix | Complete / verified |
+| MCP-0003_ANTIGRAVITY_INTEROPERABILITY_VERIFICATION.md | Antigravity MCP interoperability verification plan | Verification Plan / Manual Evidence Pending |
 | MCP_DIAGNOSTICS.md | MCP diagnostics operation | Active |
 | STABILIZATION_PLAN.md | Historical stabilization plan | Active / historical context |
 | RELEASE_CHECKLIST.md | 0.1.0 release checklist | Active |
