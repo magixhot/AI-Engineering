@@ -30,6 +30,18 @@ def result_text(result: CallToolResult) -> str:
     return content.text
 
 
+def create_symlink_or_skip(
+    link: Path,
+    target: Path,
+    *,
+    target_is_directory: bool,
+) -> None:
+    try:
+        link.symlink_to(target, target_is_directory=target_is_directory)
+    except OSError as exc:
+        pytest.skip(f"symlink fixture unavailable: {exc}")
+
+
 @asynccontextmanager
 async def connected_session(adapter: SDKAdapter) -> AsyncIterator[ClientSession]:
     client_send: Any
@@ -84,6 +96,43 @@ def test_bounded_python_rejects_outside_syntax_and_package_paths(
         service.inspect_package(outside_package)
     with pytest.raises(PythonPermissionError, match="outside configured workspace"):
         service.run_tests(Path("../outside.py"))
+
+
+def test_bounded_python_rejects_symlink_escape_for_syntax_package_and_tests(
+    tmp_path: Path,
+) -> None:
+    workspace = tmp_path / "workspace"
+    workspace.mkdir()
+
+    outside_source = tmp_path / "outside.py"
+    outside_source.write_text("secret = True\n", encoding="utf-8")
+    outside_package = tmp_path / "outside_package"
+    outside_package.mkdir()
+    (outside_package / "module.py").write_text("", encoding="utf-8")
+    outside_tests = tmp_path / "outside_tests"
+    outside_tests.mkdir()
+    (outside_tests / "test_outside.py").write_text(
+        "def test_outside():\n    assert True\n",
+        encoding="utf-8",
+    )
+
+    source_link = workspace / "linked.py"
+    package_link = workspace / "linked_package"
+    tests_link = workspace / "linked_tests"
+    create_symlink_or_skip(source_link, outside_source, target_is_directory=False)
+    create_symlink_or_skip(package_link, outside_package, target_is_directory=True)
+    create_symlink_or_skip(tests_link, outside_tests, target_is_directory=True)
+
+    service = PythonService(workspace, bounded=True)
+
+    with pytest.raises(PythonPermissionError, match="outside configured workspace"):
+        service.check_syntax(Path("linked.py"))
+    with pytest.raises(PythonPermissionError, match="outside configured workspace"):
+        service.inspect_package(Path("linked_package"))
+    with patch("subprocess.run") as run:
+        with pytest.raises(PythonPermissionError, match="outside configured workspace"):
+            service.run_tests(Path("linked_tests"))
+    run.assert_not_called()
 
 
 def test_bounded_python_package_inspection_succeeds_in_root(tmp_path: Path) -> None:
