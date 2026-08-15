@@ -58,9 +58,10 @@ class WorkspaceTools:
         return {"success": True, "path": path}
 
 
-# Backward-compatible module-level helpers remain bounded to the cwd captured
-# when this module is imported. The active MCP server does not use this service.
-_service = WorkspaceService()
+# Backward-compatible module-level Workspace tools are also bounded to the cwd
+# captured when this module is imported. The active MCP server uses its own
+# explicitly configured service instance instead.
+_service = WorkspaceService(Path.cwd())
 _tools = WorkspaceTools(_service)
 
 
