@@ -89,7 +89,9 @@ def _inspect_git(root: Path) -> tuple[bool, str | None, str | None]:
     try:
         discovered_root = Path(top_level.stdout.strip()).resolve()
     except OSError as error:
-        raise ProjectInspectionError("Git repository root could not be resolved") from error
+        raise ProjectInspectionError(
+            "Git repository root could not be resolved"
+        ) from error
 
     if discovered_root != root:
         return False, None, None
@@ -115,7 +117,9 @@ def _inspect_pyproject(root: Path) -> tuple[str | None, str | None]:
         try:
             data = tomllib.loads(pyproject.read_text(encoding="utf-8"))
         except (OSError, tomllib.TOMLDecodeError) as error:
-            raise ProjectInspectionError("pyproject.toml could not be inspected") from error
+            raise ProjectInspectionError(
+                "pyproject.toml could not be inspected"
+            ) from error
         project = data.get("project")
         if isinstance(project, dict):
             value = project.get("name")
@@ -142,7 +146,9 @@ def inspect_project_state(request: ProjectInspectionRequest) -> ProjectStateSnap
     try:
         root = request.project_root.resolve(strict=True)
     except (FileNotFoundError, OSError) as error:
-        raise ProjectInspectionError("Project root does not exist or cannot be resolved") from error
+        raise ProjectInspectionError(
+            "Project root does not exist or cannot be resolved"
+        ) from error
 
     if not root.is_dir():
         raise ProjectInspectionError("Project root must be a directory")
