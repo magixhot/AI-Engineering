@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 from pathlib import Path
 
 import pytest
@@ -115,7 +116,7 @@ def test_create_directory_creates_missing_parents_and_rejects_existing_path(
         service.create_directory(directory)
 
 
-def test_move_moves_a_fixture_file_and_rejects_missing_or_conflicting_source(
+def test_move_moves_a_fixture_file_and_preserves_current_conflict_behavior(
     tmp_path: Path,
 ) -> None:
     service = WorkspaceService()
@@ -132,8 +133,15 @@ def test_move_moves_a_fixture_file_and_rejects_missing_or_conflicting_source(
 
     replacement = tmp_path / "replacement.txt"
     replacement.write_text("replacement", encoding="utf-8")
-    with pytest.raises(FileExistsError):
+    if os.name == "nt":
+        with pytest.raises(FileExistsError):
+            service.move(replacement, destination)
+        assert replacement.read_text(encoding="utf-8") == "replacement"
+        assert destination.read_text(encoding="utf-8") == "content"
+    else:
         service.move(replacement, destination)
+        assert not replacement.exists()
+        assert destination.read_text(encoding="utf-8") == "replacement"
 
 
 def test_delete_removes_file_and_empty_directory_and_preserves_os_errors(
