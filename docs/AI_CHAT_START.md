@@ -17,14 +17,17 @@ After reading them, continue from `CURRENT_STATUS.md` and the current roadmap.
 
 ## Current Working State
 
-AI-Engineering has completed the documentation foundation, MCP-0002, SDK-0001 Project Templates
-V1, the optional SDK-0001.1 Standalone Python Project Scaffold, and SDK-0001.2 Project Template
-CLI. The `ai-engineering project create` console command is implemented and verified. The official
-MCP SDK migration, VS Code 1.132.1 interoperability verification, and the recorded Antigravity
-stdio interoperability verification are complete. Current quality gates are green: pytest has 59
-passing tests, and Ruff and mypy have no findings. The next milestone requires explicit selection;
-quality and documentation claims must remain evidence-based. ChatGPT/OpenAI, Claude Desktop, and
-other MCP clients are not verified or claimed compatible.
+AI-Engineering has completed the documentation foundation, MCP-0002, MCP-0003, SDK-0001 Project
+Templates V1, the optional SDK-0001.1 Standalone Python Project Scaffold, SDK-0001.2 Project
+Template CLI, and TOOL-0001 Core Tool Operation Verification. The `ai-engineering project create`
+console command is implemented and verified, and TOOL-0001 has verified all 15 existing Workspace,
+Git, and Python operations. The official MCP SDK migration, VS Code 1.132.1 interoperability
+verification, and the recorded Antigravity stdio interoperability verification are complete. Current
+quality gates are green: pytest has 89 passing tests, Ruff has 0 findings, and mypy has 0 findings.
+The canonical project state is ready for next-milestone selection and REL planning; no
+release-hardening implementation has started. Quality and documentation claims must remain
+evidence-based. ChatGPT/OpenAI, Claude Desktop, and other MCP clients are not verified or claimed
+compatible.
 
 ## Engineering Guardrails
 
