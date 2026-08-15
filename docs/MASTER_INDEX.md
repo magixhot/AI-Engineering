@@ -26,7 +26,7 @@
 | TOOL-0001_CORE_TOOL_OPERATION_VERIFICATION_DESIGN.md | Core Workspace, Git, and Python tool-operation verification contract | Complete / Verified |
 | REL-0001_DISTRIBUTION_AND_RELEASE_VERIFICATION_DESIGN.md | Distribution and release verification contract | Complete / Verified |
 | CI-0001_QUALITY_GATE_AUTOMATION_DESIGN.md | GitHub Actions quality-gate automation contract | Complete / Verified |
-| SAFE-0001_WORKSPACE_PATH_SAFETY_DESIGN.md | Workspace root, containment, link-escape, and controlled-error security contract | Design / Implementation Pending |
+| SAFE-0001_WORKSPACE_PATH_SAFETY_DESIGN.md | Workspace root, containment, link-escape, and controlled-error security contract/evidence | Complete / Verified |
 
 ## Active Engineering Work
 
@@ -37,7 +37,7 @@
 | Official Python MCP SDK migration | COMPLETE |
 | REL-0001 local distribution verification | COMPLETE / VERIFIED |
 | CI-0001 quality gate automation | COMPLETE / VERIFIED |
-| SAFE-0001 workspace path safety | DESIGN / IMPLEMENTATION PENDING |
+| SAFE-0001 workspace path safety | COMPLETE / VERIFIED |
 | Next engineering milestone preparation | CURRENT PRIORITY |
 | Additional MCP client interoperability | OPTIONAL / FUTURE EVIDENCE |
 | Diagnostics maintenance | ACTIVE |
@@ -48,15 +48,21 @@
 |---|---|
 | Sprint 0 — Documentation Foundation | COMPLETED |
 | Sprint 1 — MCP Foundation | IMPLEMENTED / VERIFIED |
-| Workspace, Git, and Python tool subsystems | IMPLEMENTED |
+| Workspace, Git, and Python tool subsystems | IMPLEMENTED / VERIFIED |
 | SDK-0001 Project Templates V1 | IMPLEMENTED / VERIFIED |
 | SDK-0001.1 Standalone Python Project Scaffold | COMPLETE / VERIFIED |
 | SDK-0001.2 Project Template CLI | COMPLETE / VERIFIED |
 | Antigravity MCP interoperability | VERIFIED |
+| TOOL-0001 core tool operations | COMPLETE / VERIFIED |
 | REL-0001 local distribution verification | COMPLETE / VERIFIED |
 | CI-0001 quality gate automation | COMPLETE / VERIFIED |
-| SAFE-0001 workspace path safety | DESIGN / IMPLEMENTATION PENDING |
+| SAFE-0001 workspace path safety | COMPLETE / VERIFIED |
 | Additional client and IDE interoperability | PLANNED |
+
+## Current Quality Baseline
+
+- Linux GitHub Actions / Python 3.11: pytest 99 passed, Ruff 0 findings, mypy 0 findings.
+- Windows local / Python 3.11.9: pytest 98 passed, 1 permitted symlink-fixture skip due to `WinError 1314`; Ruff 0; mypy 0.
 
 ## Source Tree
 
