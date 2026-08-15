@@ -40,13 +40,16 @@ def _project(tmp_path: Path) -> Path:
         encoding="utf-8",
     )
     (root / "CURRENT_STATUS.md").write_text(
-        _document("current-status", "\n- stale: value\n"), encoding="utf-8"
+        _document("current-status", "\n- stale: value\n"),
+        encoding="utf-8",
     )
     (root / "PROJECT_MAP.md").write_text(
-        _document("project-map", "\n- `gone.txt` (file)\n"), encoding="utf-8"
+        _document("project-map", "\n- `gone.txt` (file)\n"),
+        encoding="utf-8",
     )
     (root / "MASTER_INDEX.md").write_text(
-        _document("master-index", "\n- `OLD.md` — observed\n"), encoding="utf-8"
+        _document("master-index", "\n- `OLD.md` — observed\n"),
+        encoding="utf-8",
     )
     subprocess.run(["git", "init", "-b", "main"], cwd=root, check=True)
     subprocess.run(["git", "add", "."], cwd=root, check=True)
@@ -108,9 +111,15 @@ def test_apply_preserves_human_owned_content(tmp_path: Path) -> None:
 def test_stale_plan_fails_before_any_write(tmp_path: Path) -> None:
     root = _project(tmp_path)
     plan = _plan(root)
-    originals = {update.document: (root / update.document).read_bytes() for update in plan.updates}
+    originals = {
+        update.document: (root / update.document).read_bytes()
+        for update in plan.updates
+    }
     stale = root / "MASTER_INDEX.md"
-    stale.write_text(stale.read_text(encoding="utf-8") + "changed\n", encoding="utf-8")
+    stale.write_text(
+        stale.read_text(encoding="utf-8") + "changed\n",
+        encoding="utf-8",
+    )
 
     with pytest.raises(DocumentationSyncError, match="Stale synchronization plan"):
         apply_documentation_sync(plan)
@@ -156,7 +165,9 @@ def test_apply_rejects_plan_that_changes_human_prefix(tmp_path: Path) -> None:
         document=original.document,
         original_sha256=original.original_sha256,
         replacement_content=original.replacement_content.replace(
-            "# Document", "# Rewritten Human Heading", 1
+            "# Document",
+            "# Rewritten Human Heading",
+            1,
         ),
     )
     forged_plan = DocumentationSyncPlan(root.resolve(), (forged,))
