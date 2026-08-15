@@ -15,12 +15,16 @@ from .models import WorkspaceEntry
 
 
 class WorkspaceService:
-    """Provide filesystem operations inside one configured workspace root."""
+    """Provide filesystem operations with an optional workspace boundary."""
 
     def __init__(self, workspace_root: Path | None = None) -> None:
-        configured_root = workspace_root if workspace_root is not None else Path.cwd()
+        if workspace_root is None:
+            self._workspace_root: Path | None = None
+            return
+
+        configured_root = workspace_root.expanduser()
         try:
-            resolved_root = configured_root.expanduser().resolve(strict=True)
+            resolved_root = configured_root.resolve(strict=True)
         except FileNotFoundError as exc:
             raise WorkspaceNotFoundError(
                 f"Workspace root not found: {configured_root}"
@@ -34,11 +38,14 @@ class WorkspaceService:
         self._workspace_root = resolved_root
 
     @property
-    def workspace_root(self) -> Path:
+    def workspace_root(self) -> Path | None:
         return self._workspace_root
 
     def _authorize(self, path: Path) -> tuple[Path, Path]:
         candidate = path.expanduser()
+        if self._workspace_root is None:
+            return candidate, candidate.resolve(strict=False)
+
         if not candidate.is_absolute():
             candidate = self._workspace_root / candidate
 
@@ -111,7 +118,10 @@ class WorkspaceService:
         source_candidate, source_resolved = self._authorize(source)
         destination_candidate, _ = self._authorize(destination)
 
-        if source_resolved == self._workspace_root:
+        if (
+            self._workspace_root is not None
+            and source_resolved == self._workspace_root
+        ):
             raise WorkspacePermissionError("Workspace root cannot be moved")
 
         if not source_candidate.exists():
@@ -122,7 +132,7 @@ class WorkspaceService:
     def delete(self, path: Path) -> None:
         candidate, resolved = self._authorize(path)
 
-        if resolved == self._workspace_root:
+        if self._workspace_root is not None and resolved == self._workspace_root:
             raise WorkspacePermissionError("Workspace root cannot be deleted")
 
         if not candidate.exists():
