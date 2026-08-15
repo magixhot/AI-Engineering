@@ -35,6 +35,8 @@ See `SAFE-0001_WORKSPACE_PATH_SAFETY_DESIGN.md`.
 
 The single Windows skip is the symlink-escape fixture. Windows returned `WinError 1314` because the process lacked the privilege required to create the symlink. The SAFE-0001 design explicitly permits a link-fixture skip only when the operating system or permissions genuinely prevent fixture creation. Linux CI executed the full link coverage successfully.
 
+The Windows pytest run used a dedicated external temporary directory because the machine's default pytest temporary location had an unrelated local ACL/permission problem. No repository behavior or test expectations were changed to accommodate that machine-specific condition.
+
 ## Scope statement
 
 SAFE-0001 verifies a path-authorization boundary for MCP-exposed Workspace operations. It does not claim OS-level sandboxing, ACL enforcement, race-proof filesystem capability security, or containment of Git/Python subprocess semantics.
