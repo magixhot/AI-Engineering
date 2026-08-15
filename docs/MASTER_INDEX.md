@@ -28,6 +28,8 @@
 | REL-0002_RELEASE_PUBLICATION_DECISION_CONTRACT.md | Git tag, GitHub Release, PyPI, evidence, and publication-approval governance | Complete / Verified for v0.1.0 GitHub scope |
 | REL-0002_POST_RELEASE_RECONCILIATION.md | Actual v0.1.0 tag/release publication evidence and post-release scope reconciliation | Complete / Verified |
 | REL-0003_NEXT_RELEASE_LINE_DESIGN.md | Next release version decision, candidate freeze, artifact/evidence, release-note, and publication boundary | Design Approved / 0.2.0 Selected |
+| REL-0003_0.2.0_RELEASE_READINESS.md | Exact 0.2.0 candidate SHA, Linux/Windows/distribution evidence, publication gate, and invalidation rules | Ready for Publication Approval / Not Published |
+| REL-0003_0.2.0_RELEASE_NOTES.md | Prepared 0.2.0 GitHub Release notes and bounded compatibility/publication claims | Draft / Not Published |
 | CI-0001_QUALITY_GATE_AUTOMATION_DESIGN.md | GitHub Actions quality-gate automation contract | Complete / Verified |
 | SAFE-0001_WORKSPACE_PATH_SAFETY_DESIGN.md | Workspace root, containment, link-escape, and controlled-error security contract/evidence | Complete / Verified |
 | SAFE-0001_VERIFICATION_EVIDENCE.md | Compact Linux/Windows SAFE-0001 verification record | Complete / Verified |
@@ -51,7 +53,7 @@
 | SAFE-0001 workspace path safety | COMPLETE / VERIFIED |
 | SAFE-0002 Git/Python execution safety | COMPLETE / VERIFIED |
 | REL-0002 v0.1.0 GitHub publication | COMPLETE / VERIFIED |
-| REL-0003 next release line decision/readiness | 0.2.0 CANDIDATE PREPARATION / IN PROGRESS |
+| REL-0003 0.2.0 release readiness | READY FOR PUBLICATION APPROVAL / NOT PUBLISHED |
 | AUTO-0001 engineering project bootstrap | COMPLETE / VERIFIED |
 | AUTO-0002 project documentation synchronization | COMPLETE / VERIFIED |
 | Additional MCP client interoperability | OPTIONAL / FUTURE EVIDENCE |
@@ -74,26 +76,29 @@
 | SAFE-0001 workspace path safety | COMPLETE / VERIFIED |
 | SAFE-0002 Git/Python execution safety | COMPLETE / VERIFIED |
 | REL-0002 release publication governance and v0.1.0 GitHub publication | COMPLETE / VERIFIED |
-| REL-0003 next release line decision and readiness | 0.2.0 CANDIDATE PREPARATION |
+| REL-0003 0.2.0 release readiness | READY FOR PUBLICATION APPROVAL / NOT PUBLISHED |
 | M3 / AUTO-0001 Engineering Project Bootstrap | COMPLETE / VERIFIED |
 | M3 / AUTO-0002 Project Documentation Synchronization | COMPLETE / VERIFIED |
 | Additional client and IDE interoperability | PLANNED |
 
 ## Published Release
 
-- GitHub Release: `AI-Engineering 0.1.0`
-- Tag: `v0.1.0`
-- Tagged commit: `73929bd15fa7637db8162aac199697582bb25e67`
-- Next selected candidate version: `0.2.0` — not tagged, not released
-- AUTO-0001, AUTO-0002, and SAFE-0002: completed after the immutable v0.1.0 tag; intended for the 0.2.0 candidate scope after fresh verification
+- Current published GitHub Release: `AI-Engineering 0.1.0`
+- Current published tag: `v0.1.0`
+- Current published tagged commit: `73929bd15fa7637db8162aac199697582bb25e67`
+- Approved next version: `0.2.0`
+- Exact 0.2.0 artifact/tag candidate SHA: `1faf14c121b7b5da7c8781e3de4e836f85838a76`
+- `v0.2.0`: not created
+- GitHub Release `AI-Engineering 0.2.0`: not created
+- AUTO-0001, AUTO-0002, and SAFE-0002: included in the verified 0.2.0 candidate scope, but not part of immutable v0.1.0
 - PyPI: not approved / not published
 
 ## Current Quality Baseline
 
-- Pre-candidate Linux GitHub Actions / Python 3.11: pytest 155 passed, Ruff 0 findings, mypy 0 findings in 79 source files.
+- Exact 0.2.0 candidate passed post-merge GitHub Actions Quality run #79 on Linux/Python 3.11.
+- Fresh Windows-local candidate evidence: pytest 153 passed, 2 permitted symlink-fixture skips due to `WinError 1314`; Ruff 0; mypy 0 in 79 source files; focused release distribution test 1 passed; `git diff --check` passed; working tree clean.
 - Installed-wheel verification covers `ai-engineering project create`, `project bootstrap`, and `project docs check/plan/apply` outside the source checkout.
-- Pre-candidate Windows-local SAFE-0002 evidence: pytest 153 passed, 2 permitted symlink-fixture skips due to `WinError 1314`; Ruff 0; mypy 0 in 79 source files; `git diff --check` passed; working tree clean.
-- Fresh 0.2.0 candidate Linux, Windows, distribution, and installed-wheel evidence is pending.
+- Verified candidate artifact names: `ai_engineering-0.2.0-py3-none-any.whl` and `ai_engineering-0.2.0.tar.gz`.
 
 ## Source Tree
 
