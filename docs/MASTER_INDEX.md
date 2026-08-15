@@ -18,14 +18,15 @@
 | MCP-0003_ANTIGRAVITY_INTEROPERABILITY_VERIFICATION.md | Antigravity MCP interoperability verification evidence | Verified |
 | MCP_DIAGNOSTICS.md | MCP diagnostics operation | Active |
 | STABILIZATION_PLAN.md | Historical stabilization plan | Active / historical context |
-| RELEASE_CHECKLIST.md | 0.1.0 release checklist | Active |
+| RELEASE_CHECKLIST.md | 0.1.0 release checklist and evidence | Active |
 | SDK-0001_TEMPLATE_DESIGN.md | SDK-0001 V1 authoritative template design | Implemented / verified |
 | SDK-0001_PROJECT_TEMPLATES.md | SDK-0001 V1 framework reference | Implemented / verified |
 | SDK-0001_1_PYTHON_SCAFFOLD_DESIGN.md | SDK-0001.1 Python scaffold contract | Implemented / verified |
 | SDK-0001_2_PROJECT_TEMPLATE_CLI_DESIGN.md | SDK-0001.2 Project Template CLI contract | Implemented / verified |
 | TOOL-0001_CORE_TOOL_OPERATION_VERIFICATION_DESIGN.md | Core Workspace, Git, and Python tool-operation verification contract | Complete / Verified |
 | REL-0001_DISTRIBUTION_AND_RELEASE_VERIFICATION_DESIGN.md | Distribution and release verification contract | Complete / Verified |
-| REL-0002_RELEASE_PUBLICATION_DECISION_CONTRACT.md | Git tag, GitHub Release, PyPI, evidence, and publication-approval governance | Design / Decision Contract |
+| REL-0002_RELEASE_PUBLICATION_DECISION_CONTRACT.md | Git tag, GitHub Release, PyPI, evidence, and publication-approval governance | Complete / Verified for v0.1.0 GitHub scope |
+| REL-0002_POST_RELEASE_RECONCILIATION.md | Actual v0.1.0 tag/release publication evidence and post-release scope reconciliation | Complete / Verified |
 | CI-0001_QUALITY_GATE_AUTOMATION_DESIGN.md | GitHub Actions quality-gate automation contract | Complete / Verified |
 | SAFE-0001_WORKSPACE_PATH_SAFETY_DESIGN.md | Workspace root, containment, link-escape, and controlled-error security contract/evidence | Complete / Verified |
 | SAFE-0001_VERIFICATION_EVIDENCE.md | Compact Linux/Windows SAFE-0001 verification record | Complete / Verified |
@@ -40,7 +41,8 @@
 | REL-0001 local distribution verification | COMPLETE / VERIFIED |
 | CI-0001 quality gate automation | COMPLETE / VERIFIED |
 | SAFE-0001 workspace path safety | COMPLETE / VERIFIED |
-| REL-0002 release publication decision contract | DESIGN / CURRENT PRIORITY |
+| REL-0002 v0.1.0 GitHub publication | COMPLETE / VERIFIED |
+| Post-v0.1.0 roadmap selection | NEXT |
 | Additional MCP client interoperability | OPTIONAL / FUTURE EVIDENCE |
 | Diagnostics maintenance | ACTIVE |
 
@@ -59,12 +61,19 @@
 | REL-0001 local distribution verification | COMPLETE / VERIFIED |
 | CI-0001 quality gate automation | COMPLETE / VERIFIED |
 | SAFE-0001 workspace path safety | COMPLETE / VERIFIED |
-| REL-0002 release publication governance | DESIGN |
+| REL-0002 release publication governance and v0.1.0 GitHub publication | COMPLETE / VERIFIED |
 | Additional client and IDE interoperability | PLANNED |
+
+## Published Release
+
+- GitHub Release: `AI-Engineering 0.1.0`
+- Tag: `v0.1.0`
+- Tagged commit: `73929bd15fa7637db8162aac199697582bb25e67`
+- PyPI: not approved / not published
 
 ## Current Quality Baseline
 
-- Linux GitHub Actions / Python 3.11: pytest 99 passed, Ruff 0 findings, mypy 0 findings.
+- Release candidate Linux GitHub Actions / Python 3.11: pytest 99 passed, Ruff 0 findings, mypy 0 findings.
 - Windows local / Python 3.11.9: pytest 98 passed, 1 permitted symlink-fixture skip due to `WinError 1314`; Ruff 0; mypy 0.
 
 ## Source Tree
