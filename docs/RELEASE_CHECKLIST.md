@@ -26,7 +26,8 @@ This checklist records the release-line verification state. It does not establis
 - [x] SAFE-0001 Linux baseline: pytest 99 passed, Ruff 0 findings, mypy 0 findings in 69 source files.
 - [x] SAFE-0001 Windows-local baseline: pytest 98 passed, 1 skipped; Ruff 0; mypy 0 in 69 source files.
 - [x] The Windows skip is limited to the symlink-escape fixture because the process lacked symlink-creation privilege (`WinError 1314`).
-- [x] AUTO-0001 current Linux CI baseline: pytest **112 passed**, Ruff 0 findings, mypy 0 findings in 71 source files.
+- [x] AUTO-0001 Linux CI baseline: pytest 112 passed, Ruff 0 findings, mypy 0 findings in 71 source files.
+- [x] AUTO-0002 current Linux CI baseline: pytest **142 passed**, Ruff 0 findings, mypy 0 findings in 77 source files.
 
 ## Local Distribution Verification
 
@@ -40,13 +41,17 @@ This checklist records the release-line verification state. It does not establis
 - [x] Installed `ai-engineering` console-script help and project-create smoke checks passed.
 - [x] Post-v0.1.0 AUTO-0001 verification confirms installed `project --help` exposes `bootstrap`.
 - [x] Post-v0.1.0 AUTO-0001 verification confirms installed `ai-engineering project bootstrap` creates the `python-engineering` scaffold outside the source checkout, reports the approved success contract, creates Git `main`, and has an initial commit.
+- [x] Post-v0.1.0 AUTO-0002 verification confirms installed `project --help` exposes `docs` and `project docs --help` exposes `check`, `plan`, and `apply`.
+- [x] Installed AUTO-0002 `check` reports manual review for an unmarked bootstrap project without mutating it.
+- [x] Installed AUTO-0002 `plan` produces deterministic bounded updates for a marked isolated fixture.
+- [x] Installed AUTO-0002 `apply` updates only the three approved documents, reports `verification=passed`, leaves Git HEAD/staging unchanged, and is followed by a clean installed `check`.
 - [x] Current verification may use package-index access for isolated build dependency resolution; offline support is not claimed.
 
 ## Publication Verification
 
 - [x] Git tag `v0.1.0` was created for approved commit `73929bd15fa7637db8162aac199697582bb25e67`.
 - [x] GitHub Release `AI-Engineering 0.1.0` was published for `v0.1.0`.
-- [x] AUTO-0001 was implemented after `v0.1.0` and is not claimed as part of that immutable published tag/artifact.
+- [x] AUTO-0001 and AUTO-0002 were implemented after `v0.1.0` and are not claimed as part of that immutable published tag/artifact.
 - [ ] PyPI publishing remains not approved and not performed.
 
 ## CI Verification
@@ -56,6 +61,7 @@ This checklist records the release-line verification state. It does not establis
 - [x] Ruff, mypy, and full pytest execute without `continue-on-error`.
 - [x] REL-0001 distribution verification remains part of the full pytest suite.
 - [x] CI-0001 has successful PR and post-merge `master` evidence.
+- [x] AUTO-0002 implementation PR #46 and post-merge Quality run #59 both passed the full quality workflow.
 
 ## Workspace Path Safety Verification
 
@@ -80,6 +86,18 @@ This checklist records the release-line verification state. It does not establis
 - [x] Expected bootstrap failures use controlled stderr/exit-1 behavior; usage errors and unexpected failures retain their defined exit behavior.
 - [x] Installed-wheel bootstrap smoke succeeds outside the source checkout without editable-install or `PYTHONPATH` reliance.
 
+## Documentation Synchronization Verification
+
+- [x] AUTO-0002 V1 inspection is deterministic, local, and read-only.
+- [x] Drift detection and synchronization planning are deterministic and write nothing.
+- [x] V1 writable scope is exactly `CURRENT_STATUS.md`, `MASTER_INDEX.md`, and `PROJECT_MAP.md`.
+- [x] Missing/malformed ownership markers are manual-review conditions, not destructive normalization.
+- [x] Plans contain SHA-256 original-content guards; stale plans fail closed before writes.
+- [x] Guarded apply preserves human-owned prefix/suffix content and verifies exact written replacement content.
+- [x] Post-apply reinspection proves resolved drift is cleared.
+- [x] AUTO-0002 performs no Git stage/commit/push behavior.
+- [x] Installed `project docs check/plan/apply` behavior is verified from an isolated wheel outside the source checkout.
+
 ## Documentation
 
 - [x] MCP diagnostics documentation exists.
@@ -93,6 +111,7 @@ This checklist records the release-line verification state. It does not establis
 - [x] SAFE-0001 Linux and Windows verification evidence is recorded.
 - [x] REL-0002 v0.1.0 GitHub publication evidence is recorded.
 - [x] AUTO-0001 API, CLI, and isolated installed-wheel verification evidence is recorded.
+- [x] AUTO-0002 inspection, drift, guarded apply, CLI, isolated installed-wheel, and CI evidence is recorded.
 
 ## Follow-up Verification
 
