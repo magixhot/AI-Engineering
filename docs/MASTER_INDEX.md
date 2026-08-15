@@ -27,6 +27,7 @@
 | REL-0001_DISTRIBUTION_AND_RELEASE_VERIFICATION_DESIGN.md | Distribution and release verification contract | Complete / Verified |
 | REL-0002_RELEASE_PUBLICATION_DECISION_CONTRACT.md | Git tag, GitHub Release, PyPI, evidence, and publication-approval governance | Complete / Verified for v0.1.0 GitHub scope |
 | REL-0002_POST_RELEASE_RECONCILIATION.md | Actual v0.1.0 tag/release publication evidence and post-release scope reconciliation | Complete / Verified |
+| REL-0003_NEXT_RELEASE_LINE_DESIGN.md | Next release version decision, candidate freeze, artifact/evidence, release-note, and publication boundary | Design / Decision Contract |
 | CI-0001_QUALITY_GATE_AUTOMATION_DESIGN.md | GitHub Actions quality-gate automation contract | Complete / Verified |
 | SAFE-0001_WORKSPACE_PATH_SAFETY_DESIGN.md | Workspace root, containment, link-escape, and controlled-error security contract/evidence | Complete / Verified |
 | SAFE-0001_VERIFICATION_EVIDENCE.md | Compact Linux/Windows SAFE-0001 verification record | Complete / Verified |
@@ -50,9 +51,9 @@
 | SAFE-0001 workspace path safety | COMPLETE / VERIFIED |
 | SAFE-0002 Git/Python execution safety | COMPLETE / VERIFIED |
 | REL-0002 v0.1.0 GitHub publication | COMPLETE / VERIFIED |
+| REL-0003 next release line decision/readiness | DESIGN / DECISION CONTRACT |
 | AUTO-0001 engineering project bootstrap | COMPLETE / VERIFIED |
 | AUTO-0002 project documentation synchronization | COMPLETE / VERIFIED |
-| Post-SAFE-0002 roadmap selection | NEXT |
 | Additional MCP client interoperability | OPTIONAL / FUTURE EVIDENCE |
 | Diagnostics maintenance | ACTIVE |
 
@@ -73,6 +74,7 @@
 | SAFE-0001 workspace path safety | COMPLETE / VERIFIED |
 | SAFE-0002 Git/Python execution safety | COMPLETE / VERIFIED |
 | REL-0002 release publication governance and v0.1.0 GitHub publication | COMPLETE / VERIFIED |
+| REL-0003 next release line decision and readiness | DESIGN |
 | M3 / AUTO-0001 Engineering Project Bootstrap | COMPLETE / VERIFIED |
 | M3 / AUTO-0002 Project Documentation Synchronization | COMPLETE / VERIFIED |
 | Additional client and IDE interoperability | PLANNED |
