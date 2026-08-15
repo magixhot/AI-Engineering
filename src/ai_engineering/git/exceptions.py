@@ -1,9 +1,4 @@
-# Файл:
-# src/ai_engineering/git/exceptions.py
-
-"""
-Git exceptions.
-"""
+"""Git exceptions."""
 
 from __future__ import annotations
 
@@ -13,7 +8,11 @@ class GitError(Exception):
 
 
 class GitRepositoryNotFoundError(GitError):
-    """Raised when the current directory is not a Git repository."""
+    """Raised when the configured directory is not a Git repository."""
+
+
+class GitPermissionError(GitError):
+    """Raised when an MCP Git operation would escape its authority root."""
 
 
 class GitCommandError(GitError):
