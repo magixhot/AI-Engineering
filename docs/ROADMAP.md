@@ -26,8 +26,9 @@ path.
 The official Python MCP SDK is integrated as the protocol/server boundary. The active path is
 `python -m ai_engineering.stdio` through bootstrap, `EngineeringMCPServer`,
 `CompositeRegistry`/`SDKAdapter`, and the official `mcp.server.stdio.stdio_server`. MCP-0002
-automated contracts and VS Code 1.132.1 manual interoperability are verified. This does not
-replace the internal Runtime, Registry, or Discovery subsystems.
+automated contracts, VS Code 1.132.1 manual interoperability, and the separately recorded
+Antigravity contract are verified. This does not replace the internal Runtime, Registry, or
+Discovery subsystems.
 
 ### SDK-0001 Project Templates V1, SDK-0001.1 Python Scaffold, and SDK-0001.2 CLI
 
@@ -54,8 +55,9 @@ scope and validation. The SDK-0001.1 scaffold is complete; no broader automation
 
 ### Client and IDE Interoperability
 
-Validate interoperability with additional MCP clients and IDE integration surfaces, including
-Antigravity. VS Code 1.132.1 is already verified for the MCP-0002 scope.
+Validate interoperability with additional MCP clients and IDE integration surfaces. VS Code 1.132.1
+and Antigravity are already verified for their recorded contracts; ChatGPT/OpenAI, Claude Desktop,
+and other clients remain unverified.
 
 ### Future Engineering Capabilities
 

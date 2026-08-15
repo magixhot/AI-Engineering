@@ -1,6 +1,6 @@
 # MCP-0003 — Antigravity Interoperability Verification
 
-**Status:** PLANNED / MANUAL VERIFICATION REQUIRED
+**Status:** VERIFIED
 **Scope:** client-specific verification of the existing AI-Engineering MCP server
 
 ## Objective
@@ -10,9 +10,69 @@ the current AI-Engineering MCP server through its supported stdio boundary. The 
 Antigravity only. This milestone captures evidence; it does not redesign the server, its transport,
 or its tool registry.
 
-Antigravity is **not verified** until this procedure has been performed and its evidence recorded.
-Successful verification applies only to the tested Antigravity version/build and configuration. It
-does not establish compatibility with ChatGPT/OpenAI, Claude Desktop, or other MCP clients.
+Antigravity interoperability with the current AI-Engineering MCP stdio server is **VERIFIED** for
+the tested contract. Successful verification applies only to the tested configuration; the
+Antigravity version/build was not captured. This does not establish compatibility with every
+Antigravity version, ChatGPT/OpenAI, Claude Desktop, or other MCP clients.
+
+## Recorded Manual Evidence and History
+
+The completed manual verification used Antigravity over stdio against the AI-Engineering workspace
+at `C:\\AI\\Projects\\AI-Engineering`. The local interpreter was
+`C:\\AI\\Projects\\AI-Engineering\\.venv\\Scripts\\python.exe`; `python_version` returned Python
+3.11.9. The Antigravity version/build, verification date/time, and client-log capture were **NOT
+CAPTURED**.
+
+Antigravity connected to the server, discovered 15 tools, and continued operating after successful
+and controlled-error calls. Discovery included:
+
+```text
+workspace_list                 workspace_read_file
+workspace_write_file           workspace_create_file
+workspace_create_directory     workspace_move
+workspace_delete               git_status
+git_branch                     git_log
+git_diff                       python_version
+python_run_tests               python_check_syntax
+python_inspect_package
+```
+
+Successful calls observed:
+
+- `python_version` returned Python 3.11.9.
+- `workspace_list` successfully listed the workspace root, including `.git`, `docs`, `src`,
+  `tests`, `pyproject.toml`, `README.md`, and `uv.lock`.
+- `workspace_read_file` with `{"path":"README.md"}` returned the README content.
+
+The controlled `workspace_read_file` call with
+`{"path":"MCP-0003-antigravity-does-not-exist.txt"}` returned:
+
+```text
+Error executing tool: File not found: MCP-0003-antigravity-does-not-exist.txt
+```
+
+This was a controlled error: it did not produce a traceback, protocol breakage, or connection
+loss. The initial and final successful verification did not require `AI_ENGINEERING_DEBUG_MCP=1`;
+diagnostics remained optional and no diagnostics logs are claimed as evidence.
+
+### Initial defect, repair, and re-test
+
+The initial manual verification exposed a server-side tool-name reverse-mapping defect, not an
+Antigravity defect. The exposed name `workspace_read_file` was incorrectly dispatched as
+`workspace.read.file`, producing:
+
+```text
+Error executing tool: 'Unknown tool: workspace.read.file'
+```
+
+The MCP-0003-02A audit identified the cause: `ToolNameMapper.from_mcp()` converted every
+underscore to a dot. PR #18 (`c08bb16`) corrected the mapper to
+`name.replace("_", ".", 1)`, preserving snake_case operation names while converting only the
+namespace separator. The repaired change is present on master at `4eb0b81`.
+
+After restarting the server on repaired master, `workspace_read_file` returned `README.md` and the
+controlled missing-file call returned the expected file-not-found error. The prior unknown-tool
+failure no longer occurred.
 
 ## Preconditions
 
@@ -68,8 +128,7 @@ connection, tool, result, error, and log evidence that the UI does provide.
 
 ## Manual Procedure
 
-Do not perform this procedure as part of MCP-0003-01. A future, explicitly authorized manual
-verification performs these steps:
+This completed sequence defines the repeatable procedure for a future client-version re-test:
 
 1. Open the AI-Engineering workspace.
 2. Register or configure the `AI-Engineering` MCP server in Antigravity using the server
@@ -177,7 +236,7 @@ VS Code re-verification, production-code changes, and automated GUI testing.
 
 ## Completion Criteria
 
-MCP-0003-01 is complete when this contract is reviewed and indexed. MCP-0003 Antigravity
-interoperability is complete only after a separately authorized manual execution captures the
-required evidence and records a VERIFIED, PARTIALLY VERIFIED, or FAILED outcome without extending
-the claim beyond Antigravity.
+MCP-0003-01 is complete because this contract is reviewed and indexed. The Antigravity portion of
+MCP-0003 is complete because the required manual evidence is now recorded as VERIFIED. Any future
+Antigravity version/build re-test must record its own evidence and must not extend the claim beyond
+Antigravity.
