@@ -10,6 +10,7 @@ from ai_engineering.documentation_sync import (
 )
 from ai_engineering.project_inspection import (
     ProjectInspectionRequest,
+    ProjectStateSnapshot,
     inspect_project_state,
 )
 
@@ -42,7 +43,10 @@ def _write_managed_documents(root: Path) -> None:
 def _project(tmp_path: Path) -> Path:
     root = tmp_path / "project"
     (root / "src" / "sample_pkg").mkdir(parents=True)
-    (root / "src" / "sample_pkg" / "__init__.py").write_text("", encoding="utf-8")
+    (root / "src" / "sample_pkg" / "__init__.py").write_text(
+        "",
+        encoding="utf-8",
+    )
     (root / "README.md").write_text("# Sample\n", encoding="utf-8")
     (root / "pyproject.toml").write_text(
         '[project]\nname = "sample-project"\nversion = "0.1.0"\n',
@@ -70,7 +74,7 @@ def _project(tmp_path: Path) -> Path:
     return root
 
 
-def _snapshot(root: Path):  # type: ignore[no-untyped-def]
+def _snapshot(root: Path) -> ProjectStateSnapshot:
     return inspect_project_state(ProjectInspectionRequest(root))
 
 
@@ -158,7 +162,8 @@ def test_planning_is_read_only_stable_and_contains_original_digest(
     assert first == second
     assert len(first.updates) == 3
     for update in first.updates:
-        assert update.original_sha256 == hashlib.sha256(before[update.document]).hexdigest()
+        expected_digest = hashlib.sha256(before[update.document]).hexdigest()
+        assert update.original_sha256 == expected_digest
         assert (root / update.document).read_bytes() == before[update.document]
 
 
@@ -200,7 +205,9 @@ def test_planned_replacements_clear_drift_when_caller_applies_them(
     plan = plan_documentation_sync(detect_documentation_drift(snapshot))
 
     for update in plan.updates:
-        (root / update.document).write_bytes(update.replacement_content.encode("utf-8"))
+        (root / update.document).write_bytes(
+            update.replacement_content.encode("utf-8")
+        )
 
     refreshed = _snapshot(root)
     assert detect_documentation_drift(refreshed).items == ()
@@ -211,7 +218,10 @@ def test_crlf_human_content_is_preserved_in_planned_replacement(
 ) -> None:
     root = _project(tmp_path)
     path = root / "CURRENT_STATUS.md"
-    content = _document("current-status", "\n- stale: value\n").replace("\n", "\r\n")
+    content = _document("current-status", "\n- stale: value\n").replace(
+        "\n",
+        "\r\n",
+    )
     path.write_bytes(content.encode("utf-8"))
 
     plan = plan_documentation_sync(detect_documentation_drift(_snapshot(root)))
