@@ -61,11 +61,27 @@ V1 writes only machine-owned sections of `CURRENT_STATUS.md`, `MASTER_INDEX.md`,
 stage or commit Git changes, execute project code, install dependencies, contact remote services, or
 initialize markers automatically.
 
+### SAFE-0002 Git/Python Execution Safety
+
+**Status:** COMPLETE / VERIFIED
+
+SAFE-0002 binds active MCP Git and path-taking Python operations to `MCPConfig.workspace_root`.
+Bounded Git requires the configured workspace root to be the repository top level and rejects parent
+repository discovery above the authority root. Bounded Python rejects outside, traversal, and
+supported link escapes before inspection or pytest execution. Authorized pytest uses the current
+interpreter, workspace-root cwd, `shell=False`, closed stdin, captured output, and a bounded timeout.
+
+Linux CI verifies the full link-escape path. Final Windows-local evidence records 153 passed and two
+privilege-dependent symlink-fixture skips (`WinError 1314`), with Ruff, mypy, diff-check, and working
+tree cleanliness passing. SAFE-0002 is not an operating-system sandbox and does not contain malicious
+code already authorized to execute inside the workspace.
+
 ## Current Priority
 
-Preserve the verified MCP, SDK-0001, SAFE-0001, CI-0001, release, AUTO-0001, and AUTO-0002 contracts.
-Select the next engineering milestone from a fresh post-AUTO-0002 roadmap audit rather than extending
-the writable documentation scope implicitly.
+Preserve the verified MCP, SDK-0001, SAFE-0001, SAFE-0002, CI-0001, release, AUTO-0001, and AUTO-0002
+contracts. Select the next engineering milestone from a fresh post-SAFE-0002 roadmap audit rather
+than implicitly expanding documentation ownership, execution surfaces, client claims, or release
+scope.
 
 ## Planned
 
@@ -78,6 +94,6 @@ and other clients remain unverified.
 ### Future Engineering Capabilities
 
 Potential future work includes a separately designed AUTO-0002 ownership-marker initialization flow,
-additional bootstrap profiles, broader project update/migration behavior, Git/Python execution safety
-boundaries, publication expansion, and additional engineering automation. None of these are implied by
-AUTO-0002 V1 and each requires its own approved contract.
+additional bootstrap profiles, broader project update/migration behavior, new bounded execution tools,
+publication expansion, and additional engineering automation. None of these are implied by existing
+verified contracts and each requires its own approved design and evidence.
