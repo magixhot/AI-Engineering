@@ -74,7 +74,14 @@ def test_inspection_excludes_local_artifacts(tmp_path: Path) -> None:
     root = tmp_path / "project"
     root.mkdir()
     (root / "keep.txt").write_text("keep", encoding="utf-8")
-    for directory in (".git", ".venv", "__pycache__", "build", "dist", ".pytest_cache"):
+    for directory in (
+        ".git",
+        ".venv",
+        "__pycache__",
+        "build",
+        "dist",
+        ".pytest_cache",
+    ):
         path = root / directory
         path.mkdir()
         (path / "ignored.txt").write_text("ignored", encoding="utf-8")
@@ -101,7 +108,9 @@ def test_non_repository_has_no_git_claims(tmp_path: Path) -> None:
     assert snapshot.git_head is None
 
 
-def test_parent_repository_does_not_make_nested_project_a_repository(tmp_path: Path) -> None:
+def test_parent_repository_does_not_make_nested_project_a_repository(
+    tmp_path: Path,
+) -> None:
     subprocess.run(["git", "init", "-b", "main"], cwd=tmp_path, check=True)
     nested = tmp_path / "nested"
     nested.mkdir()
