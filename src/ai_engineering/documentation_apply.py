@@ -53,7 +53,9 @@ def _marker_bounds(content: str, document: str) -> tuple[int, int] | None:
 def _validate_plan(plan: DocumentationSyncPlan) -> None:
     documents = [update.document for update in plan.updates]
     if len(documents) != len(set(documents)):
-        raise DocumentationSyncError("Synchronization plan contains duplicate documents")
+        raise DocumentationSyncError(
+            "Synchronization plan contains duplicate documents"
+        )
     unsupported = sorted(set(documents) - _APPROVED_DOCUMENTS)
     if unsupported:
         raise DocumentationSyncError(
@@ -79,7 +81,10 @@ def _preflight(plan: DocumentationSyncPlan) -> dict[str, bytes]:
             )
 
         current_bounds = _marker_bounds(current_text, update.document)
-        replacement_bounds = _marker_bounds(update.replacement_content, update.document)
+        replacement_bounds = _marker_bounds(
+            update.replacement_content,
+            update.document,
+        )
         if current_bounds is None or replacement_bounds is None:
             raise DocumentationSyncError(
                 f"Ownership markers invalid for document: {update.document}"
@@ -87,7 +92,9 @@ def _preflight(plan: DocumentationSyncPlan) -> dict[str, bytes]:
 
         current_start, current_end = current_bounds
         replacement_start, replacement_end = replacement_bounds
-        if current_text[:current_start] != update.replacement_content[:replacement_start]:
+        current_prefix = current_text[:current_start]
+        replacement_prefix = update.replacement_content[:replacement_start]
+        if current_prefix != replacement_prefix:
             raise DocumentationSyncError(
                 f"Human-owned prefix changed in plan: {update.document}"
             )
