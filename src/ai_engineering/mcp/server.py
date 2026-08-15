@@ -1,10 +1,8 @@
-"""
-AI-Engineering MCP Server.
-"""
+"""AI-Engineering MCP Server."""
 
 from __future__ import annotations
 
-from ..git import git_branch, git_diff, git_log, git_status
+from ..git import GitService, GitTools
 from ..python import (
     python_check_syntax,
     python_inspect_package,
@@ -27,6 +25,11 @@ class EngineeringMCPServer:
         self._lifecycle = MCPLifecycle(self._config)
         self._workspace_service = WorkspaceService(self._config.workspace_root)
         self._workspace_tools = WorkspaceTools(self._workspace_service)
+        self._git_service = GitService(
+            self._config.workspace_root,
+            bounded=True,
+        )
+        self._git_tools = GitTools(self._git_service)
 
         self._register_builtin_tools()
         self._sdk = SDKAdapter(self._registry)
@@ -77,25 +80,25 @@ class EngineeringMCPServer:
 
         self._registry.register(
             name="git.status",
-            handler=git_status,
+            handler=self._git_tools.status,
             description="Git status.",
             category="git",
         )
         self._registry.register(
             name="git.branch",
-            handler=git_branch,
+            handler=self._git_tools.branch,
             description="Git branch.",
             category="git",
         )
         self._registry.register(
             name="git.log",
-            handler=git_log,
+            handler=self._git_tools.log,
             description="Git commit log.",
             category="git",
         )
         self._registry.register(
             name="git.diff",
-            handler=git_diff,
+            handler=self._git_tools.diff,
             description="Git diff.",
             category="git",
         )

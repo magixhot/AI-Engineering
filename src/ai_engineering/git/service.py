@@ -1,6 +1,4 @@
-"""
-Git service.
-"""
+"""Git service."""
 
 from __future__ import annotations
 
@@ -9,29 +7,29 @@ from pathlib import Path
 
 from .exceptions import (
     GitCommandError,
+    GitPermissionError,
     GitRepositoryNotFoundError,
 )
 from .models import GitStatus
 
 
 class GitService:
-    """
-    Provides Git operations for the Engineering MCP.
-    """
+    """Provide Git operations for AI-Engineering."""
 
     def __init__(
         self,
         repository: Path | None = None,
+        *,
+        bounded: bool = False,
     ) -> None:
-        self._repository = repository or Path.cwd()
+        self._repository = (repository or Path.cwd()).resolve()
+        self._bounded = bounded
 
     def _run(
         self,
         *args: str,
     ) -> str:
-        """
-        Execute Git command.
-        """
+        """Execute a Git command in the configured repository directory."""
 
         try:
             result = subprocess.run(
@@ -61,12 +59,29 @@ class GitService:
 
         return result.stdout.rstrip("\r\n")
 
-    def status(self) -> GitStatus:
-        """
-        Return repository status.
-        """
+    def _authorize_repository(self) -> None:
+        """Require the configured authority root to be the Git top-level directory."""
+        if not self._bounded:
+            return
 
-        branch = self.branch()
+        try:
+            top_level = Path(
+                self._run("rev-parse", "--show-toplevel")
+            ).resolve()
+        except GitCommandError as exc:
+            raise GitRepositoryNotFoundError(
+                "Workspace root is not a Git repository."
+            ) from exc
+
+        if top_level != self._repository:
+            raise GitPermissionError(
+                "Git repository root is outside the configured workspace root."
+            )
+
+    def status(self) -> GitStatus:
+        """Return repository status."""
+        self._authorize_repository()
+        branch = self.branch(_authorized=True)
 
         porcelain = self._run(
             "status",
@@ -96,10 +111,10 @@ class GitService:
             untracked=untracked,
         )
 
-    def branch(self) -> str:
-        """
-        Return current branch.
-        """
+    def branch(self, *, _authorized: bool = False) -> str:
+        """Return current branch."""
+        if not _authorized:
+            self._authorize_repository()
 
         try:
             return self._run(
@@ -116,10 +131,8 @@ class GitService:
         self,
         limit: int = 10,
     ) -> list[str]:
-        """
-        Return commit log.
-        """
-
+        """Return commit log."""
+        self._authorize_repository()
         output = self._run(
             "log",
             f"-{limit}",
@@ -129,8 +142,6 @@ class GitService:
         return output.splitlines()
 
     def diff(self) -> str:
-        """
-        Return Git diff.
-        """
-
+        """Return Git diff."""
+        self._authorize_repository()
         return self._run("diff")
