@@ -3,12 +3,7 @@
 from __future__ import annotations
 
 from ..git import GitService, GitTools
-from ..python import (
-    python_check_syntax,
-    python_inspect_package,
-    python_run_tests,
-    python_version,
-)
+from ..python import PythonService, PythonTools
 from ..registry.composite import CompositeRegistry
 from ..workspace import WorkspaceService, WorkspaceTools
 from .config import MCPConfig
@@ -30,6 +25,11 @@ class EngineeringMCPServer:
             bounded=True,
         )
         self._git_tools = GitTools(self._git_service)
+        self._python_service = PythonService(
+            self._config.workspace_root,
+            bounded=True,
+        )
+        self._python_tools = PythonTools(self._python_service)
 
         self._register_builtin_tools()
         self._sdk = SDKAdapter(self._registry)
@@ -105,25 +105,25 @@ class EngineeringMCPServer:
 
         self._registry.register(
             name="python.version",
-            handler=python_version,
+            handler=self._python_tools.version,
             description="Return Python version.",
             category="python",
         )
         self._registry.register(
             name="python.run_tests",
-            handler=python_run_tests,
+            handler=self._python_tools.run_tests,
             description="Run pytest.",
             category="python",
         )
         self._registry.register(
             name="python.check_syntax",
-            handler=python_check_syntax,
+            handler=self._python_tools.check_syntax,
             description="Check Python syntax.",
             category="python",
         )
         self._registry.register(
             name="python.inspect_package",
-            handler=python_inspect_package,
+            handler=self._python_tools.inspect_package,
             description="Inspect Python package.",
             category="python",
         )
