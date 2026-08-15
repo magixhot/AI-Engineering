@@ -60,7 +60,7 @@ the required evidence is captured and referenced from the SDK audit and migratio
 
 | Target | Evidence required before verification | Status |
 |---|---|---|
-| Antigravity | Client configuration, successful initialize/list-tools/call-tool transcript, client version, diagnostics or stderr capture, and observed error behavior | MANUAL VERIFICATION REQUIRED |
+| Antigravity | Client configuration, successful initialize/list-tools/call-tool transcript, client version, diagnostics or stderr capture, and observed error behavior | VERIFIED for the tested contract; see MCP-0003 evidence (version/build not captured) |
 | VS Code MCP client | VS Code 1.132.1; workspace `.vscode/mcp.json`; stdio server `AI-Engineering`; startup and 15-tool discovery; successful `python_version`; controlled `workspace_read_file` failure; clean MCP Output | VERIFIED (2026-08-13) |
 | Other MCP-compatible client | Identified client/version, reproducible configuration, successful initialize/list-tools/call-tool transcript, and observed error behavior | MANUAL VERIFICATION REQUIRED |
 
@@ -109,6 +109,7 @@ VS Code MCP Output.
 ## G. Completion decision
 
 The completion criteria require manual evidence for every client claimed as verified; they do not
-require verification of every listed client category. Automated verification and VS Code manual
-interoperability verification are complete. MCP-0002 is therefore **COMPLETE**. This does not claim
-Antigravity, ChatGPT/OpenAI, Claude Desktop, or other-client interoperability.
+require verification of every listed client category. Automated verification, VS Code manual
+interoperability verification, and the separately recorded Antigravity evidence are complete.
+MCP-0002 is therefore **COMPLETE**. This does not claim ChatGPT/OpenAI, Claude Desktop, or
+other-client interoperability.
