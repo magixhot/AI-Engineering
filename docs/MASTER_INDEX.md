@@ -30,6 +30,7 @@
 | CI-0001_QUALITY_GATE_AUTOMATION_DESIGN.md | GitHub Actions quality-gate automation contract | Complete / Verified |
 | SAFE-0001_WORKSPACE_PATH_SAFETY_DESIGN.md | Workspace root, containment, link-escape, and controlled-error security contract/evidence | Complete / Verified |
 | SAFE-0001_VERIFICATION_EVIDENCE.md | Compact Linux/Windows SAFE-0001 verification record | Complete / Verified |
+| AUTO-0001_ENGINEERING_PROJECT_BOOTSTRAP_DESIGN.md | Additive engineering bootstrap API/profile/verification/CLI contract over SDK-0001 | Design / Proposed |
 
 ## Active Engineering Work
 
@@ -42,7 +43,7 @@
 | CI-0001 quality gate automation | COMPLETE / VERIFIED |
 | SAFE-0001 workspace path safety | COMPLETE / VERIFIED |
 | REL-0002 v0.1.0 GitHub publication | COMPLETE / VERIFIED |
-| Post-v0.1.0 roadmap selection | NEXT |
+| AUTO-0001 engineering project bootstrap | DESIGN / CURRENT PRIORITY |
 | Additional MCP client interoperability | OPTIONAL / FUTURE EVIDENCE |
 | Diagnostics maintenance | ACTIVE |
 
@@ -62,6 +63,7 @@
 | CI-0001 quality gate automation | COMPLETE / VERIFIED |
 | SAFE-0001 workspace path safety | COMPLETE / VERIFIED |
 | REL-0002 release publication governance and v0.1.0 GitHub publication | COMPLETE / VERIFIED |
+| M3 / AUTO-0001 Engineering Project Bootstrap | DESIGN |
 | Additional client and IDE interoperability | PLANNED |
 
 ## Published Release
