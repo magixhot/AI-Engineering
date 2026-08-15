@@ -23,11 +23,12 @@ Template CLI, and TOOL-0001 Core Tool Operation Verification. The `ai-engineerin
 console command is implemented and verified, and TOOL-0001 has verified all 15 existing Workspace,
 Git, and Python operations. The official MCP SDK migration, VS Code 1.132.1 interoperability
 verification, and the recorded Antigravity stdio interoperability verification are complete. Current
-quality gates are green: pytest has 89 passing tests, Ruff has 0 findings, and mypy has 0 findings.
-The canonical project state is ready for next-milestone selection and REL planning; no
-release-hardening implementation has started. Quality and documentation claims must remain
-evidence-based. ChatGPT/OpenAI, Claude Desktop, and other MCP clients are not verified or claimed
-compatible.
+quality gates are green: pytest has 90 passing tests, Ruff has 0 findings, and mypy has 0 findings.
+REL-0001 local distribution verification is COMPLETE / VERIFIED for release line 0.1.0: wheel and
+sdist contracts, isolated wheel installation, and the installed CLI are verified. The next
+engineering direction is CI planning, not CI implementation. GitHub Release creation, PyPI
+publishing, and CI remain unperformed. Quality and documentation claims must remain evidence-based.
+ChatGPT/OpenAI, Claude Desktop, and other MCP clients are not verified or claimed compatible.
 
 ## Engineering Guardrails
 
