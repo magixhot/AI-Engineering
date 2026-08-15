@@ -40,18 +40,34 @@ package, a smoke test, and a generic `.gitignore` while preserving V1 output by 
 adds the installed `ai-engineering project create` command over the public API, with approved
 stdout/stderr and exit-code behavior.
 
+### AUTO-0001 Engineering Project Bootstrap
+
+**Status:** COMPLETE / VERIFIED
+
+AUTO-0001 adds the bounded `python-engineering` bootstrap workflow over SDK-0001. The typed core API
+delegates creation to the existing template API, performs fail-closed read-only verification, and
+is exposed through the additive installed `ai-engineering project bootstrap` command. Isolated-wheel
+verification proves the installed command outside the source checkout. AUTO-0001 was completed
+after the immutable `v0.1.0` tag and is not part of that published artifact.
+
 ## Current Priority
 
-Maintain the verified MCP-0002 implementation and the SDK-0001 V1/SDK-0001.1 project-template
-baseline. Record additional client interoperability only when supported by separately captured
-evidence; it is not a blocker for completed MCP-0002.
+Preserve the verified MCP, SDK-0001, SAFE-0001, CI-0001, release, and AUTO-0001 contracts while
+scoping the next engineering automation milestone. The next recommended milestone is AUTO-0002,
+Project Documentation Synchronization, beginning with a documentation-first design contract rather
+than implementation.
 
 ## Planned
 
-### Engineering Automation
+### AUTO-0002 — Project Documentation Synchronization
 
-Project bootstrap, documentation generation, and future engineering automation require separate
-scope and validation. The SDK-0001.1 scaffold is complete; no broader automation is implied.
+**Status:** PLANNED / DESIGN REQUIRED
+
+Define a bounded mechanism for inspecting an engineering project's current state, detecting drift in
+approved project documentation, and producing deterministic synchronization changes. The design
+must preserve originals and prohibit uncontrolled or destructive rewriting. Implementation, CLI
+surface, writable document set, and verification behavior require explicit contract approval before
+source changes begin.
 
 ### Client and IDE Interoperability
 
@@ -61,6 +77,8 @@ and other clients remain unverified.
 
 ### Future Engineering Capabilities
 
-Additional tools and automation are planned only after their design, implementation, and test scope
-are approved. Existing Workspace, Git, and Python subsystems are implemented and are not returned
-to a future-placeholder state.
+Additional bootstrap profiles, broader project update/synchronization behavior, Git/Python execution
+safety boundaries, publication expansion, and other automation are planned only after their design,
+implementation, and test scope are approved. Existing Workspace, Git, Python, bootstrap, Runtime,
+Registry, and Discovery subsystems are implemented and are not returned to a future-placeholder
+state.
