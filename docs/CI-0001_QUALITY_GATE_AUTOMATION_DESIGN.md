@@ -1,6 +1,6 @@
 # CI-0001 — Quality Gate Automation Contract
 
-**Status:** DESIGN / IMPLEMENTATION PENDING
+**Status:** IMPLEMENTED / EXTERNAL VERIFICATION REQUIRED
 **Scope:** GitHub Actions automation of existing repository quality gates
 
 ## Objective
@@ -13,7 +13,9 @@ pytest tests, Ruff with no findings, and mypy with no issues.
 
 The CI platform is **GitHub Actions**. The repository is hosted on GitHub and its reviewed change
 flow is pull-request based, so Actions is the smallest integrated platform choice. No repository
-policy contradicts this choice. This milestone creates no workflow in its design phase.
+policy contradicts this choice. The initial workflow is implemented at
+`.github/workflows/quality.yml`; GitHub Actions run evidence remains required before this contract
+can be marked complete and verified.
 
 ## Trigger Policy
 
@@ -153,3 +155,17 @@ CI-0001 becomes **COMPLETE / VERIFIED** only when:
 6. representative pull-request and post-merge/master evidence is captured;
 7. local quality gates remain green; and
 8. documentation records only verified CI behavior, with no release or publishing claim.
+
+## Implementation Record
+
+`.github/workflows/quality.yml` implements the initial contract with one `quality` job on
+`ubuntu-latest` using Python 3.11. It triggers for pull requests targeting `master` and pushes to
+`master`, grants only `contents: read`, and cancels superseded runs for the same workflow/ref.
+
+The workflow runs `uv sync --locked --group dev`, then the approved Ruff, mypy, and full pytest
+commands through `uv run`. Its job-scoped environment supplies Git author and committer identity
+for tests that create real commits. The full pytest invocation includes REL-0001 distribution
+verification because it does not exclude any test path.
+
+This is implementation evidence only. A real successful pull-request GitHub Actions run, followed
+by the required master-push evidence, is still needed for **COMPLETE / VERIFIED** status.

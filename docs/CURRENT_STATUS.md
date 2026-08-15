@@ -3,7 +3,7 @@
 **Snapshot date:** 2026-08-15
 **Status:** ACTIVE
 **Release line:** 0.1.0
-**Current phase:** MCP-0002, MCP-0003, SDK-0001, TOOL-0001, and REL-0001 Complete / Next Milestone Selection
+**Current phase:** CI-0001 Implemented / External Verification Required
 
 ## State by Delivery Area
 
@@ -19,12 +19,13 @@
 | SDK-0001.1 Standalone Python Project Scaffold | COMPLETE / VERIFIED | The opt-in scaffold generates packaging, source, and smoke-test files while preserving V1 output by default. |
 | SDK-0001.2 Project Template CLI | COMPLETE / VERIFIED | `ai-engineering project create` is an installed console-script frontend over the public template API, with V1/scaffold, stdout/stderr, and exit-code behavior verified. |
 | TOOL-0001 Core Tool Operation Verification | COMPLETE / VERIFIED | All 15 existing Workspace, Git, and Python operations have isolated service/registry/representative SDK-session verification. |
-| REL-0001 Local Distribution Verification | COMPLETE / VERIFIED | Wheel and sdist artifact policy, isolated wheel install, installed metadata/import, and installed CLI smoke are verified locally. GitHub Release, PyPI publishing, and CI remain out of scope. |
+| REL-0001 Local Distribution Verification | COMPLETE / VERIFIED | Wheel and sdist artifact policy, isolated wheel install, installed metadata/import, and installed CLI smoke are verified locally. GitHub Release and PyPI publishing remain out of scope. |
+| CI-0001 Quality Gate Automation | IMPLEMENTED / EXTERNAL VERIFICATION REQUIRED | `.github/workflows/quality.yml` runs the existing gates on pull requests to and pushes to `master`; real GitHub Actions evidence is pending. |
 | Quality gates | PASS | pytest: 90 passed; Ruff: 0 findings; mypy: 0 findings. |
 
 ## Current Priorities
 
-1. Maintain REL-0001 local-distribution evidence from verified behavior; publication and CI remain separate decisions.
+1. Maintain REL-0001 local-distribution evidence from verified behavior; publication remains a separate decision.
 2. Maintain MCP-0002 and SDK-0001 V1/SDK-0001.1/SDK-0001.2 evidence from verified behavior.
 3. Maintain MCP diagnostics for protocol and tool-execution investigation.
 4. Select any additional automation work separately from the verified project-template baseline.
@@ -43,8 +44,8 @@ SDK-0001.1 optional Python scaffold, and the SDK-0001.2 `ai-engineering project 
 complete and verified. Antigravity and VS Code interoperability are verified for their recorded
 contracts; additional client interoperability remains separate evidence-based work. REL-0001 local
 distribution verification is complete: built artifacts and an isolated wheel install are verified,
-without a GitHub Release, PyPI publication, CI implementation, or a general production-readiness
-claim.
+without a GitHub Release, PyPI publication, or a general production-readiness claim. CI-0001 is
+implemented; real GitHub Actions verification is still pending.
 
 ## Planned Work
 
