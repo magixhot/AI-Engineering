@@ -154,6 +154,8 @@ async def test_active_mcp_git_rejects_parent_repository_escape(
         result = await session.call_tool("git_status", {})
 
     assert result.isError is True
-    assert result_text(result).startswith(
-        "Error executing tool: Git repository root is outside the configured workspace root."
+    expected = (
+        "Error executing tool: Git repository root is outside "
+        "the configured workspace root."
     )
+    assert result_text(result).startswith(expected)
