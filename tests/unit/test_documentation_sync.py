@@ -175,8 +175,9 @@ def test_plan_preserves_human_content_outside_owned_section(tmp_path: Path) -> N
     update = next(
         item for item in plan.updates if item.document == "PROJECT_MAP.md"
     )
-    assert update.replacement_content.startswith("# Document\n\nHuman content\n\n")
-    assert update.replacement_content.endswith("\nHuman tail\n")
+    normalized = update.replacement_content.replace("\r\n", "\n")
+    assert normalized.startswith("# Document\n\nHuman content\n\n")
+    assert normalized.endswith("\nHuman tail\n")
     assert "gone.txt" not in update.replacement_content
     assert "src/sample_pkg/__init__.py" in update.replacement_content
     assert str(root.resolve()) not in update.replacement_content
