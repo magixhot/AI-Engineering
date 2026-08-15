@@ -17,6 +17,10 @@ class PythonExecutionError(PythonToolError):
     """
 
 
+class PythonPermissionError(PythonToolError):
+    """Raised when a Python operation escapes the configured workspace root."""
+
+
 class SyntaxValidationError(PythonToolError):
     """
     Raised when syntax validation cannot be completed.
