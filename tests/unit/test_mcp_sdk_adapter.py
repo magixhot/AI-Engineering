@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
+from pathlib import Path
 from typing import Any
 
 import anyio
@@ -9,7 +10,9 @@ import pytest
 from mcp.client.session import ClientSession
 from mcp.types import TextContent
 
+from ai_engineering.mcp.name_mapper import ToolNameMapper
 from ai_engineering.mcp.sdk_adapter import SDKAdapter
+from ai_engineering.mcp.server import create_server
 from ai_engineering.registry.composite import CompositeRegistry
 
 
@@ -74,6 +77,22 @@ def build_adapter(observed_calls: list[tuple[str, int]]) -> SDKAdapter:
     return SDKAdapter(registry)
 
 
+@pytest.mark.parametrize(
+    ("internal_name", "mcp_name"),
+    [
+        ("workspace.read_file", "workspace_read_file"),
+        ("python.check_syntax", "python_check_syntax"),
+        ("workspace.list", "workspace_list"),
+    ],
+)
+def test_tool_name_mapping_round_trips_snake_case_operations(
+    internal_name: str,
+    mcp_name: str,
+) -> None:
+    assert ToolNameMapper.to_mcp(internal_name) == mcp_name
+    assert ToolNameMapper.from_mcp(mcp_name) == internal_name
+
+
 @pytest.mark.anyio
 async def test_list_tools_exposes_registered_mapped_names_and_schemas() -> None:
     adapter = build_adapter([])
@@ -120,6 +139,54 @@ async def test_successful_mcp_call_maps_name_and_returns_text_content() -> None:
 }''',
         )
     ]
+
+
+@pytest.mark.anyio
+async def test_mcp_call_dispatches_a_multiword_operation_name() -> None:
+    registry = CompositeRegistry()
+    observed_paths: list[str] = []
+
+    def read_file(path: str) -> dict[str, str]:
+        observed_paths.append(path)
+        return {"path": path}
+
+    registry.register(
+        name="demo.read_file",
+        handler=read_file,
+        description="Record a file path.",
+    )
+    adapter = SDKAdapter(registry)
+
+    async with connected_session(adapter) as session:
+        listed = await session.list_tools()
+        result = await session.call_tool("demo_read_file", {"path": "sample.txt"})
+
+    assert [tool.name for tool in listed.tools] == ["demo_read_file"]
+    assert result.isError is False
+    assert observed_paths == ["sample.txt"]
+
+
+@pytest.mark.anyio
+async def test_workspace_read_file_returns_a_domain_error_for_a_missing_path(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.chdir(tmp_path)
+    server = create_server()
+
+    async with connected_session(server.sdk) as session:
+        listed = await session.list_tools()
+        result = await session.call_tool(
+            "workspace_read_file",
+            {"path": "MCP-0003-missing-file.txt"},
+        )
+
+    assert "workspace_read_file" in {tool.name for tool in listed.tools}
+    assert result.isError is True
+    error_content = result.content[0]
+    assert isinstance(error_content, TextContent)
+    assert error_content.text.startswith("Error executing tool: File not found:")
+    assert "Unknown tool: workspace.read.file" not in error_content.text
 
 
 @pytest.mark.anyio
