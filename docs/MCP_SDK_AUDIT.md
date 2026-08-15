@@ -1,6 +1,6 @@
 # MCP SDK Audit
 
-**Status:** COMPLETE / VS CODE VERIFIED
+**Status:** COMPLETE / VS CODE AND ANTIGRAVITY VERIFIED
 **Evidence snapshot:** 2026-08-13
 
 ## Objective
@@ -28,13 +28,17 @@ Record the repository-supported state of the official Python MCP SDK integration
 
 ## Compatibility Verification
 
-- [ ] Antigravity client interoperability is conclusively verified.
+- [x] Antigravity client interoperability is conclusively verified for the separately recorded
+  MCP-0003 stdio contract. The initial verification exposed the server-side snake_case
+  reverse-dispatch defect; PR #18 (`c08bb16`) corrected it, and the post-fix re-test succeeded.
 - [x] VS Code 1.132.1 built-in MCP client interoperability is conclusively verified (2026-08-13;
   workspace stdio configuration, startup, 15-tool discovery, successful `python_version`, and a
   controlled missing-file `workspace_read_file` failure with the server remaining Running).
 - [ ] ChatGPT or OpenAI MCP client interoperability is conclusively verified.
 - [ ] Claude Desktop interoperability is conclusively verified.
 
-MCP-0002 is complete: its automated contracts pass and the VS Code client is supported by recorded
-end-to-end evidence. Antigravity, ChatGPT/OpenAI, Claude Desktop, and other-client compatibility
-remain unverified and are not claimed.
+MCP-0002 is complete: its automated contracts pass, VS Code is supported by recorded end-to-end
+evidence, and Antigravity is separately verified by MCP-0003 after the PR #18 mapper repair.
+ChatGPT/OpenAI, Claude Desktop, and other-client compatibility remain unverified and are not
+claimed. The Antigravity evidence is a later client-specific record, not a revision of the original
+audit's historical observations.

@@ -25,6 +25,10 @@ production readiness beyond the checks listed here.
 - [x] Current DOC-0004 verification: Ruff passed (0 findings).
 - [x] Current DOC-0004 verification: mypy passed (0 findings).
 - [x] Current DOC-0004 verification: `git diff --check` passed.
+- [x] Current post-MCP-0003 verification: pytest passed (59 tests).
+- [x] Current post-MCP-0003 verification: Ruff passed (0 findings).
+- [x] Current post-MCP-0003 verification: mypy passed (0 findings).
+- [x] Current post-MCP-0003 verification: `git diff --check` passed.
 
 ## Documentation
 
@@ -33,10 +37,13 @@ production readiness beyond the checks listed here.
   interoperability verification.
 - [x] Root README records the 0.1.0 release line and current status.
 - [x] SDK-0001.2 `ai-engineering project create` CLI is recorded as implemented and verified.
+- [x] MCP-0003 Antigravity interoperability evidence is recorded in
+  `MCP-0003_ANTIGRAVITY_INTEROPERABILITY_VERIFICATION.md`.
 
 ## Follow-up Verification
 
 - [x] VS Code 1.132.1 built-in MCP interoperability is recorded as verified for MCP-0002.
-- [ ] Record client-specific evidence before claiming Antigravity, ChatGPT/OpenAI, Claude Desktop,
-  or other-client interoperability.
+- [x] Antigravity interoperability is recorded as verified for its MCP-0003 stdio contract.
+- [ ] Record client-specific evidence before claiming ChatGPT/OpenAI, Claude Desktop, or
+  other-client interoperability.
 - [ ] Maintain the migration report as SDK behavior and verification evidence change.

@@ -84,14 +84,15 @@ This document contains everything required to restore the current project contex
 
 Current phase:
 
-**MCP-0002 complete; preparing the next engineering milestone**
+**MCP-0002 and MCP-0003 complete; preparing the next engineering milestone**
 
 The official Python MCP SDK migration and its MCP-0002 verification are complete. VS Code 1.132.1
-interoperability is verified, and SDK-0001 Project Templates V1 plus the optional SDK-0001.1
-Standalone Python Project Scaffold are implemented and verified. SDK-0001.2 adds the implemented
-`ai-engineering project create` CLI over that public API, including the optional scaffold flow.
-Broader automation remains future, separately approved work. This does not claim general production
-readiness or compatibility with other MCP clients.
+and Antigravity interoperability are verified for their recorded stdio contracts. SDK-0001 Project
+Templates V1 plus the optional SDK-0001.1 Standalone Python Project Scaffold are implemented and
+verified. SDK-0001.2 adds the implemented `ai-engineering project create` CLI over that public API,
+including the optional scaffold flow. Broader automation remains future, separately approved work.
+This does not claim general production readiness or compatibility with ChatGPT/OpenAI, Claude
+Desktop, or other MCP clients.
 
 ---
 
