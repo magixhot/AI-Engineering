@@ -1,6 +1,6 @@
 # REL-0001 — Distribution and Release Verification Contract
 
-**Status:** DESIGN / IMPLEMENTATION PENDING
+**Status:** COMPLETE / VERIFIED
 **Scope:** local distribution verification for the existing `ai-engineering` package and CLI
 
 ## Objective
@@ -13,18 +13,18 @@ works in an isolated environment. It does not publish, tag, or otherwise release
 
 | Item | Current factual state | Verification state / gap |
 |---|---|---|
-| Distribution name | `ai-engineering` in `[project]` | Declared, not artifact-verified. |
-| Import package | `src/ai_engineering/` | Source layout present. |
-| Version | `0.1.0` in `[project]` | Declared, not artifact-verified. The MCP SDK server also reports a separately maintained `0.1.0`; `uv.lock` records the resolved local package version. |
-| Python requirement | `>=3.11` | Declared, not artifact-verified. |
-| Runtime dependencies | `mcp>=1.27,<1.28` | Declared, not clean-install verified. |
+| Distribution name | `ai-engineering` in `[project]` | Verified from wheel and installed metadata. |
+| Import package | `src/ai_engineering/` | Explicitly discovered and verified in the wheel. |
+| Version | `0.1.0` in `[project]` | Verified from wheel and installed metadata. The MCP SDK server also reports a separately maintained `0.1.0`; `uv.lock` records the resolved local package version. |
+| Python requirement | `>=3.11` | Verified from wheel and installed metadata. |
+| Runtime dependencies | `mcp>=1.27,<1.28` | Verified from wheel and installed metadata. |
 | Development dependencies | `pytest>=9.0`, `ruff>=0.13`, `mypy>=1.18` in the `dev` group | Not runtime dependencies. |
-| Console script | `ai-engineering = "ai_engineering.cli:main"` | Declared; previously smoke-tested from the project environment, not from a built artifact. |
-| Build backend | No `[build-system]` section | Explicit build contract is absent. |
-| Package discovery | No explicit setuptools `package-dir` or discovery configuration | `src`-layout discovery must be made explicit before building. |
+| Console script | `ai-engineering = "ai_engineering.cli:main"` | Verified from wheel metadata and an isolated installed-script smoke test. |
+| Build backend | `setuptools.build_meta` with `setuptools>=68` | Explicitly configured and verified. |
+| Package discovery | Setuptools `package-dir = {"" = "src"}` and discovery below `src` | Explicitly configured and verified. |
 | Package data | No package-data configuration or non-Python package data is present | No package-data requirement is currently claimed. |
-| README / LICENSE | `README.md` is project metadata; no explicit artifact-inclusion policy exists. `LICENSE` exists but has no packaging declaration. | Wheel/sdist inclusion is unverified. |
-| Artifacts / clean install | No wheel, sdist, artifact-content, or clean-install evidence is recorded. | REL-0001 work. |
+| README / LICENSE | README is project metadata; the sdist includes README and LICENSE. | Verified by archive inspection. |
+| Artifacts / clean install | Wheel and sdist are built from a temporary clean source copy; the wheel is installed into a fresh external venv. | Verified by `tests/release/test_distribution.py`. |
 
 The authoritative distribution metadata source is currently `pyproject.toml`. The independent MCP
 server version string is not distribution metadata, but it must remain consistent with the release
@@ -55,20 +55,17 @@ they are not pre-claimed by this design. The metadata version in both artifacts 
 
 ## Build-System Contract
 
-Before implementation, the repository must add and justify an explicit PEP 517 backend. The
-preferred baseline to evaluate is:
+The repository uses an explicit PEP 517 backend:
 
 ```toml
 [build-system]
-requires = ["setuptools>=<supported-floor>"]
+requires = ["setuptools>=68"]
 build-backend = "setuptools.build_meta"
 ```
 
-The exact supported setuptools floor is an implementation decision and must be recorded with its
-tooling rationale; this design does not select or add it. Because this is a `src` layout, the
-implementation must explicitly configure setuptools to discover packages under `src` (normally a
-package-dir mapping and a `find` location). It must not rely on implicit working-directory imports
-or add speculative package-data settings.
+The approved supported floor is 68. The `src` layout uses an explicit package-dir mapping and
+setuptools package discovery below `src`; it does not rely on working-directory imports or add
+speculative package-data settings.
 
 ## Wheel Content Policy
 
@@ -86,19 +83,16 @@ identified.
 
 ## Source Distribution Policy
 
-The sdist must contain the files necessary to build and assess the source package:
+The verified sdist contains the files necessary to build and assess the source package:
 
 - `pyproject.toml`, `README.md`, and `LICENSE`;
 - `src/ai_engineering/`;
 - `tests/`, as source-verification material.
+- `docs/`, as approved repository documentation.
 
-The implementation must explicitly decide and encode the following currently undefined policy
-points, then inspect the resulting archive: whether `docs/` belongs in the sdist (default proposed
-policy: exclude repository-internal milestone documentation) and whether `uv.lock` belongs in it
-(default proposed policy: exclude it because it is a local resolution record rather than build
-metadata). No claim is made until the selected backend configuration and an artifact inspection
-prove the policy. The sdist must exclude VCS metadata, virtual environments, caches, generated
-build outputs, and temporary or machine-specific files.
+`MANIFEST.in` explicitly encodes this policy and excludes `uv.lock`. Archive inspection verifies
+that VCS metadata, virtual environments, caches, bytecode, build output, and temporary or
+machine-specific files are absent.
 
 ## Isolated Install Contract
 
@@ -198,10 +192,10 @@ MCP behavior changes.
 
 ## Completion Criteria
 
-REL-0001 becomes **COMPLETE / VERIFIED** only when:
+REL-0001 is **COMPLETE / VERIFIED** because:
 
 1. explicit, justified build configuration is present;
-2. wheel and sdist builds succeed;
+2. wheel and sdist build successfully;
 3. artifact contents match the approved policy;
 4. isolated wheel installation succeeds;
 5. the installed package imports and reports correct installed metadata/version;
@@ -210,3 +204,18 @@ REL-0001 becomes **COMPLETE / VERIFIED** only when:
 7. full pytest, Ruff, mypy, and `git diff --check` pass;
 8. the release checklist records the evidence; and
 9. no publishing or general production-readiness claim is made.
+
+## Completion Evidence
+
+`tests/release/test_distribution.py` builds a wheel and sdist from a temporary clean source copy,
+programmatically inspects their contents and metadata, and installs the wheel into a fresh external
+virtual environment. It verifies the installed import path, installed distribution metadata,
+`ai-engineering --help`, the `project create` hierarchy, and a safe generated-project Git smoke
+with `main` and an initial commit. The artifacts are not committed and the canonical checkout is not
+used as the installed import source.
+
+The verified artifact names are `ai_engineering-0.1.0-py3-none-any.whl` and
+`ai_engineering-0.1.0.tar.gz`. The complete suite passed with 90 tests; Ruff and mypy reported no
+findings. The current verification required package-index access to provision `setuptools>=68` in
+the isolated build environment; it did not establish offline-build or offline-install support.
+GitHub Release creation, PyPI publishing, and CI implementation were not performed.

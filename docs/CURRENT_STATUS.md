@@ -1,9 +1,9 @@
 # AI-Engineering — Current Status
 
-**Snapshot date:** 2026-08-14
+**Snapshot date:** 2026-08-15
 **Status:** ACTIVE
 **Release line:** 0.1.0
-**Current phase:** MCP-0002, MCP-0003, SDK-0001, and TOOL-0001 Complete / Next Milestone Selection
+**Current phase:** MCP-0002, MCP-0003, SDK-0001, TOOL-0001, and REL-0001 Complete / Next Milestone Selection
 
 ## State by Delivery Area
 
@@ -19,14 +19,16 @@
 | SDK-0001.1 Standalone Python Project Scaffold | COMPLETE / VERIFIED | The opt-in scaffold generates packaging, source, and smoke-test files while preserving V1 output by default. |
 | SDK-0001.2 Project Template CLI | COMPLETE / VERIFIED | `ai-engineering project create` is an installed console-script frontend over the public template API, with V1/scaffold, stdout/stderr, and exit-code behavior verified. |
 | TOOL-0001 Core Tool Operation Verification | COMPLETE / VERIFIED | All 15 existing Workspace, Git, and Python operations have isolated service/registry/representative SDK-session verification. |
-| Quality gates | PASS | pytest: 89 passed; Ruff: 0 findings; mypy: 0 findings. |
+| REL-0001 Local Distribution Verification | COMPLETE / VERIFIED | Wheel and sdist artifact policy, isolated wheel install, installed metadata/import, and installed CLI smoke are verified locally. GitHub Release, PyPI publishing, and CI remain out of scope. |
+| Quality gates | PASS | pytest: 90 passed; Ruff: 0 findings; mypy: 0 findings. |
 
 ## Current Priorities
 
-1. Maintain MCP-0002 and SDK-0001 V1/SDK-0001.1/SDK-0001.2 evidence from verified behavior.
-2. Maintain MCP diagnostics for protocol and tool-execution investigation.
-3. Select any additional automation work separately from the verified project-template baseline.
-4. Verify additional MCP clients only when separately scoped and supported by evidence; Antigravity and VS Code are already recorded as verified.
+1. Maintain REL-0001 local-distribution evidence from verified behavior; publication and CI remain separate decisions.
+2. Maintain MCP-0002 and SDK-0001 V1/SDK-0001.1/SDK-0001.2 evidence from verified behavior.
+3. Maintain MCP diagnostics for protocol and tool-execution investigation.
+4. Select any additional automation work separately from the verified project-template baseline.
+5. Verify additional MCP clients only when separately scoped and supported by evidence; Antigravity and VS Code are already recorded as verified.
 
 ## Implemented Baseline
 
@@ -39,7 +41,10 @@ operations. This indicates an implemented baseline, not a claim of general produ
 MCP-0002 automated and VS Code interoperability verification are complete. SDK-0001 V1, the
 SDK-0001.1 optional Python scaffold, and the SDK-0001.2 `ai-engineering project create` CLI are
 complete and verified. Antigravity and VS Code interoperability are verified for their recorded
-contracts; additional client interoperability remains separate evidence-based work.
+contracts; additional client interoperability remains separate evidence-based work. REL-0001 local
+distribution verification is complete: built artifacts and an isolated wheel install are verified,
+without a GitHub Release, PyPI publication, CI implementation, or a general production-readiness
+claim.
 
 ## Planned Work
 

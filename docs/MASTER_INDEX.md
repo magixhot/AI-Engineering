@@ -24,7 +24,7 @@
 | SDK-0001_1_PYTHON_SCAFFOLD_DESIGN.md | SDK-0001.1 Python scaffold contract | Implemented / verified |
 | SDK-0001_2_PROJECT_TEMPLATE_CLI_DESIGN.md | SDK-0001.2 Project Template CLI contract | Implemented / verified |
 | TOOL-0001_CORE_TOOL_OPERATION_VERIFICATION_DESIGN.md | Core Workspace, Git, and Python tool-operation verification contract | Complete / Verified |
-| REL-0001_DISTRIBUTION_AND_RELEASE_VERIFICATION_DESIGN.md | Distribution and release verification contract | Design / Implementation Pending |
+| REL-0001_DISTRIBUTION_AND_RELEASE_VERIFICATION_DESIGN.md | Distribution and release verification contract | Complete / Verified |
 
 ## Active Engineering Work
 
@@ -33,6 +33,7 @@
 | MCP-0002 evidence maintenance | COMPLETE |
 | MCP-0003 Antigravity interoperability | VERIFIED |
 | Official Python MCP SDK migration | COMPLETE |
+| REL-0001 local distribution verification | COMPLETE / VERIFIED |
 | Next engineering milestone preparation | CURRENT PRIORITY |
 | Additional MCP client interoperability | OPTIONAL / FUTURE EVIDENCE |
 | Diagnostics maintenance | ACTIVE |
@@ -48,6 +49,7 @@
 | SDK-0001.1 Standalone Python Project Scaffold | COMPLETE / VERIFIED |
 | SDK-0001.2 Project Template CLI | COMPLETE / VERIFIED |
 | Antigravity MCP interoperability | VERIFIED |
+| REL-0001 local distribution verification | COMPLETE / VERIFIED |
 | Engineering automation | PLANNED |
 | Additional client and IDE interoperability | PLANNED |
 
