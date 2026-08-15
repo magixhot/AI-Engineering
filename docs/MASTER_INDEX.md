@@ -26,6 +26,7 @@
 | TOOL-0001_CORE_TOOL_OPERATION_VERIFICATION_DESIGN.md | Core Workspace, Git, and Python tool-operation verification contract | Complete / Verified |
 | REL-0001_DISTRIBUTION_AND_RELEASE_VERIFICATION_DESIGN.md | Distribution and release verification contract | Complete / Verified |
 | CI-0001_QUALITY_GATE_AUTOMATION_DESIGN.md | GitHub Actions quality-gate automation contract | Complete / Verified |
+| SAFE-0001_WORKSPACE_PATH_SAFETY_DESIGN.md | Workspace root, containment, link-escape, and controlled-error security contract | Design / Implementation Pending |
 
 ## Active Engineering Work
 
@@ -36,6 +37,7 @@
 | Official Python MCP SDK migration | COMPLETE |
 | REL-0001 local distribution verification | COMPLETE / VERIFIED |
 | CI-0001 quality gate automation | COMPLETE / VERIFIED |
+| SAFE-0001 workspace path safety | DESIGN / IMPLEMENTATION PENDING |
 | Next engineering milestone preparation | CURRENT PRIORITY |
 | Additional MCP client interoperability | OPTIONAL / FUTURE EVIDENCE |
 | Diagnostics maintenance | ACTIVE |
@@ -53,6 +55,7 @@
 | Antigravity MCP interoperability | VERIFIED |
 | REL-0001 local distribution verification | COMPLETE / VERIFIED |
 | CI-0001 quality gate automation | COMPLETE / VERIFIED |
+| SAFE-0001 workspace path safety | DESIGN / IMPLEMENTATION PENDING |
 | Additional client and IDE interoperability | PLANNED |
 
 ## Source Tree
