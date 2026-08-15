@@ -1,6 +1,6 @@
 # SAFE-0002 — Git/Python Execution Safety Design
 
-**Status:** DESIGN / PROPOSED
+**Status:** COMPLETE / VERIFIED
 **Scope:** Active MCP Git and Python tool authorization and subprocess containment policy
 
 ## 1. Purpose
@@ -9,11 +9,11 @@ SAFE-0002 defines the next security boundary after SAFE-0001. SAFE-0001 constrai
 
 SAFE-0002 closes that gap for the active MCP path without turning AI-Engineering into an operating-system sandbox.
 
-The design is documentation-first. No source behavior changes are authorized until this contract is approved.
+The design was documentation-first and is now implemented and verified for the V1 contract recorded here.
 
 ## 2. Existing Risk Surface
 
-The active MCP server currently registers module-level Git and Python handlers. Those handlers use process-level service defaults rather than service instances explicitly bound to `MCPConfig.workspace_root`.
+Before SAFE-0002 implementation, the active MCP server registered module-level Git and Python handlers using process-level service defaults rather than service instances explicitly bound to `MCPConfig.workspace_root`.
 
 Current Git operations are read-only at the Git command level:
 
@@ -29,11 +29,11 @@ Current Python operations are:
 - `python.check_syntax`
 - `python.inspect_package`
 
-`python.run_tests` launches `python -m pytest` against a caller-selected path. `python.check_syntax` and `python.inspect_package` read caller-selected paths. These path-taking operations are not currently governed by the SAFE-0001 Workspace authorization service.
+`python.run_tests` launches `python -m pytest` against a caller-selected path. `python.check_syntax` and `python.inspect_package` read caller-selected paths. SAFE-0002 now governs these path-taking operations on the active MCP path.
 
 ## 3. Security Objective
 
-For the active MCP server only, Git and Python operations must be explicitly bound to the configured `MCPConfig.workspace_root` and must fail closed when they would inspect or execute against content outside that root.
+For the active MCP server only, Git and Python operations are explicitly bound to the configured `MCPConfig.workspace_root` and fail closed when they would inspect or execute against content outside that root.
 
 The security objective is:
 
@@ -45,13 +45,11 @@ The security objective is:
 
 The root is resolved and captured during server/service construction. Runtime mutation of the root is not part of SAFE-0002.
 
-Authorization must use resolved path ancestry, not string-prefix comparison.
+Authorization uses resolved path ancestry, not string-prefix comparison.
 
 ## 5. Active-Path Service Construction
 
-The active MCP server must stop registering module-level Git/Python helpers as its security boundary.
-
-Instead it should construct explicit bounded instances, conceptually:
+The active MCP server uses explicit bounded Git/Python service instances as its security boundary, conceptually:
 
 ```text
 EngineeringMCPServer
@@ -60,9 +58,9 @@ EngineeringMCPServer
     └── PythonService(workspace_root, bounded=True)
 ```
 
-Exact constructor signatures are an implementation detail, but active MCP handlers must be instance-bound to the captured root.
+Exact constructor signatures are an implementation detail, but active MCP handlers are instance-bound to the captured root.
 
-Direct/internal no-argument services may retain legacy behavior for non-MCP consumers if tests prove that this compatibility is required. Such legacy behavior must not be used by the active MCP server.
+Direct/internal no-argument services may retain legacy behavior for non-MCP consumers where compatibility requires it. Such legacy behavior is not used by the active MCP server.
 
 ## 6. Git Safety Contract
 
@@ -70,7 +68,7 @@ Direct/internal no-argument services may retain legacy behavior for non-MCP cons
 
 SAFE-0002 V1 permits active MCP Git operations only when the configured workspace root is itself the Git repository top-level directory.
 
-The bounded Git service must determine the repository top level and require:
+The bounded Git service determines the repository top level and requires:
 
 ```text
 resolved_git_toplevel == resolved_workspace_root
@@ -103,13 +101,13 @@ SAFE-0002 V1 does not authorize:
 - automatic nested-repository selection;
 - mutation of global or user Git configuration.
 
-Existing non-MCP project-template Git initialization remains outside this contract and must not be broken by binding only the active MCP Git path.
+Existing non-MCP project-template Git initialization remains outside this contract and is preserved by binding only the active MCP Git path.
 
 ## 7. Python Safety Contract
 
 ### 7.1 `python.version`
 
-`python.version` remains path-independent and may continue to report the active interpreter version and executable path. SAFE-0002 does not treat this operation as project-code execution.
+`python.version` remains path-independent and continues to report the active interpreter version and executable path. SAFE-0002 does not treat this operation as project-code execution.
 
 ### 7.2 `python.check_syntax`
 
@@ -127,18 +125,18 @@ Outside-root, traversal, and link-escape paths are rejected before package conte
 
 `python.run_tests` is the only existing Python tool that executes project-controlled Python code and therefore receives the strictest V1 policy.
 
-The bounded service must:
+The bounded service:
 
-1. resolve the requested test target relative to `workspace_root` when a relative path is supplied;
-2. require the resolved target to remain at or below `workspace_root`;
-3. reject absolute outside-root, traversal, and link-escape targets;
-4. launch pytest with `cwd=workspace_root`;
-5. invoke only the current interpreter as `sys.executable -m pytest <authorized-target>`;
-6. keep the target as an argument rather than constructing a shell command;
-7. keep `shell=False`;
-8. use `stdin=DEVNULL`;
-9. retain captured stdout/stderr behavior;
-10. enforce a bounded subprocess timeout.
+1. resolves the requested test target relative to `workspace_root` when a relative path is supplied;
+2. requires the resolved target to remain at or below `workspace_root`;
+3. rejects absolute outside-root, traversal, and link-escape targets;
+4. launches pytest with `cwd=workspace_root`;
+5. invokes only the current interpreter as `sys.executable -m pytest <authorized-target>`;
+6. keeps the target as an argument rather than constructing a shell command;
+7. keeps `shell=False`;
+8. uses `stdin=DEVNULL`;
+9. retains captured stdout/stderr behavior;
+10. enforces a bounded subprocess timeout.
 
 The default target remains `tests`, interpreted under `workspace_root`.
 
@@ -146,9 +144,9 @@ SAFE-0002 V1 does not add arbitrary script, module, `-c`, interpreter, executabl
 
 ## 8. Environment Policy
 
-Subprocess execution must not rely on shell expansion.
+Subprocess execution does not rely on shell expansion.
 
-SAFE-0002 V1 does not attempt to provide a fully scrubbed hermetic environment. However, the active bounded subprocess path must not mutate global environment variables and must not introduce caller-controlled environment injection.
+SAFE-0002 V1 does not attempt to provide a fully scrubbed hermetic environment. However, the active bounded subprocess path does not mutate global environment variables and does not introduce caller-controlled environment injection.
 
 A future explicit environment allowlist/sanitization milestone may be added if evidence shows it is required.
 
@@ -167,9 +165,9 @@ The same containment helper may be reused across Workspace/Python only if doing 
 
 ## 10. Error Contract
 
-SAFE-0002 should introduce or use controlled domain-specific permission errors rather than leaking raw path-resolution or subprocess failures.
+SAFE-0002 uses controlled domain-specific permission errors rather than leaking raw path-resolution or subprocess failures.
 
-Recommended error classes:
+Error classes include:
 
 - `GitPermissionError` for repository-boundary violations;
 - `PythonPermissionError` for Python path/execution-boundary violations.
@@ -180,13 +178,13 @@ Existing errors remain responsible for non-authorization failures after authoriz
 - Python execution and syntax-validation failures;
 - ordinary authorized-path file errors.
 
-SDKAdapter must continue converting controlled tool failures into MCP `isError=True` results without protocol corruption.
+SDKAdapter continues converting controlled tool failures into MCP `isError=True` results without protocol corruption.
 
 ## 11. Compatibility Contract
 
 SAFE-0002 intentionally changes active MCP behavior where the previous behavior could escape the configured workspace.
 
-Required compatibility preservation:
+Verified compatibility preservation:
 
 - all existing tool names and input schemas remain unchanged;
 - successful in-root result shapes remain unchanged;
@@ -195,7 +193,7 @@ Required compatibility preservation:
 - AUTO-0002 local documentation synchronization remains unchanged;
 - direct/internal service compatibility may remain unbounded only when it is not used by active MCP handlers.
 
-The following behavior is intentionally allowed to become a controlled error:
+The following behavior is intentionally a controlled error:
 
 - MCP Git inspection when `workspace_root` is inside a parent repository rather than the repository top level;
 - MCP Python path access outside `workspace_root`;
@@ -238,7 +236,7 @@ The project must not describe SAFE-0002 as an OS sandbox.
 
 ## 14. Verification Matrix
 
-Implementation must add automated evidence for at least:
+Implementation evidence covers:
 
 | Area | Required evidence |
 |---|---|
@@ -263,33 +261,29 @@ Implementation must add automated evidence for at least:
 | MCP SDK session | representative in-root Git/Python success and outside-root controlled errors |
 | Regression | existing Workspace, SDK, AUTO-0001, AUTO-0002, release tests remain green |
 
-Windows link-fixture skips remain acceptable only when the platform or process privilege genuinely prevents fixture creation and Linux CI executes the equivalent coverage.
+Windows link-fixture skips are acceptable only when the platform or process privilege genuinely prevents fixture creation and Linux CI executes the equivalent coverage. Final evidence records Linux execution and Windows `WinError 1314` skips exactly under that rule.
 
-## 15. Proposed Atomic Implementation Sequence
+## 15. Atomic Implementation Sequence
 
 ### SAFE-0002-02 — Bound Active MCP Git Operations
 
-Introduce explicit bounded Git service/tool instances for the active MCP server, exact-root repository verification, permission errors, and focused service/SDK-session tests.
-
-No Python changes in this task.
+Completed. Explicit bounded Git service/tool instances were added for the active MCP server, including exact-root repository verification, permission errors, and focused service/SDK-session tests.
 
 ### SAFE-0002-03 — Bound Active MCP Python Operations
 
-Introduce root-bound Python service/tool instances, path authorization for syntax/package/test targets, workspace-root pytest cwd, subprocess timeout, and focused service/SDK-session tests.
-
-No new Python execution commands.
+Completed. Root-bound Python service/tool instances, path authorization for syntax/package/test targets, workspace-root pytest cwd, subprocess timeout, and focused service/SDK-session tests were added.
 
 ### SAFE-0002-04 — Cross-Platform and Integration Evidence
 
-Run the full quality suite, verify Linux link coverage and Windows-local behavior where available, update status/security evidence, and confirm installed distribution behavior is not unintentionally changed.
+Completed. Full Linux quality evidence, explicit Python link-escape coverage, Windows-local verification, regression evidence, and documentation reconciliation are recorded in `SAFE-0002_VERIFICATION_EVIDENCE.md`.
 
 No release publication is implied.
 
 ## 16. Completion Criteria
 
-SAFE-0002 is complete only when:
+SAFE-0002 completion evidence confirms:
 
-- this design is approved;
+- the design contract was accepted;
 - active MCP Git and Python handlers are explicitly root-bound;
 - Git cannot walk above `workspace_root` to a parent repository;
 - path-taking Python operations cannot inspect or execute outside `workspace_root`;
@@ -300,10 +294,14 @@ SAFE-0002 is complete only when:
 - repository pytest, Ruff, mypy, and distribution verification pass;
 - documentation states the exact verified boundary without claiming OS-level sandboxing.
 
-## 17. Approval Decision
+## 17. Accepted Compatibility/Security Decision
 
-Implementation approval should explicitly accept the following potentially breaking MCP policy:
+The implemented and verified policy is:
 
-> `MCPConfig.workspace_root` becomes the authority root for active MCP Git and path-taking Python operations, and MCP Git operations are permitted only when that root is itself the Git repository top level.
+> `MCPConfig.workspace_root` is the authority root for active MCP Git and path-taking Python operations, and MCP Git operations are permitted only when that root is itself the Git repository top level.
 
-This is the central SAFE-0002 compatibility/security decision. Everything else in V1 follows from that boundary.
+This is the central SAFE-0002 compatibility/security decision. The recorded V1 behavior and evidence follow from that boundary.
+
+## 18. Verification Evidence
+
+See `SAFE-0002_VERIFICATION_EVIDENCE.md` for the final Linux/Windows evidence, including 155-pass Linux CI, 153-pass/2-permitted-skip Windows verification, Python link-escape coverage, subprocess checks, the resolved AUTO-0002 newline-test portability defect, and the explicit non-sandbox boundary.
