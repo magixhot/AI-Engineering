@@ -3,7 +3,7 @@
 **Snapshot date:** 2026-08-15
 **Status:** ACTIVE
 **Release line:** 0.1.0
-**Current phase:** CI-0001 Implemented / External Verification Required
+**Current phase:** CI-0001 Complete / Verified
 
 ## State by Delivery Area
 
@@ -20,22 +20,23 @@
 | SDK-0001.2 Project Template CLI | COMPLETE / VERIFIED | `ai-engineering project create` is an installed console-script frontend over the public template API, with V1/scaffold, stdout/stderr, and exit-code behavior verified. |
 | TOOL-0001 Core Tool Operation Verification | COMPLETE / VERIFIED | All 15 existing Workspace, Git, and Python operations have isolated service/registry/representative SDK-session verification. |
 | REL-0001 Local Distribution Verification | COMPLETE / VERIFIED | Wheel and sdist artifact policy, isolated wheel install, installed metadata/import, and installed CLI smoke are verified locally. GitHub Release and PyPI publishing remain out of scope. |
-| CI-0001 Quality Gate Automation | IMPLEMENTED / EXTERNAL VERIFICATION REQUIRED | `.github/workflows/quality.yml` runs the existing gates on pull requests to and pushes to `master`; real GitHub Actions evidence is pending. |
+| CI-0001 Quality Gate Automation | COMPLETE / VERIFIED | GitHub Actions quality gates passed on PR #29 and on the post-merge `master` run; the workflow covers Ruff, mypy, full pytest, and REL-0001 on Linux/Python 3.11. |
 | Quality gates | PASS | pytest: 90 passed; Ruff: 0 findings; mypy: 0 findings. |
 
 ## Current Priorities
 
-1. Maintain REL-0001 local-distribution evidence from verified behavior; publication remains a separate decision.
+1. Maintain CI-0001 and REL-0001 verification evidence from observed behavior.
 2. Maintain MCP-0002 and SDK-0001 V1/SDK-0001.1/SDK-0001.2 evidence from verified behavior.
 3. Maintain MCP diagnostics for protocol and tool-execution investigation.
-4. Select any additional automation work separately from the verified project-template baseline.
+4. Select the next engineering milestone separately from the verified CI and project-template baselines.
 5. Verify additional MCP clients only when separately scoped and supported by evidence; Antigravity and VS Code are already recorded as verified.
 
 ## Implemented Baseline
 
 The 0.1.0 release documentation records MCP server initialization, JSON-RPC initialization, SDK
-error handling, stdout/stderr protection, tool discovery, and baseline Workspace/Git/Python tool
-operations. This indicates an implemented baseline, not a claim of general production readiness.
+error handling, stdout/stderr protection, tool discovery, baseline Workspace/Git/Python tool
+operations, local distribution verification, and automated GitHub Actions quality gates. This
+indicates an implemented baseline, not a claim of general production readiness.
 
 ## Active Work
 
@@ -43,9 +44,8 @@ MCP-0002 automated and VS Code interoperability verification are complete. SDK-0
 SDK-0001.1 optional Python scaffold, and the SDK-0001.2 `ai-engineering project create` CLI are
 complete and verified. Antigravity and VS Code interoperability are verified for their recorded
 contracts; additional client interoperability remains separate evidence-based work. REL-0001 local
-distribution verification is complete: built artifacts and an isolated wheel install are verified,
-without a GitHub Release, PyPI publication, or a general production-readiness claim. CI-0001 is
-implemented; real GitHub Actions verification is still pending.
+distribution verification is complete without a GitHub Release or PyPI publication. CI-0001 is
+complete and verified by successful PR and post-merge `master` GitHub Actions runs.
 
 ## Planned Work
 
