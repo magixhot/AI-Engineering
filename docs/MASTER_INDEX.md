@@ -30,6 +30,7 @@
 | CI-0001_QUALITY_GATE_AUTOMATION_DESIGN.md | GitHub Actions quality-gate automation contract | Complete / Verified |
 | SAFE-0001_WORKSPACE_PATH_SAFETY_DESIGN.md | Workspace root, containment, link-escape, and controlled-error security contract/evidence | Complete / Verified |
 | SAFE-0001_VERIFICATION_EVIDENCE.md | Compact Linux/Windows SAFE-0001 verification record | Complete / Verified |
+| SAFE-0002_GIT_PYTHON_EXECUTION_SAFETY_DESIGN.md | Active MCP Git/Python authority-root, subprocess, path, and compatibility security contract | Design / Proposed |
 | AUTO-0001_ENGINEERING_PROJECT_BOOTSTRAP_DESIGN.md | Additive engineering bootstrap API/profile/verification/CLI contract over SDK-0001 | Complete / Verified |
 | AUTO-0001_VERIFICATION_EVIDENCE.md | Core API, CLI, installed-wheel, CI, and publication-boundary evidence | Complete / Verified |
 | AUTO-0002_PROJECT_DOCUMENTATION_SYNCHRONIZATION_DESIGN.md | Bounded inspection, drift, deterministic planning, guarded apply, and ownership contract | Implemented / Verified |
@@ -46,10 +47,10 @@
 | REL-0001 local distribution verification | COMPLETE / VERIFIED |
 | CI-0001 quality gate automation | COMPLETE / VERIFIED |
 | SAFE-0001 workspace path safety | COMPLETE / VERIFIED |
+| SAFE-0002 Git/Python execution safety | DESIGN / CURRENT PRIORITY |
 | REL-0002 v0.1.0 GitHub publication | COMPLETE / VERIFIED |
 | AUTO-0001 engineering project bootstrap | COMPLETE / VERIFIED |
 | AUTO-0002 project documentation synchronization | COMPLETE / VERIFIED |
-| Post-AUTO-0002 roadmap selection | NEXT |
 | Additional MCP client interoperability | OPTIONAL / FUTURE EVIDENCE |
 | Diagnostics maintenance | ACTIVE |
 
@@ -68,6 +69,7 @@
 | REL-0001 local distribution verification | COMPLETE / VERIFIED |
 | CI-0001 quality gate automation | COMPLETE / VERIFIED |
 | SAFE-0001 workspace path safety | COMPLETE / VERIFIED |
+| SAFE-0002 Git/Python execution safety | DESIGN |
 | REL-0002 release publication governance and v0.1.0 GitHub publication | COMPLETE / VERIFIED |
 | M3 / AUTO-0001 Engineering Project Bootstrap | COMPLETE / VERIFIED |
 | M3 / AUTO-0002 Project Documentation Synchronization | COMPLETE / VERIFIED |
