@@ -84,7 +84,7 @@ This document contains everything required to restore the current project contex
 
 Current phase:
 
-**MCP-0002, MCP-0003, SDK-0001, and TOOL-0001 complete; selecting the next milestone**
+**MCP-0002, MCP-0003, SDK-0001, TOOL-0001, and REL-0001 complete; planning CI**
 
 The official Python MCP SDK migration and its MCP-0002 verification are complete. VS Code 1.132.1
 and Antigravity interoperability are verified for their recorded stdio contracts. SDK-0001 Project
@@ -92,8 +92,10 @@ Templates V1 plus the optional SDK-0001.1 Standalone Python Project Scaffold are
 verified. SDK-0001.2 adds the implemented `ai-engineering project create` CLI over that public API,
 including the optional scaffold flow. TOOL-0001 Core Tool Operation Verification is COMPLETE /
 VERIFIED for all 15 existing Workspace, Git, and Python operations. Current quality gates are
-pytest: 89 passed, Ruff: 0 findings, and mypy: 0 findings. The next milestone remains selection and
-planning only; release hardening has not started. This does not claim general production readiness
+pytest: 90 passed, Ruff: 0 findings, and mypy: 0 findings. REL-0001 local distribution verification
+is COMPLETE / VERIFIED: wheel and sdist contracts, an isolated wheel install, and the installed CLI
+are verified for release line 0.1.0. GitHub Release creation, PyPI publishing, and CI have not been
+performed. The next direction is CI planning only. This does not claim general production readiness
 or compatibility with ChatGPT/OpenAI, Claude Desktop, or other MCP clients.
 
 ---

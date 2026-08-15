@@ -25,7 +25,8 @@ AI-Engineering/
 │       └── server.py
 ├── tests/
 │   ├── unit/
-│   └── integration/
+│   ├── integration/
+│   └── release/          Bounded distribution/artifact verification, separate from unit tests
 ├── README.md
 ├── LICENSE
 ├── pyproject.toml
@@ -68,3 +69,5 @@ interoperability.
   through `project_templates.py`. SDK-0001.2 provides the `cli.py` frontend and installed
   `ai-engineering project create` console script. Broader automation and additional validated client
   interoperability remain future work.
+- `tests/release/` contains bounded local distribution verification for wheel/sdist artifacts and
+  isolated wheel installation; it is not the ordinary unit-test layer.
