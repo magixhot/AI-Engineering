@@ -4,6 +4,7 @@ Unit tests for GitService.
 
 from __future__ import annotations
 
+import os
 import subprocess
 from pathlib import Path
 from unittest.mock import MagicMock, patch
@@ -15,6 +16,62 @@ from ai_engineering.git.exceptions import (
     GitRepositoryNotFoundError,
 )
 from ai_engineering.git.service import GitService
+
+
+def run_git(repository: Path, *args: str) -> str:
+    environment = os.environ.copy()
+    environment.update(
+        {
+            "GIT_AUTHOR_NAME": "AI-Engineering Tests",
+            "GIT_AUTHOR_EMAIL": "tests@example.invalid",
+            "GIT_COMMITTER_NAME": "AI-Engineering Tests",
+            "GIT_COMMITTER_EMAIL": "tests@example.invalid",
+        }
+    )
+    result = subprocess.run(
+        ["git", *args],
+        cwd=repository,
+        env=environment,
+        capture_output=True,
+        text=True,
+        check=True,
+    )
+    return result.stdout.strip()
+
+
+def initialize_repository(tmp_path: Path) -> Path:
+    repository = tmp_path / "repository"
+    repository.mkdir()
+    run_git(repository, "init")
+    (repository / "tracked.txt").write_text("initial", encoding="utf-8")
+    run_git(repository, "add", "tracked.txt")
+    run_git(repository, "commit", "-m", "initial commit")
+    return repository
+
+
+def test_status_reports_real_clean_modified_and_untracked_states(
+    tmp_path: Path,
+) -> None:
+    repository = initialize_repository(tmp_path)
+    service = GitService(repository)
+
+    clean = service.status()
+    assert clean.is_clean is True
+    assert clean.staged == 0
+    assert clean.modified == 0
+    assert clean.untracked == 0
+
+    (repository / "tracked.txt").write_text("changed", encoding="utf-8")
+    modified = service.status()
+    assert modified.is_clean is False
+    assert modified.staged == 0
+    assert modified.modified == 1
+    assert modified.untracked == 0
+
+    (repository / "untracked.txt").write_text("new", encoding="utf-8")
+    untracked = service.status()
+    assert untracked.modified == 1
+    assert untracked.untracked == 1
 
 
 def mocked_result(stdout: str = "") -> MagicMock:
@@ -34,6 +91,15 @@ def test_run_success(tmp_path: Path) -> None:
         result = service._run("status")
 
     assert result == "ok"
+
+
+def test_run_preserves_porcelain_status_columns(tmp_path: Path) -> None:
+    service = GitService(tmp_path)
+
+    with patch("subprocess.run", return_value=mocked_result(" M tracked.txt\n")):
+        result = service._run("status", "--porcelain")
+
+    assert result == " M tracked.txt"
 
 
 def test_run_command_error(tmp_path: Path) -> None:
