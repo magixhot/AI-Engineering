@@ -35,6 +35,62 @@ def _bootstrap_arguments(target: Path, name: str = "Bootstrap Project") -> list[
     ]
 
 
+def _docs_arguments(action: str, target: Path) -> list[str]:
+    return ["project", "docs", action, "--project", str(target)]
+
+
+def _managed_document(marker: str, body: str) -> str:
+    return (
+        "# Document\n\nHuman content\n\n"
+        f"<!-- ai-engineering:auto0002:{marker}:start -->"
+        f"{body}"
+        f"<!-- ai-engineering:auto0002:{marker}:end -->\n"
+        "\nHuman tail\n"
+    )
+
+
+def _docs_project(tmp_path: Path) -> Path:
+    root = tmp_path / "docs-project"
+    (root / "src" / "sample_pkg").mkdir(parents=True)
+    (root / "src" / "sample_pkg" / "__init__.py").write_text("", encoding="utf-8")
+    (root / "README.md").write_text("# Sample\n", encoding="utf-8")
+    (root / "pyproject.toml").write_text(
+        '[project]\nname = "sample-project"\nversion = "0.1.0"\n',
+        encoding="utf-8",
+    )
+    (root / "CURRENT_STATUS.md").write_text(
+        _managed_document("current-status", "\n- stale: value\n"),
+        encoding="utf-8",
+    )
+    (root / "PROJECT_MAP.md").write_text(
+        _managed_document("project-map", "\n- `gone.txt` (file)\n"),
+        encoding="utf-8",
+    )
+    (root / "MASTER_INDEX.md").write_text(
+        _managed_document("master-index", "\n- `OLD.md` — observed\n"),
+        encoding="utf-8",
+    )
+    subprocess.run(["git", "init", "-b", "main"], cwd=root, check=True)
+    subprocess.run(["git", "add", "."], cwd=root, check=True)
+    subprocess.run(
+        [
+            "git",
+            "-c",
+            "user.name=CLI Docs Test",
+            "-c",
+            "user.email=cli-docs@example.invalid",
+            "commit",
+            "-m",
+            "initial",
+        ],
+        cwd=root,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    return root
+
+
 def test_cli_help_and_missing_arguments(capsys: pytest.CaptureFixture[str]) -> None:
     with pytest.raises(SystemExit, match="0"):
         main(["--help"])
@@ -45,7 +101,7 @@ def test_cli_help_and_missing_arguments(capsys: pytest.CaptureFixture[str]) -> N
     assert "required" in capsys.readouterr().err
 
 
-def test_cli_project_help_lists_create_and_bootstrap(
+def test_cli_project_help_lists_create_bootstrap_and_docs(
     capsys: pytest.CaptureFixture[str],
 ) -> None:
     with pytest.raises(SystemExit, match="0"):
@@ -54,6 +110,19 @@ def test_cli_project_help_lists_create_and_bootstrap(
     output = capsys.readouterr().out
     assert "create" in output
     assert "bootstrap" in output
+    assert "docs" in output
+
+
+def test_cli_docs_help_lists_check_plan_and_apply(
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    with pytest.raises(SystemExit, match="0"):
+        main(["project", "docs", "--help"])
+
+    output = capsys.readouterr().out
+    assert "check" in output
+    assert "plan" in output
+    assert "apply" in output
 
 
 def test_cli_creates_v1_project_and_reports_success(
@@ -78,16 +147,36 @@ def test_cli_scaffold_and_expected_error_output(
 ) -> None:
     target = tmp_path / "scaffold"
     result = main(
-        ["project", "create", "--name", "CLI Scaffold", "--destination",
-         str(target), "--description", "CLI scaffold.", "--python-scaffold"]
+        [
+            "project",
+            "create",
+            "--name",
+            "CLI Scaffold",
+            "--destination",
+            str(target),
+            "--description",
+            "CLI scaffold.",
+            "--python-scaffold",
+        ]
     )
     assert result == 0
     assert "package_name=cli_scaffold" in capsys.readouterr().out
 
-    assert main(
-        ["project", "create", "--name", "Again", "--destination", str(target),
-         "--description", "Existing."]
-    ) == 1
+    assert (
+        main(
+            [
+                "project",
+                "create",
+                "--name",
+                "Again",
+                "--destination",
+                str(target),
+                "--description",
+                "Existing.",
+            ]
+        )
+        == 1
+    )
     captured = capsys.readouterr()
     assert "error:" in captured.err
     assert "Traceback" not in captured.err
@@ -209,3 +298,108 @@ def test_bootstrap_cli_unexpected_failure_uses_exit_code_three(
     captured = capsys.readouterr()
     assert captured.out == ""
     assert captured.err == "error: unexpected internal failure\n"
+
+
+def test_docs_check_and_plan_are_read_only_and_deterministic(
+    tmp_path: Path,
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    root = _docs_project(tmp_path)
+    before = {path: path.read_bytes() for path in root.glob("*.md")}
+
+    assert main(_docs_arguments("check", root)) == 1
+    check_output = capsys.readouterr().out.splitlines()
+    assert check_output[0] == f"project={root.resolve()}"
+    assert "manual_review_count=0" in check_output
+    assert check_output[-1] == "status=drift"
+
+    assert main(_docs_arguments("plan", root)) == 0
+    first_plan = capsys.readouterr().out
+    assert "update_count=3" in first_plan
+    assert "manual_review_count=0" in first_plan
+    assert "status=ready" in first_plan
+    assert first_plan.count("update=") == 3
+
+    assert main(_docs_arguments("plan", root)) == 0
+    assert capsys.readouterr().out == first_plan
+    assert {path: path.read_bytes() for path in root.glob("*.md")} == before
+
+
+def test_docs_apply_updates_only_managed_docs_and_preserves_git_head(
+    tmp_path: Path,
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    root = _docs_project(tmp_path)
+    readme_before = (root / "README.md").read_bytes()
+    head_before = subprocess.run(
+        ["git", "rev-parse", "HEAD"],
+        cwd=root,
+        check=True,
+        capture_output=True,
+        text=True,
+    ).stdout.strip()
+
+    assert main(_docs_arguments("apply", root)) == 0
+    apply_output = capsys.readouterr().out.splitlines()
+    assert apply_output == [
+        f"project={root.resolve()}",
+        "changed_count=3",
+        "changed_document=CURRENT_STATUS.md",
+        "changed_document=MASTER_INDEX.md",
+        "changed_document=PROJECT_MAP.md",
+        "verification=passed",
+    ]
+    assert (root / "README.md").read_bytes() == readme_before
+
+    head_after = subprocess.run(
+        ["git", "rev-parse", "HEAD"],
+        cwd=root,
+        check=True,
+        capture_output=True,
+        text=True,
+    ).stdout.strip()
+    assert head_after == head_before
+    assert (
+        subprocess.run(
+            ["git", "diff", "--cached", "--name-only"],
+            cwd=root,
+            check=True,
+            capture_output=True,
+            text=True,
+        ).stdout
+        == ""
+    )
+
+    assert main(_docs_arguments("check", root)) == 0
+    assert capsys.readouterr().out.splitlines() == [
+        f"project={root.resolve()}",
+        "drift_count=0",
+        "manual_review_count=0",
+        "status=clean",
+    ]
+
+
+def test_docs_apply_refuses_manual_review_project(
+    tmp_path: Path,
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    root = tmp_path / "bootstrap-no-markers"
+    assert main(_bootstrap_arguments(root)) == 0
+    capsys.readouterr()
+
+    assert main(_docs_arguments("check", root)) == 1
+    check_output = capsys.readouterr().out
+    assert "manual_review_count=3" in check_output
+    assert "status=drift" in check_output
+
+    assert main(_docs_arguments("plan", root)) == 1
+    plan_output = capsys.readouterr().out
+    assert "update_count=0" in plan_output
+    assert "manual_review_count=3" in plan_output
+    assert "status=manual_review" in plan_output
+
+    assert main(_docs_arguments("apply", root)) == 1
+    captured = capsys.readouterr()
+    assert captured.out == ""
+    assert "Manual review required before documentation apply" in captured.err
+    assert "verification=passed" not in captured.err
