@@ -9,9 +9,9 @@ from pathlib import Path
 from typing import Sequence
 
 from .engineering_bootstrap import (
+    PYTHON_ENGINEERING_PROFILE,
     EngineeringBootstrapError,
     EngineeringBootstrapRequest,
-    PYTHON_ENGINEERING_PROFILE,
     bootstrap_engineering_project,
 )
 from .project_templates import (
