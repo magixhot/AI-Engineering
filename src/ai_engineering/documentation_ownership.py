@@ -1,8 +1,10 @@
-"""Read-only AUTO-0003 documentation ownership classification and planning."""
+"""AUTO-0003 documentation ownership classification, planning, and apply."""
 
 from __future__ import annotations
 
 import hashlib
+import os
+import tempfile
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Literal
@@ -11,8 +13,13 @@ from .documentation_sync import (
     DocumentationSyncError,
     _expected_body,
     _markers,
+    detect_documentation_drift,
 )
-from .project_inspection import ProjectStateSnapshot
+from .project_inspection import (
+    ProjectInspectionRequest,
+    ProjectStateSnapshot,
+    inspect_project_state,
+)
 
 ELIGIBLE_DOCUMENTS = (
     "CURRENT_STATUS.md",
@@ -32,7 +39,7 @@ OwnershipState = Literal[
 
 
 class DocumentationOwnershipError(RuntimeError):
-    """Raised when ownership initialization cannot be planned safely."""
+    """Raised when ownership initialization cannot proceed safely."""
 
 
 @dataclass(frozen=True)
@@ -56,6 +63,16 @@ class DocumentationOwnershipInitializationPlan:
     updates: tuple[DocumentationOwnershipInitializationUpdate, ...]
     classifications: tuple[DocumentationOwnershipClassification, ...]
     manual_review: tuple[str, ...]
+
+
+@dataclass(frozen=True)
+class DocumentationOwnershipInitializationResult:
+    project_root: Path
+    changed_documents: tuple[str, ...]
+
+
+def _digest(content: bytes) -> str:
+    return hashlib.sha256(content).hexdigest()
 
 
 def _newline_state(content: str) -> tuple[str | None, str | None]:
@@ -152,8 +169,6 @@ def _insert_at_eof(
             f"Managed section could not be rendered: {document}"
         ) from error
 
-    # EOF is the explicit V1 insertion boundary for each approved document.
-    # Existing bytes are never rewritten; separators are added after them only.
     separator = "" if not content or content.endswith(("\n", "\r")) else newline
     if content and not content.endswith(newline * 2):
         separator += newline
@@ -170,8 +185,12 @@ def plan_documentation_ownership_initialization(
     if not documents:
         return DocumentationOwnershipInitializationPlan(root, (), (), ())
     if len(set(documents)) != len(documents):
-        raise DocumentationOwnershipError("Duplicate document selection is not allowed")
-    unsupported = tuple(name for name in documents if name not in ELIGIBLE_DOCUMENTS)
+        raise DocumentationOwnershipError(
+            "Duplicate document selection is not allowed"
+        )
+    unsupported = tuple(
+        name for name in documents if name not in ELIGIBLE_DOCUMENTS
+    )
     if unsupported:
         raise DocumentationOwnershipError(
             f"Unsupported document selection: {', '.join(unsupported)}"
@@ -187,7 +206,9 @@ def plan_documentation_ownership_initialization(
         content = _read_content(root, document)
         if content is None:
             classification = DocumentationOwnershipClassification(
-                document, "missing_document", "approved target file does not exist"
+                document,
+                "missing_document",
+                "approved target file does not exist",
             )
         else:
             classification = classify_document_ownership(document, content)
@@ -198,7 +219,9 @@ def plan_documentation_ownership_initialization(
             updates.append(
                 DocumentationOwnershipInitializationUpdate(
                     document=document,
-                    original_sha256=hashlib.sha256(content.encode("utf-8")).hexdigest(),
+                    original_sha256=hashlib.sha256(
+                        content.encode("utf-8")
+                    ).hexdigest(),
                     replacement_content=replacement,
                     state="missing",
                 )
@@ -211,4 +234,226 @@ def plan_documentation_ownership_initialization(
         updates=tuple(updates),
         classifications=tuple(classifications),
         manual_review=tuple(manual_review),
+    )
+
+
+def _validate_apply_plan(
+    plan: DocumentationOwnershipInitializationPlan,
+) -> None:
+    if plan.manual_review:
+        raise DocumentationOwnershipError(
+            "Initialization plan requires manual review before apply"
+        )
+
+    documents = [update.document for update in plan.updates]
+    if len(documents) != len(set(documents)):
+        raise DocumentationOwnershipError(
+            "Initialization plan contains duplicate documents"
+        )
+
+    unsupported = sorted(set(documents) - set(ELIGIBLE_DOCUMENTS))
+    if unsupported:
+        raise DocumentationOwnershipError(
+            f"Initialization plan contains unsupported document: {unsupported[0]}"
+        )
+
+    invalid_state = next(
+        (update.document for update in plan.updates if update.state != "missing"),
+        None,
+    )
+    if invalid_state is not None:
+        raise DocumentationOwnershipError(
+            f"Initialization update has invalid source state: {invalid_state}"
+        )
+
+
+def _preflight_apply(
+    plan: DocumentationOwnershipInitializationPlan,
+) -> dict[str, bytes]:
+    originals: dict[str, bytes] = {}
+    root = plan.project_root.resolve()
+
+    for update in plan.updates:
+        path = root / update.document
+        try:
+            current = path.read_bytes()
+            current_text = current.decode("utf-8")
+        except (OSError, UnicodeDecodeError) as error:
+            raise DocumentationOwnershipError(
+                f"Document could not be read before apply: {update.document}"
+            ) from error
+
+        if _digest(current) != update.original_sha256:
+            raise DocumentationOwnershipError(
+                f"Stale initialization plan for document: {update.document}"
+            )
+
+        current_state = classify_document_ownership(
+            update.document,
+            current_text,
+        )
+        if current_state.state != "missing":
+            raise DocumentationOwnershipError(
+                f"Ownership state changed before apply: {update.document}"
+            )
+
+        replacement_state = classify_document_ownership(
+            update.document,
+            update.replacement_content,
+        )
+        if replacement_state.state != "initialized":
+            raise DocumentationOwnershipError(
+                f"Replacement ownership markers invalid: {update.document}"
+            )
+
+        replacement_bytes = update.replacement_content.encode("utf-8")
+        if not replacement_bytes.startswith(current):
+            raise DocumentationOwnershipError(
+                f"Human-authored bytes changed in plan: {update.document}"
+            )
+        originals[update.document] = current
+
+    return originals
+
+
+def _stage_bytes(path: Path, content: bytes) -> Path:
+    try:
+        descriptor, temporary_name = tempfile.mkstemp(
+            prefix=f".{path.name}.",
+            suffix=".auto0003.tmp",
+            dir=path.parent,
+        )
+        temporary_path = Path(temporary_name)
+        with os.fdopen(descriptor, "wb") as stream:
+            stream.write(content)
+            stream.flush()
+            os.fsync(stream.fileno())
+        return temporary_path
+    except OSError as error:
+        raise DocumentationOwnershipError(
+            f"Document staging failed: {path.name}"
+        ) from error
+
+
+def _cleanup_staged(paths: list[Path]) -> None:
+    for path in paths:
+        try:
+            path.unlink(missing_ok=True)
+        except OSError:
+            pass
+
+
+def _restore_originals(
+    root: Path,
+    originals: dict[str, bytes],
+    documents: tuple[str, ...],
+) -> None:
+    staged: list[Path] = []
+    try:
+        for document in documents:
+            path = root / document
+            temporary = _stage_bytes(path, originals[document])
+            staged.append(temporary)
+        for document, temporary in zip(documents, staged, strict=True):
+            os.replace(temporary, root / document)
+    except (OSError, DocumentationOwnershipError) as error:
+        raise DocumentationOwnershipError(
+            "Initialization rollback failed after apply error"
+        ) from error
+    finally:
+        _cleanup_staged(staged)
+
+
+def _verify_applied_plan(
+    plan: DocumentationOwnershipInitializationPlan,
+) -> None:
+    root = plan.project_root.resolve()
+    for update in plan.updates:
+        path = root / update.document
+        try:
+            written = path.read_bytes().decode("utf-8")
+        except (OSError, UnicodeDecodeError) as error:
+            raise DocumentationOwnershipError(
+                f"Document verification read failed: {update.document}"
+            ) from error
+        if written != update.replacement_content:
+            raise DocumentationOwnershipError(
+                f"Document verification failed: {update.document}"
+            )
+        classification = classify_document_ownership(
+            update.document,
+            written,
+        )
+        if classification.state != "initialized":
+            raise DocumentationOwnershipError(
+                f"Document ownership verification failed: {update.document}"
+            )
+
+    snapshot = inspect_project_state(ProjectInspectionRequest(root))
+    remaining = detect_documentation_drift(snapshot)
+    changed = {update.document for update in plan.updates}
+    unresolved = [
+        item for item in remaining.items if item.document in changed
+    ]
+    if unresolved:
+        raise DocumentationOwnershipError(
+            f"AUTO-0002 handoff verification failed: {unresolved[0].document}"
+        )
+
+    follow_up = plan_documentation_ownership_initialization(
+        snapshot,
+        tuple(update.document for update in plan.updates),
+    )
+    if follow_up.updates or follow_up.manual_review:
+        raise DocumentationOwnershipError(
+            "AUTO-0003 idempotency verification failed"
+        )
+    if any(
+        item.state != "initialized" for item in follow_up.classifications
+    ):
+        raise DocumentationOwnershipError(
+            "AUTO-0003 ownership verification failed after apply"
+        )
+
+
+def apply_documentation_ownership_initialization(
+    plan: DocumentationOwnershipInitializationPlan,
+) -> DocumentationOwnershipInitializationResult:
+    """Apply a guarded AUTO-0003 plan and verify AUTO-0002 handoff."""
+
+    _validate_apply_plan(plan)
+    originals = _preflight_apply(plan)
+    root = plan.project_root.resolve()
+    if not plan.updates:
+        return DocumentationOwnershipInitializationResult(root, ())
+
+    staged: list[Path] = []
+    replaced: list[str] = []
+    documents = tuple(update.document for update in plan.updates)
+    try:
+        for update in plan.updates:
+            path = root / update.document
+            staged.append(
+                _stage_bytes(path, update.replacement_content.encode("utf-8"))
+            )
+
+        for update, temporary in zip(plan.updates, staged, strict=True):
+            os.replace(temporary, root / update.document)
+            replaced.append(update.document)
+
+        _verify_applied_plan(plan)
+    except (OSError, DocumentationOwnershipError) as error:
+        if replaced:
+            _restore_originals(root, originals, tuple(replaced))
+        if isinstance(error, DocumentationOwnershipError):
+            raise
+        raise DocumentationOwnershipError(
+            "Initialization apply failed while replacing documents"
+        ) from error
+    finally:
+        _cleanup_staged(staged)
+
+    return DocumentationOwnershipInitializationResult(
+        project_root=root,
+        changed_documents=documents,
     )
