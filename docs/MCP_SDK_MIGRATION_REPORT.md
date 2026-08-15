@@ -1,6 +1,6 @@
 # MCP SDK Migration Report
 
-**Status:** COMPLETE / VS CODE VERIFIED
+**Status:** COMPLETE / VS CODE AND ANTIGRAVITY VERIFIED
 **Evidence snapshot:** 2026-08-13
 
 ## Goal
@@ -41,9 +41,15 @@ safe `python_version` result, and handled a missing-path `workspace_read_file` c
 failure without a traceback or server crash. `AI_ENGINEERING_DEBUG_MCP` was not set, and VS Code MCP
 Output showed no protocol corruption or unexpected AI-Engineering MCP server error.
 
+Antigravity is separately verified for the recorded MCP-0003 stdio contract. Its initial manual
+verification exposed a server-side snake_case reverse-dispatch defect; PR #18 (`c08bb16`) repaired
+the mapper, and the post-fix Antigravity re-test succeeded. This is client-specific evidence and
+does not alter the original VS Code migration evidence.
+
 MCP-0002 is complete because its criteria require evidence for every client claimed as verified,
-not all client categories. ChatGPT/OpenAI, Antigravity, Claude Desktop, and other-client
-interoperability remain unverified and are not claimed.
+not all client categories. VS Code and Antigravity are verified for their recorded contracts.
+ChatGPT/OpenAI, Claude Desktop, and other-client interoperability remain unverified and are not
+claimed.
 
 ## Known Operational Notes
 
