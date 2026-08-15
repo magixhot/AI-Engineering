@@ -83,7 +83,7 @@ The post-merge `master` Quality run also completed successfully.
 
 ### Windows local verification
 
-Windows verification was executed on Python 3.11.9 using an external temporary directory under `C:\AI\Temp` because the machine's default `%TEMP%\pytest-of-magix` directory has an unrelated local ACL/permission problem.
+Windows verification was executed on Python 3.11.9 using a dedicated external temporary directory because the machine's default pytest temporary directory had an unrelated local ACL/permission problem.
 
 Focused SAFE verification:
 
