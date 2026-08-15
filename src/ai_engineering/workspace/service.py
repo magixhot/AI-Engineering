@@ -43,7 +43,11 @@ class WorkspaceService:
             candidate = self._workspace_root / candidate
 
         resolved = candidate.resolve(strict=False)
-        if resolved != self._workspace_root and self._workspace_root not in resolved.parents:
+        is_outside = (
+            resolved != self._workspace_root
+            and self._workspace_root not in resolved.parents
+        )
+        if is_outside:
             raise WorkspacePermissionError(f"Path outside workspace root: {path}")
 
         return candidate, resolved
