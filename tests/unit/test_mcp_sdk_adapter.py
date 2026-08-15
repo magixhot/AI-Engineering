@@ -1,5 +1,8 @@
 from __future__ import annotations
 
+import json
+import os
+import subprocess
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
 from pathlib import Path
@@ -8,12 +11,19 @@ from typing import Any
 import anyio
 import pytest
 from mcp.client.session import ClientSession
-from mcp.types import TextContent
+from mcp.types import CallToolResult, TextContent
 
+from ai_engineering.git.service import GitService
 from ai_engineering.mcp.name_mapper import ToolNameMapper
 from ai_engineering.mcp.sdk_adapter import SDKAdapter
 from ai_engineering.mcp.server import create_server
 from ai_engineering.registry.composite import CompositeRegistry
+
+
+def result_text(result: CallToolResult) -> str:
+    content = result.content[0]
+    assert isinstance(content, TextContent)
+    return content.text
 
 
 @asynccontextmanager
@@ -81,7 +91,10 @@ def build_adapter(observed_calls: list[tuple[str, int]]) -> SDKAdapter:
     ("internal_name", "mcp_name"),
     [
         ("workspace.read_file", "workspace_read_file"),
+        ("workspace.create_directory", "workspace_create_directory"),
         ("python.check_syntax", "python_check_syntax"),
+        ("python.inspect_package", "python_inspect_package"),
+        ("python.run_tests", "python_run_tests"),
         ("workspace.list", "workspace_list"),
     ],
 )
@@ -187,6 +200,97 @@ async def test_workspace_read_file_returns_a_domain_error_for_a_missing_path(
     assert isinstance(error_content, TextContent)
     assert error_content.text.startswith("Error executing tool: File not found:")
     assert "Unknown tool: workspace.read.file" not in error_content.text
+
+
+@pytest.mark.anyio
+async def test_builtin_workspace_sdk_calls_read_and_write_in_a_fixture(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.chdir(tmp_path)
+    (tmp_path / "source.txt").write_text("source", encoding="utf-8")
+    server = create_server()
+
+    async with connected_session(server.sdk) as session:
+        listed = await session.list_tools()
+        read_result = await session.call_tool(
+            "workspace_read_file",
+            {"path": "source.txt"},
+        )
+        write_result = await session.call_tool(
+            "workspace_write_file",
+            {"path": "written.txt", "content": "written"},
+        )
+
+    assert {"workspace_read_file", "workspace_write_file"} <= {
+        tool.name for tool in listed.tools
+    }
+    assert read_result.isError is False
+    assert json.loads(result_text(read_result)) == {
+        "path": "source.txt",
+        "content": "source",
+    }
+    assert write_result.isError is False
+    assert json.loads(result_text(write_result)) == {
+        "success": True,
+        "path": "written.txt",
+    }
+    assert (tmp_path / "written.txt").read_text(encoding="utf-8") == "written"
+
+
+@pytest.mark.anyio
+async def test_builtin_git_status_dispatches_in_an_isolated_repository(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    import ai_engineering.git.tools as git_tools
+
+    environment = os.environ.copy()
+    environment.update(
+        {
+            "GIT_AUTHOR_NAME": "AI-Engineering Tests",
+            "GIT_AUTHOR_EMAIL": "tests@example.invalid",
+            "GIT_COMMITTER_NAME": "AI-Engineering Tests",
+            "GIT_COMMITTER_EMAIL": "tests@example.invalid",
+        }
+    )
+    subprocess.run(
+        ["git", "init"],
+        cwd=tmp_path,
+        env=environment,
+        capture_output=True,
+        text=True,
+        check=True,
+    )
+    monkeypatch.setattr(git_tools, "_service", GitService(tmp_path))
+    server = create_server()
+
+    async with connected_session(server.sdk) as session:
+        listed = await session.list_tools()
+        result = await session.call_tool("git_status", {})
+
+    assert "git_status" in {tool.name for tool in listed.tools}
+    assert result.isError is False
+    status = json.loads(result_text(result))
+    assert status["is_clean"] is True
+    assert status["staged"] == 0
+    assert status["modified"] == 0
+    assert status["untracked"] == 0
+
+
+@pytest.mark.anyio
+async def test_builtin_python_version_dispatches_through_the_sdk() -> None:
+    server = create_server()
+
+    async with connected_session(server.sdk) as session:
+        listed = await session.list_tools()
+        result = await session.call_tool("python_version", {})
+
+    assert "python_version" in {tool.name for tool in listed.tools}
+    assert result.isError is False
+    version = json.loads(result_text(result))
+    assert version["executable"]
+    assert version["version"]
 
 
 @pytest.mark.anyio

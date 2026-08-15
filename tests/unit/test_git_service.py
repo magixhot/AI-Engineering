@@ -225,3 +225,37 @@ def test_status_mixed_changes(tmp_path: Path) -> None:
     assert result.staged == 1
     assert result.modified == 1
     assert result.untracked == 1
+
+
+def test_branch_returns_current_branch_for_real_repository(tmp_path: Path) -> None:
+    repository = initialize_repository(tmp_path)
+    service = GitService(repository)
+
+    assert service.branch() == run_git(repository, "branch", "--show-current")
+
+
+def test_branch_on_non_repository_preserves_domain_error(tmp_path: Path) -> None:
+    with pytest.raises(GitRepositoryNotFoundError):
+        GitService(tmp_path).branch()
+
+
+def test_log_and_diff_capture_real_repository_state(tmp_path: Path) -> None:
+    repository = initialize_repository(tmp_path)
+    service = GitService(repository)
+
+    commit = run_git(repository, "rev-parse", "--short", "HEAD")
+    assert service.log() == [f"{commit} initial commit"]
+    assert service.diff() == ""
+
+    (repository / "tracked.txt").write_text("changed", encoding="utf-8")
+
+    assert "tracked.txt" in service.diff()
+
+
+def test_log_on_empty_repository_preserves_git_command_error(tmp_path: Path) -> None:
+    repository = tmp_path / "empty-repository"
+    repository.mkdir()
+    run_git(repository, "init")
+
+    with pytest.raises(GitCommandError):
+        GitService(repository).log()
