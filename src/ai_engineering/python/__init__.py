@@ -4,6 +4,7 @@ Python development package.
 
 from .exceptions import (
     PythonExecutionError,
+    PythonPermissionError,
     PythonToolError,
     SyntaxValidationError,
 )
@@ -14,6 +15,7 @@ from .models import (
 )
 from .service import PythonService
 from .tools import (
+    PythonTools,
     python_check_syntax,
     python_inspect_package,
     python_run_tests,
@@ -25,6 +27,7 @@ __all__ = [
     # Exceptions
     "PythonToolError",
     "PythonExecutionError",
+    "PythonPermissionError",
     "SyntaxValidationError",
 
     # Models
@@ -34,6 +37,7 @@ __all__ = [
 
     # Service
     "PythonService",
+    "PythonTools",
 
     # MCP tools
     "python_version",
