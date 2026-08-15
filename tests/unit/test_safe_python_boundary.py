@@ -30,7 +30,12 @@ def result_text(result: CallToolResult) -> str:
     return content.text
 
 
-def create_symlink_or_skip(link: Path, target: Path, *, target_is_directory: bool) -> None:
+def create_symlink_or_skip(
+    link: Path,
+    target: Path,
+    *,
+    target_is_directory: bool,
+) -> None:
     try:
         link.symlink_to(target, target_is_directory=target_is_directory)
     except OSError as exc:
