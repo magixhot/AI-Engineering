@@ -25,6 +25,7 @@
 | SDK-0001_2_PROJECT_TEMPLATE_CLI_DESIGN.md | SDK-0001.2 Project Template CLI contract | Implemented / verified |
 | TOOL-0001_CORE_TOOL_OPERATION_VERIFICATION_DESIGN.md | Core Workspace, Git, and Python tool-operation verification contract | Complete / Verified |
 | REL-0001_DISTRIBUTION_AND_RELEASE_VERIFICATION_DESIGN.md | Distribution and release verification contract | Complete / Verified |
+| REL-0002_RELEASE_PUBLICATION_DECISION_CONTRACT.md | Git tag, GitHub Release, PyPI, evidence, and publication-approval governance | Design / Decision Contract |
 | CI-0001_QUALITY_GATE_AUTOMATION_DESIGN.md | GitHub Actions quality-gate automation contract | Complete / Verified |
 | SAFE-0001_WORKSPACE_PATH_SAFETY_DESIGN.md | Workspace root, containment, link-escape, and controlled-error security contract/evidence | Complete / Verified |
 | SAFE-0001_VERIFICATION_EVIDENCE.md | Compact Linux/Windows SAFE-0001 verification record | Complete / Verified |
@@ -39,7 +40,7 @@
 | REL-0001 local distribution verification | COMPLETE / VERIFIED |
 | CI-0001 quality gate automation | COMPLETE / VERIFIED |
 | SAFE-0001 workspace path safety | COMPLETE / VERIFIED |
-| Next engineering milestone preparation | CURRENT PRIORITY |
+| REL-0002 release publication decision contract | DESIGN / CURRENT PRIORITY |
 | Additional MCP client interoperability | OPTIONAL / FUTURE EVIDENCE |
 | Diagnostics maintenance | ACTIVE |
 
@@ -58,6 +59,7 @@
 | REL-0001 local distribution verification | COMPLETE / VERIFIED |
 | CI-0001 quality gate automation | COMPLETE / VERIFIED |
 | SAFE-0001 workspace path safety | COMPLETE / VERIFIED |
+| REL-0002 release publication governance | DESIGN |
 | Additional client and IDE interoperability | PLANNED |
 
 ## Current Quality Baseline
