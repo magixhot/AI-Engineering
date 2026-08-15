@@ -7,9 +7,9 @@ import pytest
 
 import ai_engineering.engineering_bootstrap as bootstrap_module
 from ai_engineering.engineering_bootstrap import (
+    PYTHON_ENGINEERING_PROFILE,
     EngineeringBootstrapError,
     EngineeringBootstrapRequest,
-    PYTHON_ENGINEERING_PROFILE,
     bootstrap_engineering_project,
 )
 from ai_engineering.project_templates import create_standalone_project
