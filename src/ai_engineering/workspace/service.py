@@ -9,25 +9,67 @@ from pathlib import Path
 from .exceptions import (
     WorkspaceAlreadyExistsError,
     WorkspaceNotFoundError,
+    WorkspacePermissionError,
 )
 from .models import WorkspaceEntry
 
 
 class WorkspaceService:
-    """
-    Provides filesystem operations for the Engineering MCP.
-    """
+    """Provide filesystem operations with an optional workspace boundary."""
+
+    def __init__(self, workspace_root: Path | None = None) -> None:
+        if workspace_root is None:
+            self._workspace_root: Path | None = None
+            return
+
+        configured_root = workspace_root.expanduser()
+        try:
+            resolved_root = configured_root.resolve(strict=True)
+        except FileNotFoundError as exc:
+            raise WorkspaceNotFoundError(
+                f"Workspace root not found: {configured_root}"
+            ) from exc
+
+        if not resolved_root.is_dir():
+            raise WorkspaceNotFoundError(
+                f"Workspace root is not a directory: {configured_root}"
+            )
+
+        self._workspace_root = resolved_root
+
+    @property
+    def workspace_root(self) -> Path | None:
+        return self._workspace_root
+
+    def _authorize(self, path: Path) -> tuple[Path, Path]:
+        candidate = path.expanduser()
+        if self._workspace_root is None:
+            return candidate, candidate.resolve(strict=False)
+
+        if not candidate.is_absolute():
+            candidate = self._workspace_root / candidate
+
+        resolved = candidate.resolve(strict=False)
+        is_outside = (
+            resolved != self._workspace_root
+            and self._workspace_root not in resolved.parents
+        )
+        if is_outside:
+            raise WorkspacePermissionError(f"Path outside workspace root: {path}")
+
+        return candidate, resolved
 
     def list_directory(self, path: Path) -> list[WorkspaceEntry]:
-        if not path.exists():
+        candidate, _ = self._authorize(path)
+        if not candidate.exists():
             raise WorkspaceNotFoundError(f"Directory not found: {path}")
 
-        if not path.is_dir():
+        if not candidate.is_dir():
             raise WorkspaceNotFoundError(f"Not a directory: {path}")
 
         entries: list[WorkspaceEntry] = []
 
-        for item in sorted(path.iterdir()):
+        for item in sorted(candidate.iterdir()):
             entries.append(
                 WorkspaceEntry(
                     path=item,
@@ -40,10 +82,11 @@ class WorkspaceService:
         return entries
 
     def read_file(self, path: Path, encoding: str = "utf-8") -> str:
-        if not path.exists():
+        candidate, _ = self._authorize(path)
+        if not candidate.exists():
             raise WorkspaceNotFoundError(f"File not found: {path}")
 
-        return path.read_text(encoding=encoding)
+        return candidate.read_text(encoding=encoding)
 
     def write_file(
         self,
@@ -51,34 +94,51 @@ class WorkspaceService:
         content: str,
         encoding: str = "utf-8",
     ) -> None:
-        path.write_text(content, encoding=encoding)
+        candidate, _ = self._authorize(path)
+        candidate.write_text(content, encoding=encoding)
 
     def create_file(self, path: Path) -> None:
-        if path.exists():
+        candidate, _ = self._authorize(path)
+        if candidate.exists():
             raise WorkspaceAlreadyExistsError(f"File already exists: {path}")
 
-        path.parent.mkdir(parents=True, exist_ok=True)
-        path.touch()
+        candidate.parent.mkdir(parents=True, exist_ok=True)
+        candidate.touch()
 
     def create_directory(self, path: Path) -> None:
-        if path.exists():
+        candidate, _ = self._authorize(path)
+        if candidate.exists():
             raise WorkspaceAlreadyExistsError(
                 f"Directory already exists: {path}"
             )
 
-        path.mkdir(parents=True)
+        candidate.mkdir(parents=True)
 
     def move(self, source: Path, destination: Path) -> None:
-        if not source.exists():
+        source_candidate, source_resolved = self._authorize(source)
+        destination_candidate, _ = self._authorize(destination)
+
+        if (
+            self._workspace_root is not None
+            and source_resolved == self._workspace_root
+        ):
+            raise WorkspacePermissionError("Workspace root cannot be moved")
+
+        if not source_candidate.exists():
             raise WorkspaceNotFoundError(f"Source not found: {source}")
 
-        source.rename(destination)
+        source_candidate.rename(destination_candidate)
 
     def delete(self, path: Path) -> None:
-        if not path.exists():
+        candidate, resolved = self._authorize(path)
+
+        if self._workspace_root is not None and resolved == self._workspace_root:
+            raise WorkspacePermissionError("Workspace root cannot be deleted")
+
+        if not candidate.exists():
             raise WorkspaceNotFoundError(f"Path not found: {path}")
 
-        if path.is_file():
-            path.unlink()
+        if candidate.is_file():
+            candidate.unlink()
         else:
-            path.rmdir()
+            candidate.rmdir()

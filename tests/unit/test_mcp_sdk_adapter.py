@@ -14,6 +14,7 @@ from mcp.client.session import ClientSession
 from mcp.types import CallToolResult, TextContent
 
 from ai_engineering.git.service import GitService
+from ai_engineering.mcp.config import MCPConfig
 from ai_engineering.mcp.name_mapper import ToolNameMapper
 from ai_engineering.mcp.sdk_adapter import SDKAdapter
 from ai_engineering.mcp.server import create_server
@@ -28,8 +29,6 @@ def result_text(result: CallToolResult) -> str:
 
 @asynccontextmanager
 async def connected_session(adapter: SDKAdapter) -> AsyncIterator[ClientSession]:
-    """Run an SDK server and client session over public in-memory streams."""
-
     client_send: Any
     server_receive: Any
     client_send, server_receive = anyio.create_memory_object_stream(16)
@@ -53,21 +52,19 @@ async def connected_session(adapter: SDKAdapter) -> AsyncIterator[ClientSession]
 def build_adapter(observed_calls: list[tuple[str, int]]) -> SDKAdapter:
     registry = CompositeRegistry()
 
-    def echo(message: str, repeat: int = 1, enabled: bool = False) -> dict[str, Any]:
-        return {
-            "message": message * repeat,
-            "enabled": enabled,
-        }
+    def echo(
+        message: str,
+        repeat: int = 1,
+        enabled: bool = False,
+    ) -> dict[str, Any]:
+        return {"message": message * repeat, "enabled": enabled}
 
     def fail(reason: str) -> str:
         raise RuntimeError(f"failure: {reason}")
 
     def record(value: str, count: int = 1) -> dict[str, int | str]:
         observed_calls.append((value, count))
-        return {
-            "value": value,
-            "count": count,
-        }
+        return {"value": value, "count": count}
 
     registry.register(
         name="demo.echo",
@@ -109,15 +106,12 @@ def test_tool_name_mapping_round_trips_snake_case_operations(
 @pytest.mark.anyio
 async def test_list_tools_exposes_registered_mapped_names_and_schemas() -> None:
     adapter = build_adapter([])
-
     async with connected_session(adapter) as session:
         listed = await session.list_tools()
 
     tools = {tool.name: tool for tool in listed.tools}
     assert set(tools) == {"demo_echo", "demo_fail", "demo_record"}
-
-    schema = tools["demo_echo"].inputSchema
-    assert schema == {
+    assert tools["demo_echo"].inputSchema == {
         "type": "object",
         "properties": {
             "message": {"type": "string"},
@@ -131,27 +125,17 @@ async def test_list_tools_exposes_registered_mapped_names_and_schemas() -> None:
 @pytest.mark.anyio
 async def test_successful_mcp_call_maps_name_and_returns_text_content() -> None:
     adapter = build_adapter([])
-
     async with connected_session(adapter) as session:
         result = await session.call_tool(
             "demo_echo",
-            {
-                "message": "go",
-                "repeat": 2,
-                "enabled": True,
-            },
+            {"message": "go", "repeat": 2, "enabled": True},
         )
 
     assert result.isError is False
-    assert result.content == [
-        TextContent(
-            type="text",
-            text='''{
-  "message": "gogo",
-  "enabled": true
-}''',
-        )
-    ]
+    assert json.loads(result_text(result)) == {
+        "message": "gogo",
+        "enabled": True,
+    }
 
 
 @pytest.mark.anyio
@@ -172,7 +156,10 @@ async def test_mcp_call_dispatches_a_multiword_operation_name() -> None:
 
     async with connected_session(adapter) as session:
         listed = await session.list_tools()
-        result = await session.call_tool("demo_read_file", {"path": "sample.txt"})
+        result = await session.call_tool(
+            "demo_read_file",
+            {"path": "sample.txt"},
+        )
 
     assert [tool.name for tool in listed.tools] == ["demo_read_file"]
     assert result.isError is False
@@ -182,10 +169,8 @@ async def test_mcp_call_dispatches_a_multiword_operation_name() -> None:
 @pytest.mark.anyio
 async def test_workspace_read_file_returns_a_domain_error_for_a_missing_path(
     tmp_path: Path,
-    monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    monkeypatch.chdir(tmp_path)
-    server = create_server()
+    server = create_server(MCPConfig(workspace_root=tmp_path))
 
     async with connected_session(server.sdk) as session:
         listed = await session.list_tools()
@@ -196,20 +181,16 @@ async def test_workspace_read_file_returns_a_domain_error_for_a_missing_path(
 
     assert "workspace_read_file" in {tool.name for tool in listed.tools}
     assert result.isError is True
-    error_content = result.content[0]
-    assert isinstance(error_content, TextContent)
-    assert error_content.text.startswith("Error executing tool: File not found:")
-    assert "Unknown tool: workspace.read.file" not in error_content.text
+    assert result_text(result).startswith("Error executing tool: File not found:")
+    assert "Unknown tool: workspace.read.file" not in result_text(result)
 
 
 @pytest.mark.anyio
 async def test_builtin_workspace_sdk_calls_read_and_write_in_a_fixture(
     tmp_path: Path,
-    monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    monkeypatch.chdir(tmp_path)
     (tmp_path / "source.txt").write_text("source", encoding="utf-8")
-    server = create_server()
+    server = create_server(MCPConfig(workspace_root=tmp_path))
 
     async with connected_session(server.sdk) as session:
         listed = await session.list_tools()
@@ -222,20 +203,40 @@ async def test_builtin_workspace_sdk_calls_read_and_write_in_a_fixture(
             {"path": "written.txt", "content": "written"},
         )
 
-    assert {"workspace_read_file", "workspace_write_file"} <= {
-        tool.name for tool in listed.tools
-    }
-    assert read_result.isError is False
+    names = {tool.name for tool in listed.tools}
+    assert {"workspace_read_file", "workspace_write_file"} <= names
     assert json.loads(result_text(read_result)) == {
         "path": "source.txt",
         "content": "source",
     }
-    assert write_result.isError is False
     assert json.loads(result_text(write_result)) == {
         "success": True,
         "path": "written.txt",
     }
     assert (tmp_path / "written.txt").read_text(encoding="utf-8") == "written"
+
+
+@pytest.mark.anyio
+async def test_builtin_workspace_sdk_rejects_an_outside_path(
+    tmp_path: Path,
+) -> None:
+    root = tmp_path / "workspace"
+    root.mkdir()
+    outside = tmp_path / "outside.txt"
+    outside.write_text("secret", encoding="utf-8")
+    server = create_server(MCPConfig(workspace_root=root))
+
+    async with connected_session(server.sdk) as session:
+        result = await session.call_tool(
+            "workspace_read_file",
+            {"path": str(outside)},
+        )
+
+    assert result.isError is True
+    assert result_text(result).startswith(
+        "Error executing tool: Path outside workspace root:"
+    )
+    assert "secret" not in result_text(result)
 
 
 @pytest.mark.anyio
@@ -263,7 +264,7 @@ async def test_builtin_git_status_dispatches_in_an_isolated_repository(
         check=True,
     )
     monkeypatch.setattr(git_tools, "_service", GitService(tmp_path))
-    server = create_server()
+    server = create_server(MCPConfig(workspace_root=tmp_path))
 
     async with connected_session(server.sdk) as session:
         listed = await session.list_tools()
@@ -279,8 +280,10 @@ async def test_builtin_git_status_dispatches_in_an_isolated_repository(
 
 
 @pytest.mark.anyio
-async def test_builtin_python_version_dispatches_through_the_sdk() -> None:
-    server = create_server()
+async def test_builtin_python_version_dispatches_through_the_sdk(
+    tmp_path: Path,
+) -> None:
+    server = create_server(MCPConfig(workspace_root=tmp_path))
 
     async with connected_session(server.sdk) as session:
         listed = await session.list_tools()
@@ -317,7 +320,10 @@ async def test_tool_execution_failure_returns_an_mcp_error_result() -> None:
 
     assert result.isError is True
     assert result.content == [
-        TextContent(type="text", text="Error executing tool: failure: expected")
+        TextContent(
+            type="text",
+            text="Error executing tool: failure: expected",
+        )
     ]
 
 
@@ -331,7 +337,8 @@ async def test_unknown_tool_returns_a_deterministic_mcp_error_result() -> None:
     assert result.isError is True
     assert result.content == [
         TextContent(
-            type="text", text="Error executing tool: 'Unknown tool: demo.missing'"
+            type="text",
+            text="Error executing tool: 'Unknown tool: demo.missing'",
         )
     ]
 
