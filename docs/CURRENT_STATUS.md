@@ -3,7 +3,7 @@
 **Snapshot date:** 2026-08-15
 **Status:** ACTIVE
 **Release line:** 0.1.0
-**Current phase:** SAFE-0001 Complete / Verified
+**Current phase:** REL-0002 Complete / Verified — v0.1.0 published on GitHub
 
 ## State by Delivery Area
 
@@ -19,29 +19,30 @@
 | SDK-0001.1 Standalone Python Project Scaffold | COMPLETE / VERIFIED | The opt-in scaffold generates packaging, source, and smoke-test files while preserving V1 output by default. |
 | SDK-0001.2 Project Template CLI | COMPLETE / VERIFIED | `ai-engineering project create` is an installed console-script frontend over the public template API, with V1/scaffold, stdout/stderr, and exit-code behavior verified. |
 | TOOL-0001 Core Tool Operation Verification | COMPLETE / VERIFIED | All 15 existing Workspace, Git, and Python operations have isolated service/registry/representative SDK-session verification. |
-| REL-0001 Local Distribution Verification | COMPLETE / VERIFIED | Wheel and sdist artifact policy, isolated wheel install, installed metadata/import, and installed CLI smoke are verified locally. GitHub Release and PyPI publishing remain out of scope. |
+| REL-0001 Local Distribution Verification | COMPLETE / VERIFIED | Wheel and sdist artifact policy, isolated wheel install, installed metadata/import, and installed CLI smoke are verified. |
 | CI-0001 Quality Gate Automation | COMPLETE / VERIFIED | GitHub Actions covers Ruff, mypy, full pytest, and REL-0001 on Linux/Python 3.11 with successful PR and post-merge runs. |
 | SAFE-0001 Workspace Path Safety Boundary | COMPLETE / VERIFIED | Active MCP Workspace handlers enforce `MCPConfig.workspace_root`; outside traversal/absolute/link escapes are rejected; Linux CI and Windows-local verification are recorded. |
-| Quality gates | PASS | Linux CI: pytest 99 passed, Ruff 0, mypy 0. Windows local: pytest 98 passed / 1 permitted symlink-fixture skip, Ruff 0, mypy 0. |
+| REL-0002 Release Publication | COMPLETE / VERIFIED | Tag `v0.1.0` points to approved commit `73929bd15fa7637db8162aac199697582bb25e67`; GitHub Release `AI-Engineering 0.1.0` is published. PyPI remains not approved/not published. |
+| Quality gates | PASS | Release candidate Linux CI: pytest 99 passed, Ruff 0, mypy 0. Windows local: pytest 98 passed / 1 permitted symlink-fixture skip, Ruff 0, mypy 0. |
 
 ## Current Priorities
 
-1. Maintain SAFE-0001, CI-0001, REL-0001, MCP-0002/0003, and SDK-0001 evidence from observed behavior.
-2. Preserve the verified MCP Workspace root boundary without expanding it implicitly to Git/Python subprocess semantics.
-3. Maintain MCP diagnostics for protocol and tool-execution investigation.
-4. Select the next engineering milestone separately from the verified security, CI, distribution, and project-template baselines.
-5. Verify additional MCP clients only when separately scoped and supported by evidence.
+1. Preserve the published `v0.1.0` release evidence and the verified SAFE-0001, CI-0001, REL-0001, MCP-0002/0003, and SDK-0001 contracts.
+2. Keep PyPI and future release publication behind separate explicit approval decisions.
+3. Preserve the verified MCP Workspace root boundary without expanding it implicitly to Git/Python subprocess semantics.
+4. Maintain MCP diagnostics for protocol and tool-execution investigation.
+5. Select the next engineering milestone from a fresh post-v0.1.0 roadmap audit.
 
 ## Implemented Baseline
 
-The 0.1.0 release line now records the official Python MCP SDK boundary, 15 registered tool operations, SDK project bootstrap API/scaffold/CLI, local wheel/sdist verification, automated GitHub Actions quality gates, and a fail-closed MCP Workspace path boundary rooted at `MCPConfig.workspace_root`.
+AI-Engineering 0.1.0 records the official Python MCP SDK boundary, 15 registered tool operations, SDK project bootstrap API/scaffold/CLI, local wheel/sdist verification, automated GitHub Actions quality gates, and a fail-closed MCP Workspace path boundary rooted at `MCPConfig.workspace_root`.
 
-This is an implemented and verified engineering baseline for the recorded contracts. It is not a claim of general production readiness, OS-level sandboxing, Git/Python subprocess containment, or compatibility with unverified MCP clients.
+GitHub publication is now verified for tag `v0.1.0` and release `AI-Engineering 0.1.0`. This is an implemented and verified engineering baseline for the recorded contracts. It is not a claim of general production readiness, OS-level sandboxing, Git/Python subprocess containment, compatibility with unverified MCP clients, or PyPI availability.
 
 ## Active Work
 
-MCP-0002, MCP-0003, SDK-0001 V1/1.1/1.2, TOOL-0001, REL-0001, CI-0001, and SAFE-0001 are complete and verified for their approved scopes. SAFE-0001 was verified on Linux CI and locally on Windows; the Windows symlink fixture was skipped only because the process lacked the privilege required to create a symlink, while Linux CI executed the full 99-test suite successfully.
+MCP-0002, MCP-0003, SDK-0001 V1/1.1/1.2, TOOL-0001, REL-0001, CI-0001, SAFE-0001, and REL-0002 are complete and verified for their approved scopes. REL-0002 publication was limited to Git tag `v0.1.0` and GitHub Release `AI-Engineering 0.1.0`; PyPI was explicitly excluded.
 
 ## Planned Work
 
-Broader engineering automation, additional client/IDE interoperability, public release/publication policy, and any future cross-tool security boundaries remain planned until separately scoped and validated.
+The next milestone is intentionally not preselected. Broader engineering automation, additional client/IDE interoperability, PyPI/publication expansion, and any future cross-tool security boundaries remain planned until separately scoped and validated.
