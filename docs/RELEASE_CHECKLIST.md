@@ -33,6 +33,26 @@ production readiness beyond the checks listed here.
 - [x] Current TOOL-0001 verification: Ruff passed (0 findings).
 - [x] Current TOOL-0001 verification: mypy passed (0 findings).
 - [x] Current TOOL-0001 verification: `git diff --check` passed.
+- [x] Current REL-0001 verification: pytest passed (90 tests).
+- [x] Current REL-0001 verification: Ruff passed (0 findings).
+- [x] Current REL-0001 verification: mypy passed (0 findings).
+- [x] Current REL-0001 verification: `git diff --check` passed.
+
+## Local Distribution Verification
+
+- [x] Wheel build passed (`ai_engineering-0.1.0-py3-none-any.whl`).
+- [x] Sdist build passed (`ai_engineering-0.1.0.tar.gz`).
+- [x] Wheel content passed the runtime-only policy.
+- [x] Sdist content passed the approved source policy.
+- [x] Isolated wheel install passed in a fresh external virtual environment.
+- [x] Installed package import and path-isolation checks passed.
+- [x] Installed version and distribution metadata checks passed.
+- [x] Installed `ai-engineering` console-script help and project-create smoke checks passed.
+- [x] Current verification used package-index access for isolated build dependency resolution;
+  offline support is not claimed.
+- [ ] GitHub Release creation is not part of REL-0001.
+- [ ] PyPI publishing is not part of REL-0001.
+- [ ] CI automation is not part of REL-0001.
 
 ## Documentation
 
