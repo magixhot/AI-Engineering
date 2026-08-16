@@ -97,7 +97,11 @@ class MigrationRegistry:
     def contracts(self) -> tuple[MigrationContract, ...]:
         return self._contracts
 
-    def resolve(self, migration_id: str, identity: ProjectIdentity) -> MigrationContract:
+    def resolve(
+        self,
+        migration_id: str,
+        identity: ProjectIdentity,
+    ) -> MigrationContract:
         match = next(
             (item for item in self._contracts if item.migration_id == migration_id),
             None,
@@ -214,7 +218,11 @@ def _validate_python_engineering_v1(
         raise UnsupportedProjectIdentityError("pytest configuration is unsupported")
     if not isinstance(ruff_config, dict) or not isinstance(mypy_config, dict):
         raise UnsupportedProjectIdentityError("tool configuration is unsupported")
-    _expect(pytest_config.get("testpaths"), ["tests"], "tool.pytest.ini_options.testpaths")
+    _expect(
+        pytest_config.get("testpaths"),
+        ["tests"],
+        "tool.pytest.ini_options.testpaths",
+    )
     _expect(ruff_config.get("line-length"), 88, "tool.ruff.line-length")
     _expect(ruff_config.get("target-version"), "py311", "tool.ruff.target-version")
     lint = ruff_config.get("lint")
@@ -223,7 +231,11 @@ def _validate_python_engineering_v1(
     _expect(lint.get("select"), ["E", "F", "I"], "tool.ruff.lint.select")
     _expect(mypy_config.get("python_version"), "3.11", "tool.mypy.python_version")
     _expect(mypy_config.get("files"), ["src", "tests"], "tool.mypy.files")
-    _expect(mypy_config.get("warn_unused_configs"), True, "tool.mypy.warn_unused_configs")
+    _expect(
+        mypy_config.get("warn_unused_configs"),
+        True,
+        "tool.mypy.warn_unused_configs",
+    )
 
     distribution_name = project.get("name")
     if not isinstance(distribution_name, str) or not distribution_name.strip():
