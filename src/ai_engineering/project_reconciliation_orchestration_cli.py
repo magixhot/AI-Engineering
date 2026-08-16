@@ -41,11 +41,17 @@ def print_reconciliation_run_result(
             "policy_decision="
             f"{decision.workflow}:{decision.state}:{effective_max_steps}"
         )
-        for issue in decision.issues:
-            print(f"policy_issue={issue.code}:{_single_line(issue.detail)}")
+        for policy_issue in decision.issues:
+            print(
+                f"policy_issue={policy_issue.code}:"
+                f"{_single_line(policy_issue.detail)}"
+            )
     print(f"issue_count={len(result.issues)}")
-    for issue in result.issues:
-        print(f"issue={issue.code}:{_single_line(issue.detail)}")
+    for orchestration_issue in result.issues:
+        print(
+            f"issue={orchestration_issue.code}:"
+            f"{_single_line(orchestration_issue.detail)}"
+        )
     print(f"final_plan_state={result.final_plan.state}")
     print(f"remaining_step_count={len(result.final_plan.steps)}")
 
