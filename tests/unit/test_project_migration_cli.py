@@ -5,10 +5,6 @@ from pathlib import Path
 import pytest
 
 import ai_engineering.cli as cli
-from ai_engineering.engineering_bootstrap import (
-    EngineeringBootstrapRequest,
-    bootstrap_engineering_project,
-)
 from ai_engineering.project_migration import (
     ACTION_CREATE_FILE,
     OWNERSHIP_GENERATED_ABSENT,
@@ -17,16 +13,21 @@ from ai_engineering.project_migration import (
     MigrationPathRule,
     MigrationRegistry,
 )
+from ai_engineering.project_templates import (
+    StandaloneProjectRequest,
+    create_standalone_project,
+)
 
 
 def _project(tmp_path: Path) -> Path:
     root = tmp_path / "migration-cli-project"
-    bootstrap_engineering_project(
-        EngineeringBootstrapRequest(
+    create_standalone_project(
+        StandaloneProjectRequest(
             target_directory=root,
             project_name="Migration CLI Project",
             project_description="AUTO-0004 CLI verification fixture.",
             author="Example Maintainer",
+            include_python_scaffold=True,
         )
     )
     return root
