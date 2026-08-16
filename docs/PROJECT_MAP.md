@@ -83,8 +83,8 @@ AUTO-0010 policy can restrict known workflow identities, progress limits, and ap
 - AUTO-0010-03 safety/determinism/Git invariants: COMPLETE / VERIFIED; PR #108; corrected Quality #214; post-merge #215.
 - AUTO-0010-04 orchestration/public CLI integration: COMPLETE / VERIFIED; PR #109; corrected Quality #220; post-merge #221.
 - AUTO-0010-05 installed distribution verification: COMPLETE / VERIFIED; PR #110; Quality #222; post-merge #223.
-- AUTO-0010-06 final evidence/documentation reconciliation: IN PROGRESS.
+- AUTO-0010-06 final evidence/documentation reconciliation: COMPLETE / VERIFIED; PR #111; Quality #224; post-merge #225.
 
-Verified implementation baseline entering AUTO-0010-06: `272b9328a819f9a4fc281f41aed9970cd05e208f`.
+Final verified AUTO-0010 baseline: `1abd853da67cfb3954baa04f310837388b60b4f8`.
 
 `tests/release/` verifies installed-wheel behavior outside the source checkout, including AUTO-0010 policy refusal, policy progress limits, malformed-policy fail-closed behavior, and Git safety evidence.
