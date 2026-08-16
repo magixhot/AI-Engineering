@@ -15,7 +15,9 @@ from ai_engineering.project_templates import (
 )
 
 
-def _run(command: list[str], *, cwd: Path | None = None) -> subprocess.CompletedProcess[str]:
+def _run(
+    command: list[str], *, cwd: Path | None = None
+) -> subprocess.CompletedProcess[str]:
     environment = os.environ.copy()
     environment.pop("PYTHONPATH", None)
     return subprocess.run(
@@ -38,13 +40,13 @@ def _git_snapshot(root: Path) -> dict[str, str]:
             ["git", "status", "--porcelain=v1", "--untracked-files=all"],
             cwd=root,
         ).stdout,
-        "remotes": _run(
-            ["git", "remote", "-v"], cwd=root
-        ).stdout,
+        "remotes": _run(["git", "remote", "-v"], cwd=root).stdout,
     }
 
 
 def _make_git_project(root: Path) -> None:
+    if (root / ".git").is_dir():
+        return
     _run(["git", "init", "-b", "main"], cwd=root)
     _run(["git", "add", "."], cwd=root)
     _run(
@@ -72,11 +74,25 @@ def _build_installed_cli(tmp_path: Path) -> Path:
     python = venv / "Scripts" / "python.exe"
     if not python.exists():
         python = venv / "bin" / "python"
-    _run([str(python), "-m", "pip", "install", "--no-deps", str(wheel_candidates[0])])
+    _run(
+        [
+            str(python),
+            "-m",
+            "pip",
+            "install",
+            "--no-deps",
+            str(wheel_candidates[0]),
+        ]
+    )
     return venv
 
 
-def _cli(venv: Path, args: list[str], *, cwd: Path) -> subprocess.CompletedProcess[str]:
+def _cli(
+    venv: Path,
+    args: list[str],
+    *,
+    cwd: Path,
+) -> subprocess.CompletedProcess[str]:
     executable = venv / "Scripts" / "ai-engineering.exe"
     if not executable.exists():
         executable = venv / "bin" / "ai-engineering"
