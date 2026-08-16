@@ -1,4 +1,4 @@
-"""Command-line interface for project creation, bootstrap, and documentation sync."""
+"""Command-line interface for project engineering workflows."""
 
 from __future__ import annotations
 
@@ -30,6 +30,17 @@ from .project_inspection import (
     ProjectInspectionError,
     ProjectInspectionRequest,
     inspect_project_state,
+)
+from .project_migration import (
+    DEFAULT_MIGRATION_REGISTRY,
+    ProjectMigrationError,
+    ProjectMigrationPlan,
+    ProjectMigrationRequest,
+    plan_project_migration,
+)
+from .project_migration_apply import (
+    ProjectMigrationApplyError,
+    apply_project_migration,
 )
 from .project_templates import (
     ProjectTemplateError,
@@ -75,6 +86,16 @@ def _parser() -> argparse.ArgumentParser:
     for action in ("check", "plan", "apply"):
         ownership_command = ownership_actions.add_parser(action)
         ownership_command.add_argument("--project", required=True)
+
+    migrate_project = actions.add_parser("migrate")
+    migrate_actions = migrate_project.add_subparsers(
+        dest="migrate_action",
+        required=True,
+    )
+    for action in ("check", "plan", "apply"):
+        migrate_command = migrate_actions.add_parser(action)
+        migrate_command.add_argument("--project", required=True)
+        migrate_command.add_argument("--migration", required=True)
 
     return parser
 
@@ -257,6 +278,69 @@ def _project_docs(args: argparse.Namespace) -> int:
     return _docs_apply(project_root)
 
 
+def _migration_plan(args: argparse.Namespace) -> ProjectMigrationPlan:
+    return plan_project_migration(
+        ProjectMigrationRequest(
+            Path(args.project).resolve(),
+            args.migration,
+        ),
+        DEFAULT_MIGRATION_REGISTRY,
+    )
+
+
+def _migration_status(plan: ProjectMigrationPlan) -> str:
+    if plan.manual_review:
+        return "manual_review"
+    if plan.operations:
+        return "ready"
+    return "already_target"
+
+
+def _print_migration_plan(plan: ProjectMigrationPlan) -> None:
+    print(f"project={plan.project_root}")
+    print(f"migration={plan.migration_id}")
+    print(f"source_baseline={plan.source_baseline}")
+    print(f"target_baseline={plan.target_baseline}")
+    print(f"observation_count={len(plan.observations)}")
+    print(f"operation_count={len(plan.operations)}")
+    print(f"manual_review_count={len(plan.manual_review)}")
+    for observation in plan.observations:
+        digest = observation.original_sha256 or "none"
+        print(
+            f"observation={observation.path}:{observation.ownership}:"
+            f"{observation.state}:{digest}"
+        )
+    for operation in plan.operations:
+        digest = operation.original_sha256 or "none"
+        print(
+            f"operation={operation.path}:{operation.action}:"
+            f"{operation.ownership}:{digest}"
+        )
+    for path in plan.manual_review:
+        print(f"manual_review={path}")
+    print(f"status={_migration_status(plan)}")
+
+
+def _project_migrate(args: argparse.Namespace) -> int:
+    plan = _migration_plan(args)
+    if args.migrate_action == "check":
+        _print_migration_plan(plan)
+        return 1 if plan.operations or plan.manual_review else 0
+    if args.migrate_action == "plan":
+        _print_migration_plan(plan)
+        return 1 if plan.manual_review else 0
+
+    result = apply_project_migration(plan)
+    print(f"project={result.project_root}")
+    print(f"migration={result.migration_id}")
+    print(f"target_baseline={result.target_baseline}")
+    print(f"changed_count={len(result.changed_paths)}")
+    for path in result.changed_paths:
+        print(f"changed_path={path}")
+    print("verification=passed")
+    return 0
+
+
 def main(argv: Sequence[str] | None = None) -> int:
     args = _parser().parse_args(argv)
     try:
@@ -264,12 +348,16 @@ def main(argv: Sequence[str] | None = None) -> int:
             return _bootstrap_project(args)
         if args.action == "docs":
             return _project_docs(args)
+        if args.action == "migrate":
+            return _project_migrate(args)
         return _create_project(args)
     except (
         DocumentationOwnershipError,
         DocumentationSyncError,
         EngineeringBootstrapError,
         ProjectInspectionError,
+        ProjectMigrationApplyError,
+        ProjectMigrationError,
         ProjectTemplateError,
         subprocess.CalledProcessError,
         OSError,
