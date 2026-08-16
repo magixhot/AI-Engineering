@@ -61,6 +61,29 @@ V1 writes only machine-owned sections of `CURRENT_STATUS.md`, `MASTER_INDEX.md`,
 stage or commit Git changes, execute project code, install dependencies, contact remote services, or
 initialize markers automatically.
 
+### AUTO-0003 Documentation Ownership Initialization
+
+**Status:** COMPLETE / VERIFIED
+
+AUTO-0003 provides the explicit initialization layer for the three AUTO-0002 writable documents when
+the approved marker pair is completely absent and deterministic initialization is safe. It provides
+ownership-state classification, deterministic read-only planning, SHA-256 guarded apply, staged
+replacement/rollback behavior, post-write verification, AUTO-0002 handoff verification, idempotency,
+and Git HEAD/index invariants.
+
+Installed commands are:
+
+```text
+ai-engineering project docs ownership check --project PATH
+ai-engineering project docs ownership plan --project PATH
+ai-engineering project docs ownership apply --project PATH
+```
+
+Partial, duplicate, malformed, unsupported, missing-document, mixed-newline, and stale-plan states
+fail closed. Existing AUTO-0002 commands remain unchanged and never initialize markers implicitly.
+The ownership workflow is exercised through an isolated installed wheel outside the source checkout.
+Verification evidence is recorded in `AUTO-0003_VERIFICATION_EVIDENCE.md`.
+
 ### SAFE-0002 Git/Python Execution Safety
 
 **Status:** COMPLETE / VERIFIED
@@ -78,10 +101,10 @@ code already authorized to execute inside the workspace.
 
 ## Current Priority
 
-Preserve the verified MCP, SDK-0001, SAFE-0001, SAFE-0002, CI-0001, release, AUTO-0001, and AUTO-0002
-contracts. Select the next engineering milestone from a fresh post-SAFE-0002 roadmap audit rather
-than implicitly expanding documentation ownership, execution surfaces, client claims, or release
-scope.
+Preserve the verified MCP, SDK-0001, SAFE-0001, SAFE-0002, CI-0001, release, AUTO-0001, AUTO-0002,
+and AUTO-0003 contracts. Select the next engineering milestone from a fresh post-AUTO-0003 roadmap
+audit rather than implicitly expanding documentation ownership, execution surfaces, client claims,
+or release scope.
 
 ## Planned
 
@@ -93,7 +116,7 @@ and other clients remain unverified.
 
 ### Future Engineering Capabilities
 
-Potential future work includes a separately designed AUTO-0002 ownership-marker initialization flow,
-additional bootstrap profiles, broader project update/migration behavior, new bounded execution tools,
-publication expansion, and additional engineering automation. None of these are implied by existing
-verified contracts and each requires its own approved design and evidence.
+Potential future work includes additional bootstrap profiles, broader project update/migration
+behavior, new bounded execution tools, publication expansion, additional client/IDE interoperability,
+and additional engineering automation. None of these are implied by existing verified contracts and
+each requires its own approved design and evidence.
