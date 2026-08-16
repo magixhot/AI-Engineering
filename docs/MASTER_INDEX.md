@@ -38,7 +38,8 @@
 | AUTO-0005_VERIFICATION_EVIDENCE.md | AUTO-0005 evidence | Complete / Verified |
 | AUTO-0006_ENGINEERING_PROJECT_HEALTH_READINESS_AUDIT_DESIGN.md | Health/readiness contract | Complete / Verified |
 | AUTO-0006_VERIFICATION_EVIDENCE.md | AUTO-0006 evidence | Complete / Verified |
-| AUTO-0007_ENGINEERING_PROJECT_RECONCILIATION_PLAN_DESIGN.md | AUTO-0007 reconciliation contract and staged delivery | Complete / Verified |
+| AUTO-0007_ENGINEERING_PROJECT_RECONCILIATION_PLAN_DESIGN.md | Read-only reconciliation planning contract | Complete / Verified |
+| AUTO-0008_GUARDED_PROJECT_RECONCILIATION_APPLY_DESIGN.md | Guarded one-step reconciliation execution authority contract | Proposed / AUTO-0008-01 |
 
 ## Active Engineering Work
 
@@ -48,13 +49,8 @@
 | CI quality gates | COMPLETE / VERIFIED |
 | Workspace/Git/Python safety | COMPLETE / VERIFIED |
 | REL-0003 v0.2.0 publication | COMPLETE / VERIFIED |
-| AUTO-0001 | COMPLETE / VERIFIED |
-| AUTO-0002 | COMPLETE / VERIFIED |
-| AUTO-0003 | COMPLETE / VERIFIED |
-| AUTO-0004 | COMPLETE / VERIFIED |
-| AUTO-0005 | COMPLETE / VERIFIED |
-| AUTO-0006 | COMPLETE / VERIFIED |
-| AUTO-0007 | COMPLETE / VERIFIED |
+| AUTO-0001 through AUTO-0007 | COMPLETE / VERIFIED |
+| AUTO-0008 | IN PROGRESS — STAGE 01 DESIGN |
 | Additional MCP client interoperability | OPTIONAL / FUTURE EVIDENCE |
 | Diagnostics maintenance | ACTIVE |
 
@@ -69,22 +65,20 @@
 | REL-0001 / REL-0002 / REL-0003 | COMPLETE / VERIFIED |
 | CI-0001 | COMPLETE / VERIFIED |
 | SAFE-0001 / SAFE-0002 | COMPLETE / VERIFIED |
-| AUTO-0001 through AUTO-0006 | COMPLETE / VERIFIED |
-| AUTO-0007-01 Design | COMPLETE / VERIFIED |
-| AUTO-0007-02 Planner | COMPLETE / VERIFIED — PR #83 / Quality #147 |
-| AUTO-0007-03 Invariants | COMPLETE / VERIFIED — PR #84 / Quality #148 + #149 |
-| AUTO-0007-04 Public CLI | COMPLETE / VERIFIED — PR #85 / Quality #157 + #160 |
-| AUTO-0007-05 Installed Distribution Verification | COMPLETE / VERIFIED — PR #86 / Quality #161 + #162 |
-| AUTO-0007-06 Final Reconciliation / Documentation | COMPLETE / VERIFIED — PR #87 / Quality #163 + #164 |
+| AUTO-0001 through AUTO-0007 | COMPLETE / VERIFIED |
+| AUTO-0008-01 Apply Design / Authority Contract | IN PROGRESS |
+| AUTO-0008-02 Guarded Executor Core | PLANNED / BLOCKED |
+| AUTO-0008-03 Stale Plan / Failure / Git Safety Invariants | PLANNED / BLOCKED |
+| AUTO-0008-04 Public CLI | PLANNED / BLOCKED |
+| AUTO-0008-05 Installed Distribution Verification | PLANNED / BLOCKED |
+| AUTO-0008-06 Final Evidence / Documentation Reconciliation | PLANNED / BLOCKED |
 
 ## Current Quality Baseline
 
-- AUTO-0007-02: Quality #147 passed.
-- AUTO-0007-03: Quality #148 and post-merge #149 passed.
-- AUTO-0007-04: corrected Quality #157 and post-merge #160 passed.
-- AUTO-0007-05: Quality #161 and post-merge #162 passed.
-- AUTO-0007-06: Quality #163 and post-merge #164 passed.
-- The AUTO-0007-04 formatting-only failure #150 is historical evidence and is superseded by the corrected passing run #157.
+- AUTO-0007 implementation/evidence remained verified through its stage gates.
+- Post-AUTO-0007 documentation reconciliation: Quality #167/#168, #169/#170, and #171/#172 passed.
+- AUTO-0008 starts from master `4af3f7ff6933ab614705e2fdfeada65c23ad1496`, verified by post-merge Quality #172.
+- AUTO-0008-01 requires its own Quality and post-merge gates before AUTO-0008-02 may begin.
 
 ## Published Release
 
@@ -113,4 +107,4 @@ src/ai_engineering/
 └── python_engineering_baseline.py
 ```
 
-The repository has no `transport/` package.
+AUTO-0008-01 is design-only; no new production source module exists yet. The repository has no `transport/` package.

@@ -18,37 +18,56 @@ After reading them, continue from `CURRENT_STATUS.md` and the current roadmap. `
 
 ## Current Working State
 
-AI-Engineering has completed and verified the documentation foundation, MCP-0002, MCP-0003, SDK-0001 Project Templates V1, SDK-0001.1 Standalone Python Project Scaffold, SDK-0001.2 Project Template CLI, TOOL-0001 Core Tool Operation Verification, REL-0001 Local Distribution Verification, CI-0001 Quality Gate Automation, SAFE-0001 Workspace Path Safety Boundary, SAFE-0002 Git/Python Execution Safety, REL-0002 publication governance, REL-0003 v0.2.0 GitHub publication, AUTO-0001 Engineering Project Bootstrap, AUTO-0002 Project Documentation Synchronization, AUTO-0003 Documentation Ownership Initialization, AUTO-0004 Project Update/Migration Framework, AUTO-0005 Python Engineering Baseline V2 / first production migration, AUTO-0006 Project Health/Readiness Audit, and AUTO-0007 Engineering Project Reconciliation Plan for their approved scopes.
-
-AUTO-0007 is COMPLETE / VERIFIED. Stages 01–06 are closed. The final verified master baseline is `6695dda55ef127581e655902c14893fac9ed2a6e`. AUTO-0007-04 Public CLI was merged in PR #85 and verified by Quality #157 plus post-merge #160. AUTO-0007-05 Installed Distribution Verification was merged in PR #86 and verified by Quality #161 plus post-merge #162. AUTO-0007-06 Final Reconciliation / Documentation was merged in PR #87 and verified by Quality #163 plus post-merge #164.
-
-AUTO-0007 is explicitly read-only. The planner is deterministic and fail-closed. AUTO-0007-03 verifies manual-review/unsupported behavior, ordering, determinism, project-byte preservation, and Git invariants. AUTO-0007-04 exposes the planner through `ai-engineering project reconcile plan --project PATH` without adding apply/write authority, new migration edges, or publication behavior. AUTO-0007-05 verifies the installed-wheel/public CLI path. AUTO-0007-06 reconciles documentation with the final verified repository state.
-
-## Current State
-
-The repository is at a clean milestone boundary. No next implementation milestone is currently approved. Future work must begin with a separate design/contract and evidence plan rather than being inferred from completion of AUTO-0007.
+AI-Engineering has completed and verified AUTO-0001 through AUTO-0007 for their approved scopes. AUTO-0007 remains a deterministic, fail-closed, read-only reconciliation planner exposed through:
 
 ```text
-AUTO-0007 COMPLETE / VERIFIED
-        ↓
-clean master baseline
-        ↓
-next milestone requires separate design / contract / evidence
+ai-engineering project reconcile plan --project PATH
 ```
 
-## Engineering Guardrails
+The post-AUTO-0007 documentation reconciliation is closed through PR #91. The AUTO-0008 milestone-start baseline is `4af3f7ff6933ab614705e2fdfeada65c23ad1496`, verified by Quality #171 and post-merge Quality #172.
+
+## Active Milestone
+
+AUTO-0008 — Guarded Project Reconciliation Apply is active at **AUTO-0008-01 — Apply Design / Authority Contract**.
+
+Read `AUTO-0008_GUARDED_PROJECT_RECONCILIATION_APPLY_DESIGN.md` before any AUTO-0008 implementation work.
+
+AUTO-0008 introduces a separate execution-authority boundary. It must not add write behavior to AUTO-0007. It may apply at most one exact eligible reconciliation step per call and may delegate only to an already-approved existing subsystem apply primitive.
+
+AUTO-0008-01 is documentation-only. AUTO-0008-02 remains blocked until the design stage passes Quality, merge, and post-merge verification.
+
+```text
+AUTO-0007 COMPLETE / VERIFIED / READ-ONLY
+        ↓
+AUTO-0008-01 DESIGN / AUTHORITY CONTRACT
+        ↓
+Quality → merge → post-merge gate
+        ↓
+AUTO-0008-02 only after successful gate
+```
+
+## AUTO-0008 Guardrails
+
+- Preserve AUTO-0007 read-only behavior unchanged.
+- No arbitrary file writes or arbitrary command execution.
+- No new migration edges, ownership semantics, writable document classes, or publication authority.
+- One actionable step per executor call.
+- Reinspect before every write and after every successful apply.
+- Stale plan, unsupported identity, manual-review condition, or reinspection boundary must fail closed with zero unauthorized writes.
+- Delegate mutation to the existing subsystem that already owns the approved write primitive.
+- Do not claim stronger atomicity or rollback guarantees than the delegated subsystem provides.
+- No `apply all`, `force`, stale-plan bypass, Git commit/tag/push behavior, TestPyPI, or PyPI behavior.
+
+## General Engineering Guardrails
 
 - Preserve originals.
 - Extend, never replace.
 - Documentation before implementation.
 - Keep changes small, testable, deterministic, and reviewable.
-- Do not redesign existing architecture without a separate approved contract.
 - Keep environment-specific absolute paths out of project code and documentation contracts.
 - Make compatibility and security claims only from recorded evidence.
-- Treat published tags/releases as immutable historical evidence; post-release `master` work does not retroactively change them.
-- Do not expand writable documents, ownership semantics, migration scope, or publication scope without a separate approved contract.
-- Preserve AUTO-0007 read-only, deterministic, fail-closed boundaries unless explicitly redesigned.
-- Do not expand SAFE-0002 claims to OS sandboxing, arbitrary-command containment, or future Git/Python tools without a separate contract and evidence.
+- Treat published tags/releases as immutable historical evidence.
+- Do not expand SAFE-0002 claims without a separate contract and evidence.
 
 ## Project Context
 
