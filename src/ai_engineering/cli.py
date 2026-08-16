@@ -43,6 +43,7 @@ from .project_migration_apply import (
     ProjectMigrationApplyError,
     apply_project_migration,
 )
+from .project_reconciliation_cli import run_reconciliation_plan
 from .project_templates import (
     ProjectTemplateError,
     StandaloneProjectRequest,
@@ -75,6 +76,14 @@ def _parser() -> argparse.ArgumentParser:
 
     health_project = actions.add_parser("health")
     health_project.add_argument("--project", required=True)
+
+    reconcile_project = actions.add_parser("reconcile")
+    reconcile_actions = reconcile_project.add_subparsers(
+        dest="reconcile_action",
+        required=True,
+    )
+    reconcile_plan = reconcile_actions.add_parser("plan")
+    reconcile_plan.add_argument("--project", required=True)
 
     docs_project = actions.add_parser("docs")
     docs_actions = docs_project.add_subparsers(dest="docs_action", required=True)
@@ -182,6 +191,12 @@ def _project_health(args: argparse.Namespace) -> int:
     report = audit_project_health(Path(args.project).resolve())
     _print_health_report(report)
     return 0 if report.overall_state == "healthy" else 1
+
+
+def _project_reconcile(args: argparse.Namespace) -> int:
+    if args.reconcile_action != "plan":
+        raise ValueError("Unsupported reconciliation action")
+    return run_reconciliation_plan(Path(args.project).resolve())
 
 
 def _documentation_report(project_root: Path) -> DocumentationDriftReport:
@@ -385,6 +400,8 @@ def main(argv: Sequence[str] | None = None) -> int:
             return _bootstrap_project(args)
         if args.action == "health":
             return _project_health(args)
+        if args.action == "reconcile":
+            return _project_reconcile(args)
         if args.action == "docs":
             return _project_docs(args)
         if args.action == "migrate":
