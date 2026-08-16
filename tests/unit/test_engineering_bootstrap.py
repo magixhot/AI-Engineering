@@ -12,7 +12,17 @@ from ai_engineering.engineering_bootstrap import (
     EngineeringBootstrapRequest,
     bootstrap_engineering_project,
 )
-from ai_engineering.project_templates import create_standalone_project
+from ai_engineering.project_templates import (
+    StandaloneProjectRequest,
+    create_standalone_project,
+)
+from ai_engineering.python_engineering_baseline import (
+    PYTHON_ENGINEERING_IDENTITY_PATH,
+    PYTHON_ENGINEERING_V2_BASELINE,
+    PYTHON_ENGINEERING_V2_GITIGNORE,
+    PYTHON_ENGINEERING_V2_IDENTITY,
+    create_python_engineering_v2_project,
+)
 
 
 def _committed_files(target: Path) -> set[str]:
@@ -50,12 +60,17 @@ def test_bootstrap_creates_and_verifies_python_engineering_project(
     assert result.verification.initial_commit_present is True
     assert result.verification.python_package_present is True
     assert result.verification.smoke_test_present is True
+    assert result.verification.baseline == PYTHON_ENGINEERING_V2_BASELINE
     assert (target / "pyproject.toml").is_file()
     assert (target / "src" / "engineering_project" / "__init__.py").is_file()
     assert (target / "tests" / "test_smoke.py").is_file()
+    assert (target / PYTHON_ENGINEERING_IDENTITY_PATH).read_text() == (
+        PYTHON_ENGINEERING_V2_IDENTITY
+    )
+    assert (target / ".gitignore").read_text() == PYTHON_ENGINEERING_V2_GITIGNORE
 
 
-def test_bootstrap_delegates_to_public_sdk_exactly_once(
+def test_bootstrap_delegates_to_v2_profile_generator_exactly_once(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
@@ -65,11 +80,11 @@ def test_bootstrap_delegates_to_public_sdk_exactly_once(
     def counted_create(request):  # type: ignore[no-untyped-def]
         nonlocal calls
         calls += 1
-        return create_standalone_project(request)
+        return create_python_engineering_v2_project(request)
 
     monkeypatch.setattr(
         bootstrap_module,
-        "create_standalone_project",
+        "create_python_engineering_v2_project",
         counted_create,
     )
 
@@ -85,6 +100,25 @@ def test_bootstrap_delegates_to_public_sdk_exactly_once(
     assert result.package_name == "delegated_project"
 
 
+def test_generic_python_scaffold_remains_non_managed_v1_output(tmp_path: Path) -> None:
+    target = tmp_path / "generic-project"
+
+    create_standalone_project(
+        StandaloneProjectRequest(
+            target_directory=target,
+            project_name="Generic Project",
+            project_description="Generic SDK Python scaffold.",
+            include_python_scaffold=True,
+        )
+    )
+
+    assert not (target / PYTHON_ENGINEERING_IDENTITY_PATH).exists()
+    gitignore = (target / ".gitignore").read_text()
+    assert ".pytest_cache/" not in gitignore
+    assert ".mypy_cache/" not in gitignore
+    assert ".ruff_cache/" not in gitignore
+
+
 def test_bootstrap_rejects_unknown_profile_before_project_creation(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
@@ -96,7 +130,7 @@ def test_bootstrap_rejects_unknown_profile_before_project_creation(
 
     monkeypatch.setattr(
         bootstrap_module,
-        "create_standalone_project",
+        "create_python_engineering_v2_project",
         unexpected_create,
     )
 
@@ -194,6 +228,7 @@ def test_bootstrap_initial_commit_contains_all_generated_files(tmp_path: Path) -
         for path in result.project.generated_files
     }
     assert generated_files == _committed_files(target)
+    assert PYTHON_ENGINEERING_IDENTITY_PATH in generated_files
 
 
 def test_bootstrap_verification_failure_returns_no_success_result(
@@ -203,13 +238,13 @@ def test_bootstrap_verification_failure_returns_no_success_result(
     target = tmp_path / "verification-failure"
 
     def create_then_remove_smoke_test(request):  # type: ignore[no-untyped-def]
-        project = create_standalone_project(request)
+        project = create_python_engineering_v2_project(request)
         (target / "tests" / "test_smoke.py").unlink()
         return project
 
     monkeypatch.setattr(
         bootstrap_module,
-        "create_standalone_project",
+        "create_python_engineering_v2_project",
         create_then_remove_smoke_test,
     )
 

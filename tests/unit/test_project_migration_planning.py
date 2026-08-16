@@ -5,10 +5,6 @@ from pathlib import Path
 
 import pytest
 
-from ai_engineering.engineering_bootstrap import (
-    EngineeringBootstrapRequest,
-    bootstrap_engineering_project,
-)
 from ai_engineering.project_migration import (
     ACTION_CREATE_FILE,
     ACTION_DELETE_MACHINE_FILE,
@@ -32,16 +28,21 @@ from ai_engineering.project_migration import (
     ProjectMigrationRequest,
     plan_project_migration,
 )
+from ai_engineering.project_templates import (
+    StandaloneProjectRequest,
+    create_standalone_project,
+)
 
 
 def _bootstrap(tmp_path: Path) -> Path:
     root = tmp_path / "sample-project"
-    bootstrap_engineering_project(
-        EngineeringBootstrapRequest(
+    create_standalone_project(
+        StandaloneProjectRequest(
             target_directory=root,
             project_name="Sample Project",
             project_description="Migration planning fixture.",
             author="Example Maintainer",
+            include_python_scaffold=True,
         )
     )
     return root
@@ -165,9 +166,7 @@ def test_already_target_paths_produce_no_write_operations(tmp_path: Path) -> Non
 
     assert plan.operations == ()
     assert plan.manual_review == ()
-    assert all(
-        item.state == STATE_ALREADY_TARGET for item in plan.observations
-    )
+    assert all(item.state == STATE_ALREADY_TARGET for item in plan.observations)
 
 
 def test_locally_modified_machine_file_requires_manual_review(tmp_path: Path) -> None:

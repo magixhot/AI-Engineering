@@ -5,10 +5,6 @@ from pathlib import Path
 
 import pytest
 
-from ai_engineering.engineering_bootstrap import (
-    EngineeringBootstrapRequest,
-    bootstrap_engineering_project,
-)
 from ai_engineering.project_migration import (
     ACTION_CREATE_FILE,
     ACTION_DELETE_MACHINE_FILE,
@@ -29,6 +25,10 @@ from ai_engineering.project_migration_apply import (
     ProjectMigrationWriteError,
     apply_project_migration,
 )
+from ai_engineering.project_templates import (
+    StandaloneProjectRequest,
+    create_standalone_project,
+)
 
 
 def _git(root: Path, *args: str) -> str:
@@ -43,18 +43,17 @@ def _git(root: Path, *args: str) -> str:
 
 def _project(tmp_path: Path) -> Path:
     root = tmp_path / "sample-project"
-    bootstrap_engineering_project(
-        EngineeringBootstrapRequest(
+    create_standalone_project(
+        StandaloneProjectRequest(
             target_directory=root,
             project_name="Sample Project",
             project_description="Migration apply fixture.",
             author="Example Maintainer",
+            include_python_scaffold=True,
         )
     )
-    _git(root, "init")
     _git(root, "config", "user.name", "Test User")
     _git(root, "config", "user.email", "test@example.invalid")
-    _git(root, "add", ".")
     _git(root, "commit", "--allow-empty", "-m", "baseline")
     return root
 

@@ -9,10 +9,15 @@ from .project_templates import (
     ProjectTemplateGenerator,
     StandaloneProject,
     StandaloneProjectRequest,
-    create_standalone_project,
 )
-
-PYTHON_ENGINEERING_PROFILE = "python-engineering"
+from .python_engineering_baseline import (
+    PYTHON_ENGINEERING_IDENTITY_PATH,
+    PYTHON_ENGINEERING_PROFILE,
+    PYTHON_ENGINEERING_V2_BASELINE,
+    PYTHON_ENGINEERING_V2_GITIGNORE,
+    PYTHON_ENGINEERING_V2_IDENTITY,
+    create_python_engineering_v2_project,
+)
 
 
 class EngineeringBootstrapError(Exception):
@@ -32,7 +37,7 @@ class EngineeringBootstrapRequest:
 
 @dataclass(frozen=True)
 class EngineeringBootstrapVerification:
-    """Read-only evidence for the invariants claimed by AUTO-0001 V1."""
+    """Read-only evidence for the invariants claimed by AUTO-0001/AUTO-0005."""
 
     required_files_present: bool
     git_repository: bool
@@ -40,6 +45,7 @@ class EngineeringBootstrapVerification:
     initial_commit_present: bool
     python_package_present: bool
     smoke_test_present: bool
+    baseline: str = PYTHON_ENGINEERING_V2_BASELINE
 
 
 @dataclass(frozen=True)
@@ -73,6 +79,7 @@ def _expected_relative_files(package_name: str) -> set[str]:
         *ProjectTemplateGenerator.REQUIRED_DOCS,
         "pyproject.toml",
         ".gitignore",
+        PYTHON_ENGINEERING_IDENTITY_PATH,
         f"src/{package_name}/__init__.py",
         "tests/test_smoke.py",
     }
@@ -98,7 +105,7 @@ def _verify_bootstrap(
     if generated_relative_files != expected_relative_files:
         raise EngineeringBootstrapError(
             "Bootstrap verification failed: generated file set does not match "
-            "the python-engineering profile"
+            "the python-engineering V2 profile"
         )
 
     missing_files = sorted(
@@ -110,6 +117,18 @@ def _verify_bootstrap(
         raise EngineeringBootstrapError(
             "Bootstrap verification failed: missing required files: "
             + ", ".join(missing_files)
+        )
+
+    identity_path = target / PYTHON_ENGINEERING_IDENTITY_PATH
+    if identity_path.read_text(encoding="utf-8") != PYTHON_ENGINEERING_V2_IDENTITY:
+        raise EngineeringBootstrapError(
+            "Bootstrap verification failed: engineering identity marker is not V2"
+        )
+
+    gitignore_path = target / ".gitignore"
+    if gitignore_path.read_text(encoding="utf-8") != PYTHON_ENGINEERING_V2_GITIGNORE:
+        raise EngineeringBootstrapError(
+            "Bootstrap verification failed: .gitignore does not match V2 baseline"
         )
 
     git_root = Path(_run_git(target, "rev-parse", "--show-toplevel")).resolve()
@@ -150,7 +169,7 @@ def _verify_bootstrap(
 def bootstrap_engineering_project(
     request: EngineeringBootstrapRequest,
 ) -> EngineeringBootstrapResult:
-    """Create and verify one AUTO-0001 V1 engineering project."""
+    """Create and verify one AUTO-0005 python-engineering V2 project."""
 
     if request.profile != PYTHON_ENGINEERING_PROFILE:
         raise EngineeringBootstrapError(
@@ -161,7 +180,7 @@ def bootstrap_engineering_project(
         package_name = ProjectTemplateGenerator._derive_package_name(
             request.project_name
         )
-        project = create_standalone_project(
+        project = create_python_engineering_v2_project(
             StandaloneProjectRequest(
                 target_directory=request.target_directory,
                 project_name=request.project_name,
@@ -170,7 +189,7 @@ def bootstrap_engineering_project(
                 include_python_scaffold=True,
             )
         )
-    except ProjectTemplateError as exc:
+    except (ProjectTemplateError, ValueError) as exc:
         raise EngineeringBootstrapError(str(exc)) from exc
 
     verification = _verify_bootstrap(project, package_name)
