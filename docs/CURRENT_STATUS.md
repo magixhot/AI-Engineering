@@ -3,35 +3,35 @@
 **Snapshot date:** 2026-08-16  
 **Status:** ACTIVE  
 **Release line:** 0.2.0 published  
-**Current milestone:** NONE — AUTO-0010 COMPLETE / VERIFIED  
-**Active stage:** NONE
+**Current milestone:** AUTO-0011 — Reconciliation Approval  
+**Active stage:** AUTO-0011-06 Final Evidence / Documentation Reconciliation
 
 ## Authoritative State
 
-AUTO-0001 through AUTO-0010 are COMPLETE / VERIFIED for their approved scopes. AUTO-0010 stages 01 through 06 completed their required pre-merge and exact post-merge Quality gates.
+AUTO-0001 through AUTO-0010 are COMPLETE / VERIFIED for their approved scopes. AUTO-0011 stages 01 through 05 are COMPLETE / VERIFIED; stage 06 is the documentation-only closure gate.
 
 | Stage | State | Evidence |
 |---|---|---|
-| AUTO-0010-01 Reconciliation Policy Design | COMPLETE / VERIFIED | PR #106; Quality #207; post-merge #208. |
-| AUTO-0010-02 Typed Policy Parser / Evaluator | COMPLETE / VERIFIED | PR #107; corrected Quality #211; post-merge #212. |
-| AUTO-0010-03 Safety / Determinism / Git Invariants | COMPLETE / VERIFIED | PR #108; corrected Quality #214; post-merge #215. |
-| AUTO-0010-04 Orchestration + Public CLI Integration | COMPLETE / VERIFIED | PR #109; corrected Quality #220; post-merge #221. |
-| AUTO-0010-05 Installed Distribution Verification | COMPLETE / VERIFIED | PR #110; Quality #222; post-merge #223. |
-| AUTO-0010-06 Final Evidence / Documentation Reconciliation | COMPLETE / VERIFIED | PR #111; Quality #224; post-merge #225. |
+| AUTO-0011-01 Reconciliation Approval Design | COMPLETE / VERIFIED | PR #113; Quality #228; post-merge #229. |
+| AUTO-0011-02 Typed Approval Model / Canonicalization | COMPLETE / VERIFIED | PR #114; corrected Quality #232; post-merge #233. |
+| AUTO-0011-03 Approval Verification / Safety Invariants | COMPLETE / VERIFIED | PR #115; corrected Quality #235; post-merge #236. |
+| AUTO-0011-04 Guarded Integration | COMPLETE / VERIFIED | PR #116; corrected Quality #238; post-merge #239. |
+| AUTO-0011-05 Installed Distribution Verification | COMPLETE / VERIFIED | PR #117; Quality #240; post-merge #241. |
+| AUTO-0011-06 Final Evidence / Documentation Reconciliation | IN PROGRESS | Documentation-only closure from exact verified implementation baseline. |
 
-## Final Verified AUTO-0010 Baseline
+## Verified Implementation Baseline Entering Closure
 
 ```text
-master = 1abd853da67cfb3954baa04f310837388b60b4f8
+master = 2d181d38d26087bb672eaaa0691b27f071353eb7
 ```
 
-PR #111 merged AUTO-0010-06. Quality #224 passed before merge and post-merge Quality #225 passed on the exact `push` to `master` for `1abd853da67cfb3954baa04f310837388b60b4f8`.
+PR #117 merged AUTO-0011-05. Quality #240 passed before merge and post-merge Quality #241 passed on the exact `push` to `master` for `2d181d38d26087bb672eaaa0691b27f071353eb7`.
 
-The implementation baseline entering closure was `272b9328a819f9a4fc281f41aed9970cd05e208f`, verified by post-merge Quality #223; it remains historical evidence.
+AUTO-0011 becomes fully COMPLETE / VERIFIED only after the stage-06 documentation PR passes pre-merge Quality, merges, and the exact resulting `master` commit passes post-merge Quality.
 
 ## Reconciliation Authority Boundaries
 
-AUTO-0007 remains permanently read-only. AUTO-0008 remains the sole guarded one-step apply authority. AUTO-0009 remains bounded multi-step orchestration with fresh planning between writes. AUTO-0010 is only a restrictive policy gate over those existing boundaries.
+AUTO-0007 remains permanently read-only. AUTO-0008 remains the sole guarded one-step apply authority. AUTO-0009 remains bounded multi-step orchestration with fresh planning between writes. AUTO-0010 remains restriction-only policy. AUTO-0011 adds an optional explicit approval gate; it does not create mutation authority.
 
 Public commands:
 
@@ -40,12 +40,16 @@ ai-engineering project reconcile plan --project PATH
 ai-engineering project reconcile apply --project PATH --step SEQUENCE
 ai-engineering project reconcile run --project PATH [--max-steps N]
 ai-engineering project reconcile run --project PATH --policy POLICY.toml [--max-steps N]
+ai-engineering project reconcile approve --project PATH [--policy POLICY.toml]
+ai-engineering project reconcile run --project PATH --approval APPROVAL.json [--policy POLICY.toml] [--max-steps N]
 ```
 
-An explicit policy is freshly loaded/evaluated before each candidate write. Invalid or contradictory policy fails closed; valid refusal blocks the candidate before write; no-policy behavior preserves AUTO-0009 semantics. If both CLI and policy provide limits, the stricter limit wins.
+Approval artifacts are deterministic, typed, digest-bound, and scoped to one candidate. When approval mode is requested, the artifact must match the freshly planned candidate, portable project identity, Git HEAD/branch state, and explicit policy fingerprint. Malformed or mismatched approval fails closed before that candidate write. A successful write is still delegated only through the existing AUTO-0008/AUTO-0009 path.
 
-AUTO-0010 adds no new reconciliation workflow, mutation primitive, arbitrary command/script/plugin execution, network policy source, force/stale bypass, direct Git mutation, publication authority, or rollback guarantee.
+Because AUTO-0009 replans after each successful write, one approval can authorize at most the bound candidate. A later candidate requires a fresh matching approval. AUTO-0010 policy remains independently restrictive and cannot be overridden by approval.
+
+AUTO-0011 adds no new reconciliation workflow, file mutation primitive, arbitrary command/script/plugin execution, remote approval/signing service, autonomous approval, whole-run approval, direct Git mutation, force/stale bypass, publication authority, or rollback guarantee.
 
 ## Current Priority
 
-Preserve the verified AUTO-0007 through AUTO-0010 authority boundaries. Any next capability milestone must begin with a separate design/contract before production implementation.
+Complete AUTO-0011-06 without changing production behavior. After exact post-merge Quality succeeds, reconcile the final baseline if necessary before starting any next capability milestone.
