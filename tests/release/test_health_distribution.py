@@ -170,9 +170,11 @@ def test_installed_wheel_runs_project_health_end_to_end(tmp_path: Path) -> None:
     assert "identity=python-engineering" in legacy_health.stdout
     assert "baseline=python-engineering-v1" in legacy_health.stdout
     assert "migration=ready" in legacy_health.stdout
-    assert "next_action=project migrate plan --migration python-engineering-v1-to-v2" in (
-        legacy_health.stdout
+    expected_next_action = (
+        "next_action=project migrate plan --migration "
+        "python-engineering-v1-to-v2"
     )
+    assert expected_next_action in legacy_health.stdout
     assert legacy_health.stderr == ""
     assert "Traceback" not in legacy_health.stdout
 
