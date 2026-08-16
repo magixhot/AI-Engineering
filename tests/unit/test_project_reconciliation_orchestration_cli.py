@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 from pathlib import Path
+from types import SimpleNamespace
+from typing import cast
 
 import ai_engineering.public_cli as public_cli
 from ai_engineering.project_reconciliation import ProjectReconciliationPlan
@@ -13,14 +15,10 @@ from ai_engineering.project_reconciliation_orchestration_cli import (
 )
 
 
-def _plan(project: Path) -> ProjectReconciliationPlan:
-    return ProjectReconciliationPlan(
-        project_root=project,
-        state="clean",
-        identity=None,
-        health=None,
-        steps=(),
-        issues=(),
+def _plan() -> ProjectReconciliationPlan:
+    return cast(
+        ProjectReconciliationPlan,
+        SimpleNamespace(state="clean", steps=()),
     )
 
 
@@ -98,7 +96,7 @@ def test_run_result_prints_deterministic_terminal_evidence(
         state="stopped",
         successful_steps=0,
         attempts=(),
-        final_plan=_plan(tmp_path.resolve()),
+        final_plan=_plan(),
         issues=(
             ProjectReconciliationOrchestrationIssue(
                 code="PLAN_MANUAL_REVIEW",
