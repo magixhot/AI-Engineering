@@ -186,7 +186,12 @@ def parse_reconciliation_approval(raw: bytes) -> ReconciliationApprovalLoadResul
     try:
         data = json.loads(raw.decode("utf-8"))
     except (UnicodeDecodeError, json.JSONDecodeError):
-        return _error(_issue("APPROVAL_PARSE_ERROR", "approval JSON could not be parsed"))
+        return _error(
+            _issue(
+                "APPROVAL_PARSE_ERROR",
+                "approval JSON could not be parsed",
+            )
+        )
     if not isinstance(data, dict):
         return _error(_issue("APPROVAL_ROOT_TYPE", "approval root must be an object"))
 
@@ -210,12 +215,27 @@ def parse_reconciliation_approval(raw: bytes) -> ReconciliationApprovalLoadResul
         )
     for field in ("project_id", "workflow", "git_head", "scope", "digest"):
         if not isinstance(data[field], str) or not data[field]:
-            issues.append(_issue("APPROVAL_FIELD_TYPE", f"{field} must be a non-empty string"))
+            issues.append(
+                _issue(
+                    "APPROVAL_FIELD_TYPE",
+                    f"{field} must be a non-empty string",
+                )
+            )
     for field in ("git_branch", "policy_fingerprint"):
         if data[field] is not None and not isinstance(data[field], str):
-            issues.append(_issue("APPROVAL_FIELD_TYPE", f"{field} must be a string or null"))
+            issues.append(
+                _issue(
+                    "APPROVAL_FIELD_TYPE",
+                    f"{field} must be a string or null",
+                )
+            )
     if data["scope"] != "single_candidate":
-        issues.append(_issue("APPROVAL_SCOPE_INVALID", "scope must be single_candidate"))
+        issues.append(
+            _issue(
+                "APPROVAL_SCOPE_INVALID",
+                "scope must be single_candidate",
+            )
+        )
 
     raw_inputs = data["candidate_inputs"]
     candidate_inputs: tuple[tuple[str, str], ...] = ()
@@ -254,7 +274,12 @@ def parse_reconciliation_approval(raw: bytes) -> ReconciliationApprovalLoadResul
         scope=scope,
     )
     if digest != expected:
-        return _error(_issue("APPROVAL_DIGEST_INVALID", "approval digest does not match payload"))
+        return _error(
+            _issue(
+                "APPROVAL_DIGEST_INVALID",
+                "approval digest does not match payload",
+            )
+        )
 
     return ReconciliationApprovalLoadResult(
         state="loaded",
