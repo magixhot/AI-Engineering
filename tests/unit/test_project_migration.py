@@ -4,10 +4,6 @@ from pathlib import Path
 
 import pytest
 
-from ai_engineering.engineering_bootstrap import (
-    EngineeringBootstrapRequest,
-    bootstrap_engineering_project,
-)
 from ai_engineering.project_migration import (
     DEFAULT_MIGRATION_REGISTRY,
     PYTHON_ENGINEERING_V1_BASELINE,
@@ -17,16 +13,21 @@ from ai_engineering.project_migration import (
     UnsupportedProjectIdentityError,
     detect_project_identity,
 )
+from ai_engineering.project_templates import (
+    StandaloneProjectRequest,
+    create_standalone_project,
+)
 
 
 def _bootstrap(tmp_path: Path) -> Path:
     target = tmp_path / "sample-project"
-    bootstrap_engineering_project(
-        EngineeringBootstrapRequest(
+    create_standalone_project(
+        StandaloneProjectRequest(
             target_directory=target,
             project_name="Sample Project",
             project_description="Migration identity fixture.",
             author="Example Maintainer",
+            include_python_scaffold=True,
         )
     )
     return target
