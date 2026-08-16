@@ -45,6 +45,7 @@
 | AUTO-0003_VERIFICATION_EVIDENCE.md | Classification/planning, guarded apply, AUTO-0002 handoff, CLI, installed-wheel, and CI evidence | Complete / Verified |
 | AUTO-0004_PROJECT_UPDATE_MIGRATION_DESIGN.md | Preserve-originals project update/migration identity, planning, guarded apply, rollback, and verification contract | Implemented / Verified |
 | AUTO-0004_VERIFICATION_EVIDENCE.md | Project identity, registry, deterministic planning, guarded apply/rollback, CLI, installed-wheel, and CI evidence | Complete / Verified |
+| AUTO-0005_PYTHON_ENGINEERING_V2_DESIGN.md | Python-engineering V2 identity/hygiene baseline and first production V1-to-V2 migration contract | Design / Proposed |
 
 ## Active Engineering Work
 
@@ -63,6 +64,7 @@
 | AUTO-0002 project documentation synchronization | COMPLETE / VERIFIED |
 | AUTO-0003 documentation ownership initialization | COMPLETE / VERIFIED |
 | AUTO-0004 engineering project update/migration framework | COMPLETE / VERIFIED |
+| AUTO-0005 python-engineering V2 + first production migration edge | DESIGN / PROPOSED |
 | Additional MCP client interoperability | OPTIONAL / FUTURE EVIDENCE |
 | Diagnostics maintenance | ACTIVE |
 
@@ -88,6 +90,7 @@
 | M3 / AUTO-0002 Project Documentation Synchronization | COMPLETE / VERIFIED |
 | M3 / AUTO-0003 Documentation Ownership Initialization | COMPLETE / VERIFIED |
 | M3 / AUTO-0004 Engineering Project Update / Migration | COMPLETE / VERIFIED |
+| M3 / AUTO-0005 Python Engineering Baseline V2 / First Production Migration | DESIGN |
 | Additional client and IDE interoperability | PLANNED |
 
 ## Published Release
@@ -115,6 +118,7 @@
 - AUTO-0004 deterministic planning passed Quality #102 and post-merge Quality #103.
 - AUTO-0004 guarded apply passed corrected Quality #107 and post-merge Quality #108 after formatting-only #104 and a deterministic CI fixture correction exposed by #106.
 - AUTO-0004 CLI and installed-wheel verification passed Quality #109 and post-merge Quality #110 on `54355abf4b509e3fd72416a031152a6e7680dd13`.
+- AUTO-0004 final reconciliation passed Quality #111 and post-merge Quality #112 on `4cc71a1c46cd0b98acd6702aae5bda0e19eea651`.
 - Quality #94 exact Linux baseline: pytest 174 passed; Ruff clean; mypy clean in 83 source files.
 - Windows 0.2.0 candidate evidence remains: pytest 153 passed, 2 permitted symlink-fixture skips due to `WinError 1314`; Ruff 0; mypy 0 in 79 source files; focused release distribution test 1 passed; `git diff --check` passed; working tree clean.
 - Installed-wheel verification covers `ai-engineering project create`, `project bootstrap`, `project docs check/plan/apply`, `project docs ownership check/plan/apply`, and the AUTO-0004 `project migrate check/plan/apply` command surface.
