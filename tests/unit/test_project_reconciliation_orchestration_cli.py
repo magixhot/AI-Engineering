@@ -23,10 +23,15 @@ def _plan() -> ProjectReconciliationPlan:
 
 
 def test_public_cli_routes_run_with_default_limit(monkeypatch, tmp_path: Path) -> None:
-    captured: list[tuple[Path, int]] = []
+    captured: list[tuple[Path, int, Path | None]] = []
 
-    def fake_run(project_root: Path, *, max_steps: int) -> int:
-        captured.append((project_root, max_steps))
+    def fake_run(
+        project_root: Path,
+        *,
+        max_steps: int,
+        policy_path: Path | None,
+    ) -> int:
+        captured.append((project_root, max_steps, policy_path))
         return 0
 
     monkeypatch.setattr(public_cli, "run_reconciliation_orchestration", fake_run)
@@ -34,14 +39,23 @@ def test_public_cli_routes_run_with_default_limit(monkeypatch, tmp_path: Path) -
     assert public_cli.main(
         ["project", "reconcile", "run", "--project", str(tmp_path)]
     ) == 0
-    assert captured == [(tmp_path.resolve(), 8)]
+    assert captured == [(tmp_path.resolve(), 8, None)]
 
 
-def test_public_cli_routes_run_with_bounded_limit(monkeypatch, tmp_path: Path) -> None:
-    captured: list[int] = []
+def test_public_cli_routes_run_with_bounded_limit_and_policy(
+    monkeypatch,
+    tmp_path: Path,
+) -> None:
+    captured: list[tuple[int, Path | None]] = []
+    policy = tmp_path / "policy.toml"
 
-    def fake_run(project_root: Path, *, max_steps: int) -> int:
-        captured.append(max_steps)
+    def fake_run(
+        project_root: Path,
+        *,
+        max_steps: int,
+        policy_path: Path | None,
+    ) -> int:
+        captured.append((max_steps, policy_path))
         return 1
 
     monkeypatch.setattr(public_cli, "run_reconciliation_orchestration", fake_run)
@@ -55,9 +69,11 @@ def test_public_cli_routes_run_with_bounded_limit(monkeypatch, tmp_path: Path) -
             str(tmp_path),
             "--max-steps",
             "3",
+            "--policy",
+            str(policy),
         ]
     ) == 1
-    assert captured == [3]
+    assert captured == [(3, policy.resolve())]
 
 
 def test_public_cli_rejects_unbounded_or_invalid_limits(tmp_path: Path) -> None:
@@ -98,6 +114,7 @@ def test_run_result_prints_deterministic_terminal_evidence(
         state="stopped",
         successful_steps=0,
         attempts=(),
+        policy_decisions=(),
         final_plan=_plan(),
         issues=(
             ProjectReconciliationOrchestrationIssue(
@@ -114,6 +131,7 @@ def test_run_result_prints_deterministic_terminal_evidence(
         "state=stopped",
         "successful_steps=0",
         "attempt_count=0",
+        "policy_decision_count=0",
         "issue_count=1",
         "issue=PLAN_MANUAL_REVIEW:manual review required",
         "final_plan_state=clean",
