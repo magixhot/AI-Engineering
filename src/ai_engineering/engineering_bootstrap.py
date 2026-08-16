@@ -4,8 +4,12 @@ import subprocess
 from dataclasses import dataclass
 from pathlib import Path
 
-from .project_templates import ProjectTemplateError, ProjectTemplateGenerator, StandaloneProject
-from .project_templates import StandaloneProjectRequest
+from .project_templates import (
+    ProjectTemplateError,
+    ProjectTemplateGenerator,
+    StandaloneProject,
+    StandaloneProjectRequest,
+)
 from .python_engineering_baseline import (
     PYTHON_ENGINEERING_IDENTITY_PATH,
     PYTHON_ENGINEERING_PROFILE,
