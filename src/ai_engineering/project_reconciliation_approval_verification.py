@@ -51,7 +51,10 @@ def verify_reconciliation_approval(
     mismatches: list[ReconciliationApprovalMismatch] = []
     if approval.scope != "single_candidate":
         mismatches.append(
-            _mismatch("APPROVAL_SCOPE_MISMATCH", "approval scope is not single_candidate")
+            _mismatch(
+                "APPROVAL_SCOPE_MISMATCH",
+                "approval scope is not single_candidate",
+            )
         )
     if approval.project_id != context.project_id:
         mismatches.append(
@@ -68,10 +71,15 @@ def verify_reconciliation_approval(
     if approval.git_head != context.git_head:
         mismatches.append(_mismatch("APPROVAL_GIT_MISMATCH", "Git HEAD changed"))
     if approval.git_branch != context.git_branch:
-        mismatches.append(_mismatch("APPROVAL_GIT_MISMATCH", "Git branch state changed"))
+        mismatches.append(
+            _mismatch("APPROVAL_GIT_MISMATCH", "Git branch state changed")
+        )
     if approval.policy_fingerprint != context.policy_fingerprint:
         mismatches.append(
-            _mismatch("APPROVAL_POLICY_MISMATCH", "effective policy fingerprint changed")
+            _mismatch(
+                "APPROVAL_POLICY_MISMATCH",
+                "effective policy fingerprint changed",
+            )
         )
 
     ordered = tuple(sorted(mismatches, key=lambda item: (item.code, item.detail)))
