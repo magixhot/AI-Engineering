@@ -87,7 +87,10 @@ def _issue(code: str, detail: str) -> ReconciliationPolicyIssue:
     return ReconciliationPolicyIssue(code=code, detail=detail)
 
 
-def _error(source: Path, *issues: ReconciliationPolicyIssue) -> ReconciliationPolicyLoadResult:
+def _error(
+    source: Path,
+    *issues: ReconciliationPolicyIssue,
+) -> ReconciliationPolicyLoadResult:
     return ReconciliationPolicyLoadResult(
         source=source,
         state="policy_error",
@@ -106,8 +109,15 @@ def _workflow_field(
     name: str,
 ) -> tuple[tuple[str, ...] | None, tuple[ReconciliationPolicyIssue, ...]]:
     value = data.get(name, [])
-    if not isinstance(value, list) or any(not isinstance(item, str) for item in value):
-        return None, (_issue("POLICY_FIELD_TYPE", f"{name} must be an array of strings"),)
+    if not isinstance(value, list) or any(
+        not isinstance(item, str) for item in value
+    ):
+        return None, (
+            _issue(
+                "POLICY_FIELD_TYPE",
+                f"{name} must be an array of strings",
+            ),
+        )
     workflows = tuple(sorted(set(value)))
     unknown = tuple(item for item in workflows if item not in _KNOWN_WORKFLOWS)
     if unknown:
@@ -120,7 +130,13 @@ def _workflow_field(
 
 def _parse_policy(source: Path, data: object) -> ReconciliationPolicyLoadResult:
     if not isinstance(data, dict):
-        return _error(source, _issue("POLICY_ROOT_TYPE", "policy root must be a TOML table"))
+        return _error(
+            source,
+            _issue(
+                "POLICY_ROOT_TYPE",
+                "policy root must be a TOML table",
+            ),
+        )
 
     unknown_fields = sorted(set(data) - _ALLOWED_FIELDS)
     if unknown_fields:
@@ -143,10 +159,16 @@ def _parse_policy(source: Path, data: object) -> ReconciliationPolicyLoadResult:
     max_steps: int | None
     if max_steps_value is None:
         max_steps = None
-    elif type(max_steps_value) is not int or not 1 <= max_steps_value <= _MAX_POLICY_STEPS:
+    elif (
+        type(max_steps_value) is not int
+        or not 1 <= max_steps_value <= _MAX_POLICY_STEPS
+    ):
         return _error(
             source,
-            _issue("POLICY_MAX_STEPS_INVALID", "max_steps must be an integer from 1 to 100"),
+            _issue(
+                "POLICY_MAX_STEPS_INVALID",
+                "max_steps must be an integer from 1 to 100",
+            ),
         )
     else:
         max_steps = max_steps_value
@@ -222,11 +244,17 @@ def load_reconciliation_policy(policy_path: Path) -> ReconciliationPolicyLoadRes
         raw = source.read_bytes()
         data = tomllib.loads(raw.decode("utf-8"))
     except (OSError, UnicodeDecodeError, tomllib.TOMLDecodeError):
-        return _error(source, _issue("POLICY_PARSE_ERROR", "policy TOML could not be parsed"))
+        return _error(
+            source,
+            _issue("POLICY_PARSE_ERROR", "policy TOML could not be parsed"),
+        )
     return _parse_policy(source, data)
 
 
-def _effective_limit(policy_limit: int | None, requested_limit: int | None) -> int | None:
+def _effective_limit(
+    policy_limit: int | None,
+    requested_limit: int | None,
+) -> int | None:
     if policy_limit is None:
         return requested_limit
     if requested_limit is None:
@@ -267,19 +295,46 @@ def evaluate_reconciliation_policy(
     refusals: list[ReconciliationPolicyIssue] = []
 
     if workflow not in _KNOWN_WORKFLOWS:
-        errors.append(_issue("POLICY_UNKNOWN_CANDIDATE", f"unknown candidate workflow: {workflow}"))
+        errors.append(
+            _issue(
+                "POLICY_UNKNOWN_CANDIDATE",
+                f"unknown candidate workflow: {workflow}",
+            )
+        )
     if policy.allowed_workflows and workflow not in policy.allowed_workflows:
-        refusals.append(_issue("POLICY_WORKFLOW_NOT_ALLOWED", "candidate workflow is outside the allow-list"))
+        refusals.append(
+            _issue(
+                "POLICY_WORKFLOW_NOT_ALLOWED",
+                "candidate workflow is outside the allow-list",
+            )
+        )
     if workflow in policy.denied_workflows:
-        refusals.append(_issue("POLICY_WORKFLOW_DENIED", "candidate workflow is denied"))
+        refusals.append(
+            _issue("POLICY_WORKFLOW_DENIED", "candidate workflow is denied")
+        )
 
     tracked_dirty = bool(git_readiness.staged_paths or git_readiness.unstaged_paths)
     if tracked_dirty and not policy.allow_dirty_worktree:
-        refusals.append(_issue("POLICY_DIRTY_WORKTREE", "tracked Git changes are not allowed"))
+        refusals.append(
+            _issue(
+                "POLICY_DIRTY_WORKTREE",
+                "tracked Git changes are not allowed",
+            )
+        )
     if git_readiness.untracked_paths and not policy.allow_untracked_files:
-        refusals.append(_issue("POLICY_UNTRACKED_FILES", "untracked files are not allowed"))
+        refusals.append(
+            _issue(
+                "POLICY_UNTRACKED_FILES",
+                "untracked files are not allowed",
+            )
+        )
     if policy.require_attached_branch and git_readiness.branch is None:
-        refusals.append(_issue("POLICY_DETACHED_BRANCH", "an attached Git branch is required"))
+        refusals.append(
+            _issue(
+                "POLICY_DETACHED_BRANCH",
+                "an attached Git branch is required",
+            )
+        )
 
     if policy.require_project_root_match:
         if expected_project_root is None:
@@ -298,9 +353,16 @@ def evaluate_reconciliation_policy(
             )
 
     if requested_max_steps is not None and requested_max_steps < 1:
-        errors.append(_issue("POLICY_REQUEST_LIMIT_INVALID", "requested max steps must be positive"))
+        errors.append(
+            _issue(
+                "POLICY_REQUEST_LIMIT_INVALID",
+                "requested max steps must be positive",
+            )
+        )
 
-    issues = tuple(sorted(errors + refusals, key=lambda item: (item.code, item.detail)))
+    issues = tuple(
+        sorted(errors + refusals, key=lambda item: (item.code, item.detail))
+    )
     state: PolicyDecisionState
     if errors:
         state = "policy_error"
