@@ -119,7 +119,9 @@ def test_equivalent_policy_order_produces_identical_decision(tmp_path: Path) -> 
     assert first.untracked_paths == second.untracked_paths == ()
 
 
-def test_policy_mutation_requires_fresh_reload_to_change_decision(tmp_path: Path) -> None:
+def test_policy_mutation_requires_fresh_reload_to_change_decision(
+    tmp_path: Path,
+) -> None:
     root = _repo(tmp_path)
     policy_path = tmp_path / "policy.toml"
     policy_path.write_text("version = 1\n", encoding="utf-8")
