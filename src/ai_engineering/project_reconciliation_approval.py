@@ -123,10 +123,30 @@ def canonical_approval_payload_bytes(
     ).encode("utf-8")
 
 
-def approval_digest(**kwargs: object) -> str:
+def approval_digest(
+    *,
+    version: int,
+    project_id: str,
+    workflow: str,
+    candidate_inputs: tuple[tuple[str, str], ...],
+    git_head: str,
+    git_branch: str | None,
+    policy_fingerprint: str | None,
+    scope: str = "single_candidate",
+) -> str:
     """Return the lowercase SHA-256 digest of a canonical approval payload."""
 
-    return hashlib.sha256(canonical_approval_payload_bytes(**kwargs)).hexdigest()
+    payload = canonical_approval_payload_bytes(
+        version=version,
+        project_id=project_id,
+        workflow=workflow,
+        candidate_inputs=candidate_inputs,
+        git_head=git_head,
+        git_branch=git_branch,
+        policy_fingerprint=policy_fingerprint,
+        scope=scope,
+    )
+    return hashlib.sha256(payload).hexdigest()
 
 
 def build_reconciliation_approval(
@@ -141,18 +161,27 @@ def build_reconciliation_approval(
     """Build one deterministic, single-candidate approval artifact."""
 
     inputs = tuple(sorted(candidate_inputs))
-    fields = {
-        "version": _APPROVAL_VERSION,
-        "project_id": project_id,
-        "workflow": workflow,
-        "candidate_inputs": inputs,
-        "git_head": git_head,
-        "git_branch": git_branch,
-        "policy_fingerprint": policy_fingerprint,
-        "scope": "single_candidate",
-    }
-    digest = approval_digest(**fields)
-    return ReconciliationApproval(digest=digest, **fields)
+    digest = approval_digest(
+        version=_APPROVAL_VERSION,
+        project_id=project_id,
+        workflow=workflow,
+        candidate_inputs=inputs,
+        git_head=git_head,
+        git_branch=git_branch,
+        policy_fingerprint=policy_fingerprint,
+        scope="single_candidate",
+    )
+    return ReconciliationApproval(
+        version=_APPROVAL_VERSION,
+        project_id=project_id,
+        workflow=workflow,
+        candidate_inputs=inputs,
+        git_head=git_head,
+        git_branch=git_branch,
+        policy_fingerprint=policy_fingerprint,
+        scope="single_candidate",
+        digest=digest,
+    )
 
 
 def serialize_reconciliation_approval(approval: ReconciliationApproval) -> bytes:
