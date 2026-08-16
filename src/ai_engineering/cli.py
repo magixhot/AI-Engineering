@@ -43,6 +43,7 @@ from .project_migration_apply import (
     ProjectMigrationApplyError,
     apply_project_migration,
 )
+from .project_reconciliation_apply_cli import run_reconciliation_apply
 from .project_reconciliation_cli import run_reconciliation_plan
 from .project_templates import (
     ProjectTemplateError,
@@ -84,6 +85,9 @@ def _parser() -> argparse.ArgumentParser:
     )
     reconcile_plan = reconcile_actions.add_parser("plan")
     reconcile_plan.add_argument("--project", required=True)
+    reconcile_apply = reconcile_actions.add_parser("apply")
+    reconcile_apply.add_argument("--project", required=True)
+    reconcile_apply.add_argument("--step", required=True, type=int)
 
     docs_project = actions.add_parser("docs")
     docs_actions = docs_project.add_subparsers(dest="docs_action", required=True)
@@ -194,9 +198,12 @@ def _project_health(args: argparse.Namespace) -> int:
 
 
 def _project_reconcile(args: argparse.Namespace) -> int:
-    if args.reconcile_action != "plan":
-        raise ValueError("Unsupported reconciliation action")
-    return run_reconciliation_plan(Path(args.project).resolve())
+    project_root = Path(args.project).resolve()
+    if args.reconcile_action == "plan":
+        return run_reconciliation_plan(project_root)
+    if args.reconcile_action == "apply":
+        return run_reconciliation_apply(project_root, args.step)
+    raise ValueError("Unsupported reconciliation action")
 
 
 def _documentation_report(project_root: Path) -> DocumentationDriftReport:
