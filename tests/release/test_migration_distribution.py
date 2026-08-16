@@ -12,6 +12,12 @@ PROJECT_ROOT = Path(__file__).resolve().parents[2]
 PROJECT_VERSION = tomllib.loads(
     (PROJECT_ROOT / "pyproject.toml").read_text(encoding="utf-8")
 )["project"]["version"]
+MIGRATION_ID = "python-engineering-v1-to-v2"
+V2_MARKER = (
+    "schema = 1\n"
+    'profile = "python-engineering"\n'
+    'baseline = "python-engineering-v2"\n'
+)
 
 
 def _environment() -> dict[str, str]:
@@ -53,7 +59,24 @@ def _venv_executable(venv_directory: Path, name: str) -> Path:
     return scripts / f"{name}{suffix}"
 
 
-def test_installed_wheel_migration_cli_is_present_and_fails_closed(
+def _migration_command(
+    cli: Path,
+    action: str,
+    project: Path,
+) -> list[str]:
+    return [
+        str(cli),
+        "project",
+        "migrate",
+        action,
+        "--project",
+        str(project),
+        "--migration",
+        MIGRATION_ID,
+    ]
+
+
+def test_installed_wheel_runs_production_v1_to_v2_migration(
     tmp_path: Path,
 ) -> None:
     environment = _environment()
@@ -127,6 +150,86 @@ def test_installed_wheel_migration_cli_is_present_and_fails_closed(
         environment=environment,
     ).stdout.strip()
 
+    check_before = _run(
+        _migration_command(cli, "check", project),
+        cwd=isolated,
+        environment=environment,
+        check=False,
+    )
+    assert check_before.returncode == 1
+    assert "source_baseline=python-engineering-v1" in check_before.stdout
+    assert "target_baseline=python-engineering-v2" in check_before.stdout
+    assert "operation_count=2" in check_before.stdout
+    assert "manual_review_count=0" in check_before.stdout
+    assert "status=ready" in check_before.stdout
+
+    plan_before = _run(
+        _migration_command(cli, "plan", project),
+        cwd=isolated,
+        environment=environment,
+    )
+    assert "operation=.ai-engineering.toml:create_file:generated_absent:none" in (
+        plan_before.stdout
+    )
+    assert "operation=.gitignore:replace_machine_owned_file:machine_owned:" in (
+        plan_before.stdout
+    )
+    assert "status=ready" in plan_before.stdout
+
+    apply_result = _run(
+        _migration_command(cli, "apply", project),
+        cwd=isolated,
+        environment=environment,
+    )
+    assert f"migration={MIGRATION_ID}" in apply_result.stdout
+    assert "target_baseline=python-engineering-v2" in apply_result.stdout
+    assert "changed_count=2" in apply_result.stdout
+    assert "changed_path=.ai-engineering.toml" in apply_result.stdout
+    assert "changed_path=.gitignore" in apply_result.stdout
+    assert "verification=passed" in apply_result.stdout
+
+    assert (project / ".ai-engineering.toml").read_text(encoding="utf-8") == V2_MARKER
+    gitignore = (project / ".gitignore").read_text(encoding="utf-8")
+    assert ".pytest_cache/\n" in gitignore
+    assert ".mypy_cache/\n" in gitignore
+    assert ".ruff_cache/\n" in gitignore
+
+    assert _run(
+        ["git", "rev-parse", "HEAD"],
+        cwd=project,
+        environment=environment,
+    ).stdout.strip() == head_before
+    assert _run(
+        ["git", "diff", "--cached", "--name-only"],
+        cwd=project,
+        environment=environment,
+    ).stdout == ""
+    assert set(
+        _run(
+            ["git", "status", "--short"],
+            cwd=project,
+            environment=environment,
+        ).stdout.splitlines()
+    ) == {" M .gitignore", "?? .ai-engineering.toml"}
+
+    plan_after = _run(
+        _migration_command(cli, "plan", project),
+        cwd=isolated,
+        environment=environment,
+    )
+    assert "source_baseline=python-engineering-v2" in plan_after.stdout
+    assert "operation_count=0" in plan_after.stdout
+    assert "manual_review_count=0" in plan_after.stdout
+    assert "status=already_target" in plan_after.stdout
+
+    apply_again = _run(
+        _migration_command(cli, "apply", project),
+        cwd=isolated,
+        environment=environment,
+    )
+    assert "changed_count=0" in apply_again.stdout
+    assert "verification=passed" in apply_again.stdout
+
     unsupported = _run(
         [
             str(cli),
@@ -146,14 +249,3 @@ def test_installed_wheel_migration_cli_is_present_and_fails_closed(
     assert unsupported.stdout == ""
     assert "Unsupported migration id" in unsupported.stderr
     assert "Traceback" not in unsupported.stderr
-
-    assert _run(
-        ["git", "rev-parse", "HEAD"],
-        cwd=project,
-        environment=environment,
-    ).stdout.strip() == head_before
-    assert _run(
-        ["git", "diff", "--cached", "--name-only"],
-        cwd=project,
-        environment=environment,
-    ).stdout == ""
