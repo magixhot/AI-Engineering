@@ -96,7 +96,7 @@ def run_project_reconciliation(
         plan = plan_project_reconciliation(root)
 
         if plan.state == "clean":
-            terminal = "complete" if attempts else "no_change"
+            terminal: OrchestrationState = "complete" if attempts else "no_change"
             return _result(root, terminal, successful_steps, attempts, plan)
 
         if plan.state == "unsupported":
