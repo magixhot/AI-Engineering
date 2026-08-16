@@ -18,41 +18,37 @@ After reading them, continue from `CURRENT_STATUS.md` and the current roadmap. `
 
 ## Current Working State
 
-AI-Engineering has completed and verified AUTO-0001 through AUTO-0007 for their approved scopes. AUTO-0007 remains a deterministic, fail-closed, read-only reconciliation planner exposed through:
+AI-Engineering has completed and verified AUTO-0001 through AUTO-0008 for their approved scopes.
+
+AUTO-0007 remains a deterministic, fail-closed, read-only reconciliation planner exposed through:
 
 ```text
 ai-engineering project reconcile plan --project PATH
 ```
 
-AUTO-0008 stages 01 through 05 are COMPLETE / VERIFIED. The current verified implementation baseline entering the final reconciliation stage is `35196bde98e8436265dd85ac397e4fc6b6f51037`, verified by AUTO-0008-05 Quality #183 and post-merge Quality #184.
-
-## Active Milestone
-
-AUTO-0008 — Guarded Project Reconciliation Apply is active at **AUTO-0008-06 — Final Evidence / Documentation Reconciliation**.
-
-Read `AUTO-0008_GUARDED_PROJECT_RECONCILIATION_APPLY_DESIGN.md` for the authority contract.
-
-Verified public apply command:
+AUTO-0008 provides a separate guarded one-step execution boundary exposed through:
 
 ```text
 ai-engineering project reconcile apply --project PATH --step SEQUENCE
 ```
 
-AUTO-0008 is a separate execution-authority boundary. It does not add write behavior to AUTO-0007. It applies at most one exact eligible reconciliation step per call and delegates only to an already-approved existing subsystem apply primitive.
+AUTO-0008 stages 01 through 06 are COMPLETE / VERIFIED. The final verified AUTO-0008 baseline is `68f6d6f5d68b501582ecda7d83fe77e099c12e15`, with stage-06 Quality #185 and post-merge Quality #186.
+
+## Active Milestone
+
+No new AUTO milestone is active. A future milestone must be defined by a separate approved design/contract before new production capability work begins.
+
+Read `AUTO-0008_GUARDED_PROJECT_RECONCILIATION_APPLY_DESIGN.md` for the guarded execution authority contract.
 
 ```text
-AUTO-0008-01 design             COMPLETE / VERIFIED
-AUTO-0008-02 executor core      COMPLETE / VERIFIED
-AUTO-0008-03 safety invariants  COMPLETE / VERIFIED
-AUTO-0008-04 public CLI         COMPLETE / VERIFIED
-AUTO-0008-05 installed wheel    COMPLETE / VERIFIED
-        ↓
-AUTO-0008-06 final reconciliation — ACTIVE
-        ↓
-Quality → merge → post-merge gate → final closure evidence
+AUTO-0007 read-only planner       COMPLETE / VERIFIED
+AUTO-0008-01 design               COMPLETE / VERIFIED
+AUTO-0008-02 executor core        COMPLETE / VERIFIED
+AUTO-0008-03 safety invariants    COMPLETE / VERIFIED
+AUTO-0008-04 public CLI           COMPLETE / VERIFIED
+AUTO-0008-05 installed wheel      COMPLETE / VERIFIED
+AUTO-0008-06 final reconciliation COMPLETE / VERIFIED
 ```
-
-AUTO-0008 is not fully closed until stage 06 itself passes Quality, merge, and post-merge verification and authoritative closure evidence is recorded.
 
 ## AUTO-0008 Guardrails
 

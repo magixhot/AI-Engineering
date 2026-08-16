@@ -150,7 +150,9 @@ already owns the approved write primitive.
 - AUTO-0008-03 safety/failure invariants: COMPLETE / VERIFIED; PR #94; Quality #178; post-merge #179.
 - AUTO-0008-04 public guarded apply CLI: COMPLETE / VERIFIED; PR #95; corrected Quality #181; post-merge #182.
 - AUTO-0008-05 installed distribution verification: COMPLETE / VERIFIED; PR #96; Quality #183; post-merge #184.
-- AUTO-0008-06 final evidence/documentation reconciliation: IN PROGRESS, documentation-only.
+- AUTO-0008-06 final evidence/documentation reconciliation: COMPLETE / VERIFIED; PR #97; Quality #185; post-merge #186.
+
+Final verified AUTO-0008 baseline: `68f6d6f5d68b501582ecda7d83fe77e099c12e15`.
 
 `tests/release/` verifies wheel/sdist artifacts, isolated wheel installation, and installed CLI behavior
 outside the source checkout, including AUTO-0007 read-only planning and AUTO-0008 guarded one-step

@@ -49,8 +49,7 @@
 | CI quality gates | COMPLETE / VERIFIED |
 | Workspace/Git/Python safety | COMPLETE / VERIFIED |
 | REL-0003 v0.2.0 publication | COMPLETE / VERIFIED |
-| AUTO-0001 through AUTO-0007 | COMPLETE / VERIFIED |
-| AUTO-0008 | IN PROGRESS — STAGE 06 FINAL RECONCILIATION |
+| AUTO-0001 through AUTO-0008 | COMPLETE / VERIFIED |
 | Additional MCP client interoperability | OPTIONAL / FUTURE EVIDENCE |
 | Diagnostics maintenance | ACTIVE |
 
@@ -71,14 +70,14 @@
 | AUTO-0008-03 Stale Plan / Failure / Git Safety Invariants | COMPLETE / VERIFIED — PR #94; Quality #178; post-merge #179 |
 | AUTO-0008-04 Public CLI | COMPLETE / VERIFIED — PR #95; corrected Quality #181; post-merge #182 |
 | AUTO-0008-05 Installed Distribution Verification | COMPLETE / VERIFIED — PR #96; Quality #183; post-merge #184 |
-| AUTO-0008-06 Final Evidence / Documentation Reconciliation | IN PROGRESS |
+| AUTO-0008-06 Final Evidence / Documentation Reconciliation | COMPLETE / VERIFIED — PR #97; Quality #185; post-merge #186 |
 
 ## Current Quality Baseline
 
 - AUTO-0007 final/post-completion reconciliation remained verified through PR #91 / Quality #171 / post-merge #172.
-- AUTO-0008-01 through AUTO-0008-05 have completed their pre-merge and post-merge Quality gates.
-- Current verified implementation baseline entering AUTO-0008-06: master `35196bde98e8436265dd85ac397e4fc6b6f51037`, verified by post-merge Quality #184.
-- AUTO-0008-06 requires its own Quality, merge, and post-merge gate before milestone closure.
+- AUTO-0008-01 through AUTO-0008-06 completed their required pre-merge and post-merge Quality gates.
+- Final verified AUTO-0008 baseline: master `68f6d6f5d68b501582ecda7d83fe77e099c12e15`, verified by post-merge Quality #186.
+- The implementation baseline entering AUTO-0008-06 was `35196bde98e8436265dd85ac397e4fc6b6f51037`, verified by post-merge Quality #184.
 
 ## Published Release
 
@@ -109,4 +108,4 @@ src/ai_engineering/
 └── python_engineering_baseline.py
 ```
 
-AUTO-0008 production implementation is present and verified through stage 05. Stage 06 is documentation-only. The repository has no `transport/` package.
+AUTO-0008 production implementation and final documentation reconciliation are complete / verified. The repository has no `transport/` package.

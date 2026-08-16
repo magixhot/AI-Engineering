@@ -4,11 +4,11 @@
 **Status:** ACTIVE  
 **Release line:** 0.2.0 published  
 **Current milestone:** AUTO-0008 — Guarded Project Reconciliation Apply  
-**Active stage:** AUTO-0008-06 — Final Evidence / Documentation Reconciliation
+**Active stage:** NONE — AUTO-0008 COMPLETE / VERIFIED
 
 ## Authoritative State
 
-AUTO-0001 through AUTO-0007 are COMPLETE / VERIFIED for their approved scopes. AUTO-0008 stages 01 through 05 are COMPLETE / VERIFIED. AUTO-0008-06 is the final documentation/evidence reconciliation stage and is the only active AUTO-0008 stage.
+AUTO-0001 through AUTO-0008 are COMPLETE / VERIFIED for their approved scopes. AUTO-0008 stages 01 through 06 have completed their required pre-merge and post-merge Quality gates.
 
 | Stage | State | Evidence |
 |---|---|---|
@@ -18,19 +18,19 @@ AUTO-0001 through AUTO-0007 are COMPLETE / VERIFIED for their approved scopes. A
 | AUTO-0008-03 Safety / Failure Invariants | COMPLETE / VERIFIED | PR #94; Quality #178; post-merge Quality #179. |
 | AUTO-0008-04 Public CLI | COMPLETE / VERIFIED | PR #95; corrected Quality #181; post-merge Quality #182. |
 | AUTO-0008-05 Installed Distribution Verification | COMPLETE / VERIFIED | PR #96; Quality #183; post-merge Quality #184. |
-| AUTO-0008-06 Final Evidence / Documentation Reconciliation | IN PROGRESS | Documentation-only closure stage from verified master `35196bde98e8436265dd85ac397e4fc6b6f51037`. |
+| AUTO-0008-06 Final Evidence / Documentation Reconciliation | COMPLETE / VERIFIED | PR #97; Quality #185; post-merge Quality #186; merge commit `68f6d6f5d68b501582ecda7d83fe77e099c12e15`. |
 
-## Current Verified Implementation Baseline
+## Final Verified AUTO-0008 Baseline
 
-The implementation and installed-distribution state entering AUTO-0008-06 is:
+The final verified AUTO-0008 repository baseline is:
 
 ```text
-master = 35196bde98e8436265dd85ac397e4fc6b6f51037
+master = 68f6d6f5d68b501582ecda7d83fe77e099c12e15
 ```
 
-PR #96 merged AUTO-0008-05. Quality #183 passed before merge and post-merge Quality #184 passed on the exact `push` to `master` for `35196bde98e8436265dd85ac397e4fc6b6f51037`.
+PR #97 merged the AUTO-0008-06 final evidence/documentation reconciliation. Quality #185 passed before merge and post-merge Quality #186 passed on the exact `push` to `master` for `68f6d6f5d68b501582ecda7d83fe77e099c12e15`.
 
-AUTO-0008 began from milestone-start baseline `4af3f7ff6933ab614705e2fdfeada65c23ad1496`; that historical starting evidence remains unchanged.
+The implementation baseline entering AUTO-0008-06 was `35196bde98e8436265dd85ac397e4fc6b6f51037`, verified by post-merge Quality #184. AUTO-0008 began from milestone-start baseline `4af3f7ff6933ab614705e2fdfeada65c23ad1496`; both remain historical evidence.
 
 ## AUTO-0007 Contract
 
@@ -67,7 +67,8 @@ The authoritative design is `AUTO-0008_GUARDED_PROJECT_RECONCILIATION_APPLY_DESI
 - AUTO-0008-02: initial Quality #175 exposed formatting defects; corrected Quality #176 — PASS; post-merge #177 — PASS.
 - AUTO-0008-03: Quality #178 — PASS; post-merge #179 — PASS.
 - AUTO-0008-04: initial Quality #180 exposed a mypy-only test typing defect; corrected Quality #181 — PASS; post-merge #182 — PASS.
-- AUTO-0008-05: Quality #183 — PASS; post-merge #184 — PASS on exact master `35196bde98e8436265dd85ac397e4fc6b6f51037`.
+- AUTO-0008-05: Quality #183 — PASS; post-merge #184 — PASS.
+- AUTO-0008-06: Quality #185 — PASS; post-merge #186 — PASS on exact master `68f6d6f5d68b501582ecda7d83fe77e099c12e15`.
 
 ## Release Baseline
 
@@ -81,10 +82,10 @@ AUTO-0008 does not authorize a version bump, tag, GitHub Release, TestPyPI, PyPI
 
 ## Current Priorities
 
-1. Complete AUTO-0008-06 documentation-only reconciliation.
-2. Preserve the verified one-step guarded execution boundary and permanent AUTO-0007 read-only boundary.
-3. Record the AUTO-0008-06 Quality, merge, and post-merge evidence before declaring the milestone fully closed.
-4. Do not begin a new milestone until AUTO-0008 closure evidence and authoritative documentation agree.
+1. Preserve the verified AUTO-0007 read-only planner and AUTO-0008 guarded one-step execution boundary.
+2. Keep authoritative documentation synchronized with the final AUTO-0008 evidence baseline.
+3. Do not expand writable scope, migration edges, ownership semantics, or publication authority without a separate approved contract.
+4. Define the next milestone separately before new production capability work begins.
 
 ## Engineering Guardrails
 

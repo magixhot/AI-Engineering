@@ -2,7 +2,7 @@
 
 ## Completed / Verified
 
-The documentation foundation, MCP foundation, SDK-0001 project templates/scaffold/CLI, TOOL-0001 core tool verification, REL-0001/REL-0002/REL-0003 release work, CI-0001 quality gates, SAFE-0001/SAFE-0002 safety boundaries, and AUTO-0001 through AUTO-0007 are COMPLETE / VERIFIED for their approved scopes.
+The documentation foundation, MCP foundation, SDK-0001 project templates/scaffold/CLI, TOOL-0001 core tool verification, REL-0001/REL-0002/REL-0003 release work, CI-0001 quality gates, SAFE-0001/SAFE-0002 safety boundaries, and AUTO-0001 through AUTO-0008 are COMPLETE / VERIFIED for their approved scopes.
 
 ## AUTO-0007 — Engineering Project Reconciliation Plan
 
@@ -20,7 +20,7 @@ AUTO-0007 remains permanently read-only under AUTO-0008.
 
 ## AUTO-0008 — Guarded Project Reconciliation Apply
 
-**Status:** IN PROGRESS — AUTO-0008-06 FINAL RECONCILIATION
+**Status:** COMPLETE / VERIFIED
 
 AUTO-0008 adds a separate guarded execution boundary for applying one exact eligible reconciliation step through an already-approved subsystem write primitive. It does not add write behavior to AUTO-0007 and does not authorize arbitrary writes, commands, new migration edges, publication, `apply all`, `force`, or stale-plan bypass behavior.
 
@@ -72,20 +72,22 @@ The built wheel is installed into an isolated virtual environment and the public
 
 ### AUTO-0008-06 — Final Evidence / Documentation Reconciliation
 
-**Status:** IN PROGRESS
+**Status:** COMPLETE / VERIFIED
 
-Reconcile authoritative status, roadmap, repository map, session bootstrap, and documentation index with the verified implementation/evidence through AUTO-0008-05. This stage is documentation-only. AUTO-0008 is not fully closed until this stage passes its own Quality, merge, and post-merge gate and final closure evidence is recorded.
+Merged in PR #97. Quality #185 passed and post-merge Quality #186 passed on exact master `68f6d6f5d68b501582ecda7d83fe77e099c12e15`.
+
+The authoritative status, roadmap, repository map, session bootstrap, and documentation index were reconciled with verified AUTO-0008 implementation and installed-distribution evidence.
 
 ## Delivery Gates
 
-AUTO-0008 stages execute strictly in order:
+AUTO-0008 stages executed strictly in order:
 
 `01 → 02 → 03 → 04 → 05 → 06`
 
-Stages 01 through 05 have completed their normal pre-merge and post-merge Quality gates. Stage 06 is the remaining closure gate.
+All six stages completed their normal pre-merge and post-merge Quality gates. The final verified AUTO-0008 baseline is `68f6d6f5d68b501582ecda7d83fe77e099c12e15`.
 
 ## Current Priority
 
-Complete AUTO-0008-06 without production changes. Preserve AUTO-0007 read-only behavior and the verified AUTO-0008 one-step, stale-safe, fail-closed, delegated execution boundary.
+Preserve the verified AUTO-0007 read-only planner and AUTO-0008 one-step, stale-safe, fail-closed, delegated execution boundary. Any next milestone must be defined separately before new production capability work begins.
 
 A stage is not fully closed until implementation/design evidence, Quality/post-merge evidence, and authoritative documentation agree.
