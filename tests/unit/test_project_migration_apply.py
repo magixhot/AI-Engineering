@@ -226,7 +226,10 @@ def test_mid_apply_failure_rolls_back_prior_writes(
     assert second.read_bytes() == b"old-b"
 
 
-def test_verification_failure_rolls_back(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+def test_verification_failure_rolls_back(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     root = _project(tmp_path)
     target = root / "machine.txt"
     target.write_bytes(b"old")
