@@ -76,6 +76,24 @@ Installed-wheel verification proves the public CLI path from a legacy V1 project
 
 Evidence: `AUTO-0005_VERIFICATION_EVIDENCE.md`.
 
+### AUTO-0006 Engineering Project Health / Readiness Audit
+
+**Status:** COMPLETE / VERIFIED
+
+AUTO-0006 provides one deterministic read-only entry point for engineering project readiness. It composes existing project inspection, documentation ownership/synchronization, migration readiness, and bounded Git observations into a typed health report without modifying the target project.
+
+Installed command:
+
+```text
+ai-engineering project health --project PATH
+```
+
+Stable overall states are `healthy`, `action_required`, `manual_review`, and `unsupported`. Next-action recommendations point only to already-approved workflows. Dirty staged/unstaged/untracked Git state is observable but is not by itself an automatic blocker.
+
+Installed-wheel verification covers V1 action-required, V2 healthy, and unsupported states; deterministic output/exit codes; controlled traceback-free failures; and preservation of Git HEAD, branch, staged index, working-tree status, and remotes.
+
+Evidence: `AUTO-0006_VERIFICATION_EVIDENCE.md`.
+
 ### SAFE-0002 Git/Python Execution Safety
 
 **Status:** COMPLETE / VERIFIED
@@ -84,7 +102,7 @@ SAFE-0002 binds active MCP Git and path-taking Python operations to `MCPConfig.w
 
 ## Current Priority
 
-Preserve the verified MCP, SDK-0001, SAFE-0001, SAFE-0002, CI-0001, release, and AUTO-0001 through AUTO-0005 contracts. Select the next engineering milestone from a fresh post-AUTO-0005 roadmap audit rather than implicitly expanding migration scope, execution surfaces, client claims, or publication scope.
+Preserve the verified MCP, SDK-0001, SAFE-0001, SAFE-0002, CI-0001, release, and AUTO-0001 through AUTO-0006 contracts. Select the next engineering milestone from a fresh post-AUTO-0006 roadmap audit rather than implicitly expanding migration scope, execution surfaces, client claims, bootstrap profiles, or publication scope.
 
 ## Planned
 

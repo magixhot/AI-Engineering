@@ -47,6 +47,8 @@
 | AUTO-0004_VERIFICATION_EVIDENCE.md | Project identity, registry, deterministic planning, guarded apply/rollback, CLI, installed-wheel, and CI evidence | Complete / Verified |
 | AUTO-0005_PYTHON_ENGINEERING_V2_DESIGN.md | Python-engineering V2 identity/hygiene baseline and first production V1-to-V2 migration contract | Implemented / Verified |
 | AUTO-0005_VERIFICATION_EVIDENCE.md | V2 bootstrap, dual identity, first production edge, installed-wheel migration, and CI evidence | Complete / Verified |
+| AUTO-0006_ENGINEERING_PROJECT_HEALTH_READINESS_AUDIT_DESIGN.md | Deterministic read-only engineering project health/readiness aggregation and next-action contract | Implemented / Verified |
+| AUTO-0006_VERIFICATION_EVIDENCE.md | Typed health aggregation, bounded Git readiness, public health CLI, installed-wheel E2E, and CI evidence | Complete / Verified |
 
 ## Active Engineering Work
 
@@ -66,6 +68,7 @@
 | AUTO-0003 documentation ownership initialization | COMPLETE / VERIFIED |
 | AUTO-0004 engineering project update/migration framework | COMPLETE / VERIFIED |
 | AUTO-0005 python-engineering V2 + first production migration edge | COMPLETE / VERIFIED |
+| AUTO-0006 engineering project health/readiness audit | COMPLETE / VERIFIED |
 | Additional MCP client interoperability | OPTIONAL / FUTURE EVIDENCE |
 | Diagnostics maintenance | ACTIVE |
 
@@ -92,6 +95,7 @@
 | M3 / AUTO-0003 Documentation Ownership Initialization | COMPLETE / VERIFIED |
 | M3 / AUTO-0004 Engineering Project Update / Migration | COMPLETE / VERIFIED |
 | M3 / AUTO-0005 Python Engineering Baseline V2 / First Production Migration | COMPLETE / VERIFIED |
+| M3 / AUTO-0006 Engineering Project Health / Readiness Audit | COMPLETE / VERIFIED |
 | Additional client and IDE interoperability | PLANNED |
 
 ## Published Release
@@ -107,11 +111,16 @@
 
 - AUTO-0004 final reconciliation passed Quality #111 and post-merge Quality #112 on `4cc71a1c46cd0b98acd6702aae5bda0e19eea651`.
 - AUTO-0005 design passed Quality #113 and post-merge Quality #114.
-- AUTO-0005 V2 bootstrap passed corrected Quality #120 and post-merge Quality #121 after stale legacy-V1 fixtures were separated from the new V2 engineering bootstrap.
-- AUTO-0005 production identity/registry edge passed corrected Quality #123 and post-merge Quality #124 after a formatting-only Ruff defect in #122.
-- AUTO-0005 installed-wheel production migration passed Quality #125 and post-merge Quality #126 on `8a2ea40ff61873c91c9bfb77529f2486068dab2c`.
+- AUTO-0005 V2 bootstrap passed corrected Quality #120 and post-merge Quality #121.
+- AUTO-0005 production identity/registry edge passed corrected Quality #123 and post-merge Quality #124.
+- AUTO-0005 installed-wheel production migration passed Quality #125 and post-merge Quality #126.
+- AUTO-0006 design passed Quality #129 and post-merge Quality #130.
+- AUTO-0006 typed health aggregation passed Quality #131 and post-merge Quality #132.
+- AUTO-0006 bounded Git readiness passed corrected Quality #134 and post-merge Quality #135 after a formatting-only Ruff defect in #133.
+- AUTO-0006 public health CLI passed Quality #136 and post-merge Quality #137.
+- AUTO-0006 installed-wheel health E2E passed corrected Quality #139 and post-merge Quality #140 on `bfc18eb3306250fa92fe3882c1f8cbb2bc394a71` after a formatting-only Ruff defect in #138.
 - Windows 0.2.0 candidate evidence remains: pytest 153 passed, 2 permitted symlink-fixture skips due to `WinError 1314`; Ruff 0; mypy 0 in 79 source files; focused release distribution test 1 passed; `git diff --check` passed; working tree clean.
-- Installed-wheel verification covers `ai-engineering project create`, `project bootstrap`, `project docs check/plan/apply`, `project docs ownership check/plan/apply`, and real `project migrate check/plan/apply` execution for `python-engineering-v1-to-v2`.
+- Installed-wheel verification covers `ai-engineering project create`, `project bootstrap`, `project docs check/plan/apply`, `project docs ownership check/plan/apply`, real `project migrate check/plan/apply` execution for `python-engineering-v1-to-v2`, and `project health` for representative V1/V2/unsupported states.
 
 ## Source Tree
 
@@ -121,6 +130,8 @@ src/ai_engineering/
 ├── python/      ├── registry/  ├── runtime/       ├── shared/
 ├── stdio/       ├── tools/     ├── workspace/
 ├── project_inspection.py
+├── project_git_readiness.py
+├── project_health.py
 ├── documentation_sync.py
 ├── documentation_apply.py
 ├── documentation_ownership.py
