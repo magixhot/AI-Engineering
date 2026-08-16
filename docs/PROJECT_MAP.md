@@ -131,7 +131,7 @@ boundaries.
 - AUTO-0005 Python Engineering V2 / first production migration: complete / verified.
 - AUTO-0006 Project Health/Readiness Audit: complete / verified.
 - AUTO-0007-01 design, AUTO-0007-02 planner, and AUTO-0007-03 invariants: complete / verified.
-- AUTO-0007-04 public reconciliation CLI: in progress in PR #85; Quality #150 is in progress.
+- AUTO-0007-04 public reconciliation CLI: COMPLETE / VERIFIED; merged in PR #85; Quality #157 passed; post-merge Quality #160 passed.
 - AUTO-0007-05 installed distribution verification and AUTO-0007-06 final documentation reconciliation:
   planned and gated on successful completion of the current stage.
 
