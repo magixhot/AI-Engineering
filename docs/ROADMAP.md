@@ -10,60 +10,74 @@ The documentation foundation, MCP foundation, SDK-0001 project templates/scaffol
 
 AUTO-0007 composes existing project identity, inspection, documentation ownership/synchronization, migration readiness, and Git invariants into a deterministic, read-only reconciliation planner. The contract is fail-closed and adds no write/apply authority, new migration edge, or publication behavior.
 
-### AUTO-0007-01 — Reconciliation Planner Design
-
-**Status:** COMPLETE / VERIFIED
-
-The authoritative design defines planner states, ordered steps, blockers/issues, affected paths, reinspection boundaries, expected-state semantics, determinism, and project/Git preservation requirements.
-
-### AUTO-0007-02 — Planner Implementation
-
-**Status:** COMPLETE / VERIFIED
-
-PR #83 merged. Quality #147 and the resulting master verification passed.
-
-### AUTO-0007-03 — Reconciliation Invariants
-
-**Status:** COMPLETE / VERIFIED
-
-Test-only invariant stage. PR #84 merged at `cbbfc382d5b094a21ae3e7dc9d7fc441f12df569`. Quality #148 and post-merge #149 passed.
-
-### AUTO-0007-04 — Public CLI
-
-**Status:** COMPLETE / VERIFIED
-
-PR #85 merged at `b5ddb0af7ff38276f67bda4eccb0ff765f8fa318`. Corrected implementation Quality #157 passed and post-merge Quality #160 passed.
-
-Public command:
+Public planning command:
 
 ```text
 ai-engineering project reconcile plan --project PATH
 ```
 
-The CLI preserves deterministic `key=value` output, fail-closed states and controlled exit behavior. No apply/write authority was added.
+AUTO-0007 remains permanently read-only under AUTO-0008.
 
-### AUTO-0007-05 — Installed Distribution Verification
+## AUTO-0008 — Guarded Project Reconciliation Apply
 
-**Status:** COMPLETE / VERIFIED
+**Status:** IN PROGRESS — AUTO-0008-01 DESIGN
 
-PR #86 merged at `2c2a0b1a7c1d1f26f2723a5a64662b921a986dc2`. Quality #161 passed and post-merge Quality #162 passed on the exact merge commit.
+AUTO-0008 defines a separate guarded execution boundary for applying an exact eligible reconciliation step through an already-approved subsystem write primitive. It does not add write behavior to AUTO-0007 and does not authorize arbitrary writes, commands, new migration edges, publication, `apply all`, `force`, or stale-plan bypass behavior.
 
-The stage verifies the installed wheel/public CLI path in an isolated environment, deterministic output, controlled unsupported behavior, and preservation of project/Git invariants.
+### AUTO-0008-01 — Apply Design / Authority Contract
 
-### AUTO-0007-06 — Final Reconciliation / Documentation
+**Status:** IN PROGRESS
 
-**Status:** COMPLETE / VERIFIED
+Documentation-only stage. Defines authority mapping, eligibility, stale-plan detection, Git/workspace safety, one-step execution, mandatory reinspection, failure/rollback reporting, deterministic result semantics, CLI boundaries, verification matrix, and Definition of Done.
 
-PR #87 merged at `53236558772b857de260817394308aec5eaa5ab2`. Quality #163 passed and post-merge Quality #164 passed on the exact merge commit.
+No production code or write authority changes are allowed in this stage.
 
-This stage reconciles authoritative documentation with the final verified AUTO-0007 implementation, merge, and Quality state. No production authority, migration scope, or publication scope was changed.
+### AUTO-0008-02 — Guarded Executor Core
+
+**Status:** PLANNED / BLOCKED
+
+Typed core executor only. May delegate one exact eligible reconciliation step to an existing approved apply primitive. No public CLI in this stage.
+
+### AUTO-0008-03 — Stale Plan / Failure / Git Safety Invariants
+
+**Status:** PLANNED / BLOCKED
+
+Verification of zero-write stale/manual-review/unsupported behavior, deterministic eligibility/refusal, Git/workspace preservation outside delegated scope, bounded failure/rollback evidence, and mandatory reinspection boundaries.
+
+### AUTO-0008-04 — Public CLI
+
+**Status:** PLANNED / BLOCKED
+
+Planned bounded command:
+
+```text
+ai-engineering project reconcile apply --project PATH --step SEQUENCE
+```
+
+Final CLI shape is gated by the verified core/invariant contract. No `apply all`, `force`, stale bypass, arbitrary workflow, publication, or hidden interactive write path is permitted.
+
+### AUTO-0008-05 — Installed Distribution Verification
+
+**Status:** PLANNED / BLOCKED
+
+Build/install isolated wheel and verify the installed public apply path without source-tree leakage, while preserving the same authority and safety boundaries.
+
+### AUTO-0008-06 — Final Evidence / Documentation Reconciliation
+
+**Status:** PLANNED / BLOCKED
+
+Reconcile implementation, Quality/post-merge evidence, installed-distribution verification, and authoritative documentation before milestone closure.
+
+## Delivery Gates
+
+AUTO-0008 stages execute strictly in order:
+
+`01 → 02 → 03 → 04 → 05 → 06`
+
+Each stage requires the normal Quality gate before merge and a successful post-merge Quality gate before the next stage begins.
 
 ## Current Priority
 
-Preserve the clean verified `master` baseline. Documentation must remain synchronized at milestone boundaries. No new implementation milestone starts without a separate approved design/contract and evidence plan.
+Complete AUTO-0008-01 without production changes. Preserve AUTO-0007 read-only behavior and make the new execution authority explicit, narrow, one-step, stale-safe, fail-closed, and delegated to existing approved subsystem write APIs.
 
-## Next Milestone
-
-No next implementation milestone is currently approved. Candidate future work remains subject to a separate design/contract and evidence process.
-
-A stage is not fully closed until implementation evidence, quality/post-merge evidence, and authoritative documentation agree.
+A stage is not fully closed until implementation/design evidence, Quality/post-merge evidence, and authoritative documentation agree.
