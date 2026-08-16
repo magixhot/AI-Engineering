@@ -16,7 +16,8 @@
 | MCP-0003_ANTIGRAVITY_INTEROPERABILITY_VERIFICATION.md | Antigravity MCP interoperability evidence | Verified |
 | AUTO-0007_ENGINEERING_PROJECT_RECONCILIATION_PLAN_DESIGN.md | Read-only reconciliation planning contract | Complete / Verified |
 | AUTO-0008_GUARDED_PROJECT_RECONCILIATION_APPLY_DESIGN.md | Guarded one-step reconciliation execution authority contract | Complete / Verified |
-| AUTO-0009_MULTI_STEP_RECONCILIATION_ORCHESTRATION_DESIGN.md | Bounded multi-step orchestration contract | Active / Verified through stage 05 |
+| AUTO-0009_MULTI_STEP_RECONCILIATION_ORCHESTRATION_DESIGN.md | Bounded multi-step orchestration contract | Complete / Verified |
+| AUTO-0009_FINAL_EVIDENCE.md | AUTO-0009 final verified evidence | Complete / Verified |
 
 ## Active Engineering Work
 
@@ -26,9 +27,7 @@
 | CI quality gates | COMPLETE / VERIFIED |
 | Workspace/Git/Python safety | COMPLETE / VERIFIED |
 | REL-0003 v0.2.0 publication | COMPLETE / VERIFIED |
-| AUTO-0001 through AUTO-0008 | COMPLETE / VERIFIED |
-| AUTO-0009 stages 01–05 | COMPLETE / VERIFIED |
-| AUTO-0009-06 Final Evidence / Documentation Reconciliation | IN PROGRESS |
+| AUTO-0001 through AUTO-0009 | COMPLETE / VERIFIED |
 | Diagnostics maintenance | ACTIVE |
 
 ## AUTO-0009 Delivery State
@@ -40,17 +39,17 @@
 | AUTO-0009-03 Safety / Progress / Failure Invariants | COMPLETE / VERIFIED — PR #101; Quality #195; post-merge #196 |
 | AUTO-0009-04 Public CLI | COMPLETE / VERIFIED — PR #102; corrected Quality #199; post-merge #200 |
 | AUTO-0009-05 Installed Distribution Verification | COMPLETE / VERIFIED — PR #103; Quality #201; post-merge #202 |
-| AUTO-0009-06 Final Evidence / Documentation Reconciliation | IN PROGRESS |
+| AUTO-0009-06 Final Evidence / Documentation Reconciliation | COMPLETE / VERIFIED — PR #104; Quality #203; post-merge #204 |
 
 ## Current Quality Baseline
 
-Verified implementation baseline entering AUTO-0009-06:
+Final verified AUTO-0009 baseline:
 
 ```text
-master = 9564f8ffdc869bb0d8058f74c78c1e5138e5a37c
+master = 87419229713c93e869d596ffcfabafb12aec4c00
 ```
 
-Post-merge Quality #202 passed on that exact master commit.
+Post-merge Quality #204 passed on that exact master commit.
 
 ## Published Release
 
@@ -72,4 +71,4 @@ src/ai_engineering/
 └── public_cli.py
 ```
 
-AUTO-0007 stays read-only, AUTO-0008 stays the sole one-step apply authority, and AUTO-0009 only orchestrates bounded repeated replan/apply cycles. Stage 06 must pass its own Quality and post-merge gates before AUTO-0009 is declared COMPLETE / VERIFIED.
+AUTO-0007 stays read-only, AUTO-0008 stays the sole one-step apply authority, and AUTO-0009 only orchestrates bounded repeated replan/apply cycles. Any next capability milestone requires a separate approved design/contract.
