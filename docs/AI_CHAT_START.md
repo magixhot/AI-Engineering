@@ -14,11 +14,11 @@ For a new or continued session, restore context in this order:
 8. `MASTER_INDEX.md`
 9. The design/evidence document for the active milestone listed in `MASTER_INDEX.md`, if one exists
 
-After reading them, continue from `CURRENT_STATUS.md` and the current roadmap. `CURRENT_STATUS.md` is authoritative for current state.
+After reading them, continue from `CURRENT_STATUS.md`; it is authoritative for current state.
 
 ## Current Working State
 
-AI-Engineering has completed and verified AUTO-0001 through AUTO-0009 for their approved scopes. AUTO-0009 stages 01–06 are COMPLETE / VERIFIED.
+AI-Engineering has completed and verified AUTO-0001 through AUTO-0009. AUTO-0010 stages 01–05 are COMPLETE / VERIFIED; AUTO-0010-06 final evidence/documentation reconciliation is active.
 
 Permanent reconciliation boundaries:
 
@@ -26,42 +26,43 @@ Permanent reconciliation boundaries:
 ai-engineering project reconcile plan --project PATH
 ai-engineering project reconcile apply --project PATH --step SEQUENCE
 ai-engineering project reconcile run --project PATH [--max-steps N]
+ai-engineering project reconcile run --project PATH --policy POLICY.toml [--max-steps N]
 ```
 
-AUTO-0007 is permanently read-only. AUTO-0008 remains the sole guarded one-step apply boundary. AUTO-0009 is bounded orchestration over repeated fresh planning plus exactly one AUTO-0008 apply per iteration.
+AUTO-0007 is permanently read-only. AUTO-0008 remains the sole guarded one-step apply boundary. AUTO-0009 is bounded orchestration over repeated fresh planning plus exactly one AUTO-0008 apply per iteration. AUTO-0010 policy can only restrict those existing authorities.
 
-Final verified AUTO-0009 baseline:
+Verified implementation baseline entering AUTO-0010-06:
 
 ```text
-master = 87419229713c93e869d596ffcfabafb12aec4c00
+master = 272b9328a819f9a4fc281f41aed9970cd05e208f
 ```
 
-AUTO-0009-06 merged in PR #104 and passed Quality #203 plus post-merge Quality #204 on that exact commit.
+PR #110 merged AUTO-0010-05 and passed Quality #222 plus exact post-merge Quality #223.
 
 ## Active Milestone
 
-No new AUTO milestone is active. A future capability milestone must begin with a separate approved design/contract before production capability work starts.
+AUTO-0010-06 — Final Evidence / Documentation Reconciliation.
 
-Read `AUTO-0009_MULTI_STEP_RECONCILIATION_ORCHESTRATION_DESIGN.md` and `AUTO-0009_FINAL_EVIDENCE.md` for the verified orchestration contract and evidence.
+Read `AUTO-0010_RECONCILIATION_POLICY_DESIGN.md` and `AUTO-0010_FINAL_EVIDENCE.md`.
 
 ```text
-AUTO-0009-01 design                  COMPLETE / VERIFIED
-AUTO-0009-02 orchestrator core       COMPLETE / VERIFIED
-AUTO-0009-03 safety invariants       COMPLETE / VERIFIED
-AUTO-0009-04 public CLI              COMPLETE / VERIFIED
-AUTO-0009-05 installed distribution  COMPLETE / VERIFIED
-AUTO-0009-06 final reconciliation    COMPLETE / VERIFIED
+AUTO-0010-01 design                  COMPLETE / VERIFIED
+AUTO-0010-02 policy core             COMPLETE / VERIFIED
+AUTO-0010-03 safety invariants       COMPLETE / VERIFIED
+AUTO-0010-04 orchestration + CLI     COMPLETE / VERIFIED
+AUTO-0010-05 installed distribution  COMPLETE / VERIFIED
+AUTO-0010-06 final reconciliation    IN PROGRESS
 ```
 
-## AUTO-0009 Guardrails
+## AUTO-0010 Guardrails
 
-- Fresh AUTO-0007 planning before every mutation.
-- Exactly one AUTO-0008 delegated apply per orchestration iteration.
-- Canonical deterministic ordering only.
-- Finite progress bound; public default 8, hard maximum 100.
-- Stop fail-closed on stale, manual-review, unsupported, failed, or limit-reached state.
-- No arbitrary step list, parallel writes, `force`, stale bypass, new migration edges, publication, or direct Git mutation authority.
-- Partial progress must be reported truthfully; no invented whole-run atomicity or rollback guarantee.
+- Policy is an explicit restriction layer, never execution authority.
+- Fresh policy loading/evaluation occurs before every candidate write.
+- Invalid/unknown/contradictory policy fails closed.
+- Refused candidate writes do not occur; earlier successful orchestration progress remains truthful.
+- The stricter of CLI and policy progress limits applies.
+- No arbitrary commands/scripts/plugins, network policy retrieval, new workflows, force/stale bypass, direct Git mutation, publication, or rollback guarantee.
+- AUTO-0007/AUTO-0008/AUTO-0009 authority boundaries remain unchanged.
 
 ## General Engineering Guardrails
 
