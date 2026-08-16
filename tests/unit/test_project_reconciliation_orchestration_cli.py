@@ -31,7 +31,9 @@ def test_public_cli_routes_run_with_default_limit(monkeypatch, tmp_path: Path) -
 
     monkeypatch.setattr(public_cli, "run_reconciliation_orchestration", fake_run)
 
-    assert public_cli.main(["project", "reconcile", "run", "--project", str(tmp_path)]) == 0
+    assert public_cli.main(
+        ["project", "reconcile", "run", "--project", str(tmp_path)]
+    ) == 0
     assert captured == [(tmp_path.resolve(), 8)]
 
 
