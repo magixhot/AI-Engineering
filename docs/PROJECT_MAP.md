@@ -90,8 +90,9 @@ AUTO-0011 cannot create write authority, bypass AUTO-0008 stale-state checks, ov
 - AUTO-0011-03 verification/safety invariants: COMPLETE / VERIFIED; PR #115; corrected Quality #235; post-merge #236.
 - AUTO-0011-04 guarded integration: COMPLETE / VERIFIED; PR #116; corrected Quality #238; post-merge #239.
 - AUTO-0011-05 installed distribution verification: COMPLETE / VERIFIED; PR #117; Quality #240; post-merge #241.
-- AUTO-0011-06 final evidence/documentation reconciliation: IN PROGRESS.
+- AUTO-0011-06 final evidence/documentation reconciliation: COMPLETE / VERIFIED; PR #118; Quality #242; post-merge #243.
+- AUTO-0011 administrative closure record: PR #119; Quality #244; post-merge #245.
 
-Verified implementation baseline entering closure: `2d181d38d26087bb672eaaa0691b27f071353eb7`.
+The stage-06 capability/documentation baseline `94449b8754bb0bd803b5d60f38292e1530b82b1e` and administrative verification commit `b3d3d2f20cb3827f129ef1e6479f89bf015ae1f8` are historical evidence. Later repository progress does not invalidate them.
 
 `tests/release/` verifies installed-wheel behavior outside the source checkout, including AUTO-0011 deterministic approval generation, one-bound-candidate execution, stale approval refusal, malformed approval fail-closed behavior, and preservation of the existing Git safety boundary.

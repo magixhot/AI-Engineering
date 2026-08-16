@@ -3,12 +3,12 @@
 **Snapshot date:** 2026-08-16  
 **Status:** ACTIVE  
 **Release line:** 0.2.0 published  
-**Current milestone:** AUTO-0011 — Reconciliation Approval  
-**Active stage:** AUTO-0011-06 Final Evidence / Documentation Reconciliation
+**Current milestone:** NONE — AUTO-0011 COMPLETE / VERIFIED  
+**Active stage:** NONE
 
 ## Authoritative State
 
-AUTO-0001 through AUTO-0010 are COMPLETE / VERIFIED for their approved scopes. AUTO-0011 stages 01 through 05 are COMPLETE / VERIFIED; stage 06 is the documentation-only closure gate.
+AUTO-0001 through AUTO-0011 are COMPLETE / VERIFIED for their approved scopes.
 
 | Stage | State | Evidence |
 |---|---|---|
@@ -17,17 +17,19 @@ AUTO-0001 through AUTO-0010 are COMPLETE / VERIFIED for their approved scopes. A
 | AUTO-0011-03 Approval Verification / Safety Invariants | COMPLETE / VERIFIED | PR #115; corrected Quality #235; post-merge #236. |
 | AUTO-0011-04 Guarded Integration | COMPLETE / VERIFIED | PR #116; corrected Quality #238; post-merge #239. |
 | AUTO-0011-05 Installed Distribution Verification | COMPLETE / VERIFIED | PR #117; Quality #240; post-merge #241. |
-| AUTO-0011-06 Final Evidence / Documentation Reconciliation | IN PROGRESS | Documentation-only closure from exact verified implementation baseline. |
+| AUTO-0011-06 Final Evidence / Documentation Reconciliation | COMPLETE / VERIFIED | PR #118; Quality #242; post-merge #243. |
 
-## Verified Implementation Baseline Entering Closure
+## Verified AUTO-0011 Closure Evidence
+
+The verified AUTO-0011 capability/documentation baseline produced by stage 06 is:
 
 ```text
-master = 2d181d38d26087bb672eaaa0691b27f071353eb7
+94449b8754bb0bd803b5d60f38292e1530b82b1e
 ```
 
-PR #117 merged AUTO-0011-05. Quality #240 passed before merge and post-merge Quality #241 passed on the exact `push` to `master` for `2d181d38d26087bb672eaaa0691b27f071353eb7`.
+PR #118 merged AUTO-0011-06 and exact post-merge Quality #243 succeeded on that commit.
 
-AUTO-0011 becomes fully COMPLETE / VERIFIED only after the stage-06 documentation PR passes pre-merge Quality, merges, and the exact resulting `master` commit passes post-merge Quality.
+A subsequent documentation-only administrative record, PR #119, passed Quality #244 before merge and exact post-merge Quality #245 after merge. Its merge commit `b3d3d2f20cb3827f129ef1e6479f89bf015ae1f8` is historical administrative verification evidence, not a requirement that future `master` remain equal to that SHA.
 
 ## Reconciliation Authority Boundaries
 
@@ -44,7 +46,7 @@ ai-engineering project reconcile approve --project PATH [--policy POLICY.toml]
 ai-engineering project reconcile run --project PATH --approval APPROVAL.json [--policy POLICY.toml] [--max-steps N]
 ```
 
-Approval artifacts are deterministic, typed, digest-bound, and scoped to one candidate. When approval mode is requested, the artifact must match the freshly planned candidate, portable project identity, Git HEAD/branch state, and explicit policy fingerprint. Malformed or mismatched approval fails closed before that candidate write. A successful write is still delegated only through the existing AUTO-0008/AUTO-0009 path.
+Approval artifacts are deterministic, typed, digest-bound, and scoped to one candidate. When approval mode is requested, the artifact must match the freshly planned candidate, portable project identity, Git HEAD/branch state, and explicit policy fingerprint. Malformed or mismatched approval fails closed before that candidate write. A successful write remains delegated only through the existing AUTO-0008/AUTO-0009 path.
 
 Because AUTO-0009 replans after each successful write, one approval can authorize at most the bound candidate. A later candidate requires a fresh matching approval. AUTO-0010 policy remains independently restrictive and cannot be overridden by approval.
 
@@ -52,4 +54,4 @@ AUTO-0011 adds no new reconciliation workflow, file mutation primitive, arbitrar
 
 ## Current Priority
 
-Complete AUTO-0011-06 without changing production behavior. After exact post-merge Quality succeeds, reconcile the final baseline if necessary before starting any next capability milestone.
+Preserve the verified AUTO-0007 through AUTO-0011 boundaries. Any next capability milestone must begin with a separate design/contract before production implementation.

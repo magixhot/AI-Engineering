@@ -18,7 +18,7 @@ After reading them, continue from `CURRENT_STATUS.md`; it is authoritative for c
 
 ## Current Working State
 
-AI-Engineering has completed and verified AUTO-0001 through AUTO-0010 for their approved scopes. AUTO-0011 implementation stages 01 through 05 are also COMPLETE / VERIFIED; stage 06 is the documentation-only closure gate.
+AI-Engineering has completed and verified AUTO-0001 through AUTO-0011 for their approved scopes.
 
 Permanent reconciliation boundaries:
 
@@ -33,19 +33,13 @@ ai-engineering project reconcile run --project PATH --approval APPROVAL.json [--
 
 AUTO-0007 is permanently read-only. AUTO-0008 remains the sole guarded one-step apply boundary. AUTO-0009 is bounded orchestration over repeated fresh planning plus exactly one AUTO-0008 apply per iteration. AUTO-0010 policy can only restrict those existing authorities. AUTO-0011 approval is an optional additional single-candidate gate and cannot grant new mutation authority.
 
-Verified AUTO-0011 implementation baseline entering closure:
-
-```text
-master = 2d181d38d26087bb672eaaa0691b27f071353eb7
-```
-
-PR #117 merged AUTO-0011-05 and passed Quality #240 plus exact post-merge Quality #241.
+AUTO-0011 stage 06 completed through PR #118, Quality #242, and exact post-merge Quality #243. Administrative closure record PR #119 then passed Quality #244 and exact post-merge Quality #245. The recorded SHAs are historical verification evidence rather than a requirement that future `master` remain unchanged.
 
 ## Active Milestone
 
-AUTO-0011-06 Final Evidence / Documentation Reconciliation is active. It is documentation-only and must not change production behavior.
+No AUTO capability milestone is active.
 
-Read `AUTO-0011_RECONCILIATION_APPROVAL_DESIGN.md` and `AUTO-0011_FINAL_EVIDENCE.md` for the approval contract and staged closure evidence.
+Read `AUTO-0011_RECONCILIATION_APPROVAL_DESIGN.md` and `AUTO-0011_FINAL_EVIDENCE.md` for the verified approval contract and closure evidence.
 
 ```text
 AUTO-0011-01 design                   COMPLETE / VERIFIED
@@ -53,10 +47,10 @@ AUTO-0011-02 typed approval model     COMPLETE / VERIFIED
 AUTO-0011-03 approval verification    COMPLETE / VERIFIED
 AUTO-0011-04 guarded integration      COMPLETE / VERIFIED
 AUTO-0011-05 installed distribution   COMPLETE / VERIFIED
-AUTO-0011-06 final reconciliation     IN PROGRESS
+AUTO-0011-06 final reconciliation     COMPLETE / VERIFIED
 ```
 
-AUTO-0011 becomes fully COMPLETE / VERIFIED only after the stage-06 PR passes pre-merge Quality, merges, and exact post-merge Quality succeeds on the resulting `master` commit.
+Any next AUTO capability must begin with a separate design/contract before production implementation.
 
 ## AUTO-0011 Guardrails
 
