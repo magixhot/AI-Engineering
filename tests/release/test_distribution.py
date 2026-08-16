@@ -156,7 +156,7 @@ def test_distribution_artifacts_and_isolated_wheel_install(tmp_path: Path) -> No
             for requirement in metadata.get_all("Requires-Dist", [])
         )
         assert (
-            "ai-engineering = ai_engineering.cli:main"
+            "ai-engineering = ai_engineering.public_cli:main"
             in wheel.read(f"{DIST_INFO_ROOT}/entry_points.txt").decode()
         )
 
@@ -211,7 +211,7 @@ def test_distribution_artifacts_and_isolated_wheel_install(tmp_path: Path) -> No
         and "<1.28" in requirement
         for requirement in installed_metadata["requires_dist"]
     )
-    assert installed_metadata["entry_point"] == "ai_engineering.cli:main"
+    assert installed_metadata["entry_point"] == "ai_engineering.public_cli:main"
 
     installed_cli = _venv_executable(venv_directory, "ai-engineering")
     help_result = _run(

@@ -9,7 +9,7 @@ dependencies = [
 ]
 
 [project.scripts]
-ai-engineering = "ai_engineering.cli:main"
+ai-engineering = "ai_engineering.public_cli:main"
 
 [dependency-groups]
 dev = [
