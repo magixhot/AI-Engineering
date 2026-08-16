@@ -8,7 +8,9 @@ from ai_engineering.engineering_bootstrap import (
     bootstrap_engineering_project,
 )
 from ai_engineering.project_health import NEXT_DOCS_PLAN, NEXT_MIGRATION_PLAN
-from ai_engineering.project_reconciliation_orchestration import run_project_reconciliation
+from ai_engineering.project_reconciliation_orchestration import (
+    run_project_reconciliation,
+)
 from ai_engineering.project_templates import (
     StandaloneProjectRequest,
     create_standalone_project,
@@ -112,7 +114,9 @@ def test_policy_limit_is_stricter_than_cli_limit(tmp_path: Path) -> None:
     assert result.issues[0].code == "PROGRESS_LIMIT_REACHED"
 
 
-def test_later_policy_refusal_preserves_truthful_partial_progress(tmp_path: Path) -> None:
+def test_later_policy_refusal_preserves_partial_progress(
+    tmp_path: Path,
+) -> None:
     root = _bootstrap_v1(tmp_path)
     policy = _write_policy(
         tmp_path,
@@ -151,7 +155,9 @@ def test_malformed_explicit_policy_fails_before_candidate_write(tmp_path: Path) 
     assert _git(root, "rev-parse", "HEAD") == head
 
 
-def test_no_policy_preserves_existing_healthy_no_change_behavior(tmp_path: Path) -> None:
+def test_no_policy_preserves_healthy_no_change_behavior(
+    tmp_path: Path,
+) -> None:
     root = _bootstrap_v2(tmp_path)
     first = run_project_reconciliation(root)
     assert first.state == "complete"
