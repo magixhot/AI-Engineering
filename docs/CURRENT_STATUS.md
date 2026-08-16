@@ -1,8 +1,8 @@
 # AI-Engineering — Current Status
 
-**Snapshot date:** 2026-08-16
-**Status:** ACTIVE
-**Release line:** 0.2.0 published
+**Snapshot date:** 2026-08-16  
+**Status:** ACTIVE  
+**Release line:** 0.2.0 published  
 **Current phase:** AUTO-0007 — Engineering Project Reconciliation Plan
 
 ## State by Delivery Area
@@ -11,7 +11,7 @@
 |---|---|---|
 | Sprint 0 — Documentation Foundation | COMPLETED | Core project documents exist and are maintained. |
 | Sprint 1 — MCP Foundation | IMPLEMENTED / VERIFIED | MCP bootstrap, SDK adapter, registry integration, STDIO entry point, and diagnostics are covered by MCP-0002 evidence. |
-| Official Python MCP SDK migration | COMPLETE | `mcp` is a project dependency; the SDK bootstrap and adapter are implemented and verified by MCP-0002. |
+| Official Python MCP SDK migration | COMPLETE | `mcp` is a project dependency; SDK bootstrap and adapter are implemented and verified by MCP-0002. |
 | Workspace, Git, and Python tools | IMPLEMENTED / VERIFIED | All 15 registered operations have isolated service/registry/representative SDK-session verification. |
 | Client interoperability | VS CODE AND ANTIGRAVITY VERIFIED | VS Code 1.132.1 and Antigravity are specifically verified for their recorded contracts; other client categories remain unverified and are not claimed. |
 | SDK-0001 Project Templates V1 / Python Scaffold / CLI | COMPLETE / VERIFIED | Standalone templates, optional Python scaffold, and installed `ai-engineering project create` behavior are verified. |
@@ -28,21 +28,22 @@
 | AUTO-0004 Engineering Project Update / Migration Framework | COMPLETE / VERIFIED | Positive project identity, explicit migration registry, deterministic planning, SHA-256 guards, guarded atomic apply/rollback, Git invariants, installed migration CLI, and isolated-wheel verification are complete. Evidence: `AUTO-0004_VERIFICATION_EVIDENCE.md`. |
 | AUTO-0005 Python Engineering Baseline V2 / First Production Migration | COMPLETE / VERIFIED | New engineering bootstraps use `python-engineering-v2`; dual V1/V2 identity and the registered `python-engineering-v1-to-v2` edge are verified through the installed public CLI. Evidence: `AUTO-0005_VERIFICATION_EVIDENCE.md`. |
 | AUTO-0006 Engineering Project Health / Readiness Audit | COMPLETE / VERIFIED | Typed read-only health aggregation, bounded Git readiness, deterministic next-action guidance, public `project health` CLI, and isolated-wheel E2E verification are complete. Evidence: `AUTO-0006_VERIFICATION_EVIDENCE.md`. |
-| AUTO-0007 Engineering Project Reconciliation Plan | IN PROGRESS | Design and planner stages 01–03 are complete/verified; stage 04 Public CLI is active in PR #85. |
+| AUTO-0007 Engineering Project Reconciliation Plan | IN PROGRESS | Stages 01–03 are complete/verified. Stage 04 Public CLI is implementation-complete in PR #85; corrected head `0e9d0fbd86b174f243193d9b5716ba93aef1fbff` passed Quality #157. Merge and post-merge gate remain. |
 | AUTO-0007-01 Reconciliation Planner Design | COMPLETE / VERIFIED | Read-only reconciliation contract and deterministic planner design are established in `AUTO-0007_ENGINEERING_PROJECT_RECONCILIATION_PLAN_DESIGN.md`. |
 | AUTO-0007-02 Planner Implementation | COMPLETE / VERIFIED | PR #83 merged; post-merge Quality #147 passed. Master base before stage 03: `006e1677efae525207e49d8c1eb3f1429583c603`. |
-| AUTO-0007-03 Reconciliation Invariants | COMPLETE / VERIFIED | Test-only invariant stage. PR #84 merged at `cbbfc382d5b094a21ae3e7dc9d7fc441f12df569`; Quality #148 passed and post-merge Quality #149 passed. |
-| AUTO-0007-04 Public CLI | IN PROGRESS | PR #85, branch `agent/auto-0007-04-public-cli`, head `cbb961dd4bd76547254de027cc380a354bbb8ca1`; Quality #150 is currently in progress. |
-| Quality gates | PASS THROUGH AUTO-0007-03 | AUTO-0007-02 passed #147; AUTO-0007-03 passed #148 and post-merge #149. AUTO-0007-04 is awaiting #150. |
+| AUTO-0007-03 Reconciliation Invariants | COMPLETE / VERIFIED | Test-only invariant stage. PR #84 merged at `cbbfc382d5b094a21ae3e7dc9d7fc441f12df569`; Quality #148 and post-merge Quality #149 passed. |
+| AUTO-0007-04 Public CLI | QUALITY PASSED / MERGE PENDING | PR #85, branch `agent/auto-0007-04-public-cli`, corrected head `0e9d0fbd86b174f243193d9b5716ba93aef1fbff`; Quality #157 passed. |
+| Quality gates | PASS THROUGH CURRENT HEAD | AUTO-0007-02 #147, AUTO-0007-03 #148 + #149, AUTO-0007-04 corrected head #157. PR #85 merge and post-merge gate remain. |
 
 ## Current Priorities
 
-1. Complete AUTO-0007-04 Public CLI without expanding write authority, publication scope, or migration scope.
-2. Preserve the AUTO-0007 fail-closed, deterministic, read-only reconciliation contract.
-3. After Quality #150 succeeds, merge PR #85 and run the post-merge gate.
-4. Reconcile this documentation again after the AUTO-0007-04 merge before starting AUTO-0007-05.
-5. Preserve the published `v0.2.0` release and its exact tag target.
-6. Keep PyPI explicitly not approved/not published.
+1. Prepare PR #85 for merge after Quality #157 success.
+2. Merge AUTO-0007-04 and run the mandatory post-merge gate.
+3. Reconcile authoritative documentation after the merge before starting AUTO-0007-05.
+4. Run AUTO-0007-05 Installed Distribution Verification only after the stage-04 post-merge gate succeeds.
+5. Preserve the AUTO-0007 fail-closed, deterministic, read-only reconciliation contract.
+6. Preserve the published `v0.2.0` release and its exact tag target.
+7. Keep PyPI explicitly not approved/not published.
 
 ## Implemented Baseline
 
@@ -62,15 +63,13 @@ REL-0003 published version `0.2.0` to GitHub. The immutable tag `v0.2.0` points 
 
 ## Active Work
 
-AUTO-0007-04 Public CLI is the only active delivery stage. PR #85 is open as a draft/active implementation on `agent/auto-0007-04-public-cli`. Quality #150 is in progress for head `cbb961dd4bd76547254de027cc380a354bbb8ca1`.
-
-No AUTO-0007-05 implementation is started until AUTO-0007-04 passes quality, merges, and its post-merge gate succeeds.
+AUTO-0007-04 Public CLI is implementation-complete and quality-passed on PR #85. The corrected head is `0e9d0fbd86b174f243193d9b5716ba93aef1fbff`; Quality #157 succeeded. The PR remains the active merge gate. No AUTO-0007-05 implementation has started.
 
 ## Planned Work
 
 ### AUTO-0007 sequence
 
-- AUTO-0007-04 — Public CLI — IN PROGRESS
+- AUTO-0007-04 — Public CLI — QUALITY PASSED / MERGE PENDING
 - AUTO-0007-05 — Installed Distribution Verification — PLANNED
 - AUTO-0007-06 — Final Reconciliation / Documentation — PLANNED
 
