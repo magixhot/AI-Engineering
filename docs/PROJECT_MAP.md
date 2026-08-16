@@ -93,8 +93,8 @@ AUTO-0009 owns no direct mutation primitive. It does not bypass AUTO-0008 stale-
 - AUTO-0009-03 safety/progress/failure invariants: COMPLETE / VERIFIED; PR #101; Quality #195; post-merge #196.
 - AUTO-0009-04 public CLI: COMPLETE / VERIFIED; PR #102; corrected Quality #199; post-merge #200.
 - AUTO-0009-05 installed distribution verification: COMPLETE / VERIFIED; PR #103; Quality #201; post-merge #202.
-- AUTO-0009-06 final evidence/documentation reconciliation: IN PROGRESS.
+- AUTO-0009-06 final evidence/documentation reconciliation: COMPLETE / VERIFIED; PR #104; Quality #203; post-merge #204.
 
-Verified implementation baseline entering AUTO-0009-06: `9564f8ffdc869bb0d8058f74c78c1e5138e5a37c`.
+Final verified AUTO-0009 baseline: `87419229713c93e869d596ffcfabafb12aec4c00`.
 
 `tests/release/` verifies wheel/sdist artifacts and installed CLI behavior outside the source checkout, including AUTO-0007 planning, AUTO-0008 guarded one-step apply, and AUTO-0009 bounded orchestration.

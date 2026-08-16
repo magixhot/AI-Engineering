@@ -4,11 +4,11 @@
 **Status:** ACTIVE  
 **Release line:** 0.2.0 published  
 **Current milestone:** AUTO-0009 — Multi-step Reconciliation Orchestration  
-**Active stage:** AUTO-0009-06 — Final Evidence / Documentation Reconciliation
+**Active stage:** NONE — AUTO-0009 COMPLETE / VERIFIED
 
 ## Authoritative State
 
-AUTO-0001 through AUTO-0008 are COMPLETE / VERIFIED for their approved scopes. AUTO-0009 stages 01 through 05 are COMPLETE / VERIFIED; stage 06 is in progress and must still pass its own pre-merge and post-merge Quality gates before the milestone is closed.
+AUTO-0001 through AUTO-0009 are COMPLETE / VERIFIED for their approved scopes. AUTO-0009 stages 01 through 06 have completed their required pre-merge and post-merge Quality gates.
 
 | Stage | State | Evidence |
 |---|---|---|
@@ -17,15 +17,17 @@ AUTO-0001 through AUTO-0008 are COMPLETE / VERIFIED for their approved scopes. A
 | AUTO-0009-03 Safety / Progress / Failure Invariants | COMPLETE / VERIFIED | PR #101; Quality #195; post-merge Quality #196. |
 | AUTO-0009-04 Public CLI | COMPLETE / VERIFIED | PR #102; corrected Quality #199; post-merge Quality #200. |
 | AUTO-0009-05 Installed Distribution Verification | COMPLETE / VERIFIED | PR #103; Quality #201; post-merge Quality #202; merge commit `9564f8ffdc869bb0d8058f74c78c1e5138e5a37c`. |
-| AUTO-0009-06 Final Evidence / Documentation Reconciliation | IN PROGRESS | Documentation-only reconciliation from verified baseline `9564f8ffdc869bb0d8058f74c78c1e5138e5a37c`. |
+| AUTO-0009-06 Final Evidence / Documentation Reconciliation | COMPLETE / VERIFIED | PR #104; Quality #203; post-merge Quality #204; merge commit `87419229713c93e869d596ffcfabafb12aec4c00`. |
 
-## Verified Baseline Entering AUTO-0009-06
+## Final Verified AUTO-0009 Baseline
 
 ```text
-master = 9564f8ffdc869bb0d8058f74c78c1e5138e5a37c
+master = 87419229713c93e869d596ffcfabafb12aec4c00
 ```
 
-Post-merge Quality #202 passed on the exact `push` to `master` for that commit.
+PR #104 merged the AUTO-0009-06 final evidence/documentation reconciliation. Quality #203 passed before merge and post-merge Quality #204 passed on the exact `push` to `master` for `87419229713c93e869d596ffcfabafb12aec4c00`.
+
+The implementation baseline entering AUTO-0009-06 was `9564f8ffdc869bb0d8058f74c78c1e5138e5a37c`, verified by post-merge Quality #202; it remains historical evidence.
 
 ## AUTO-0007 / AUTO-0008 Permanent Boundaries
 
@@ -64,6 +66,7 @@ The authoritative design is `AUTO-0009_MULTI_STEP_RECONCILIATION_ORCHESTRATION_D
 - AUTO-0009-03: Quality #195 — PASS; post-merge #196 — PASS.
 - AUTO-0009-04: Quality #197 exposed Ruff E501; Quality #198 exposed a stale distribution entry-point expectation; corrected Quality #199 — PASS; post-merge #200 — PASS.
 - AUTO-0009-05: Quality #201 — PASS; post-merge #202 — PASS on exact master `9564f8ffdc869bb0d8058f74c78c1e5138e5a37c`.
+- AUTO-0009-06: Quality #203 — PASS; post-merge #204 — PASS on exact master `87419229713c93e869d596ffcfabafb12aec4c00`.
 
 ## Release Baseline
 
@@ -77,7 +80,7 @@ AUTO-0009 does not authorize a version bump, tag, GitHub Release, TestPyPI, PyPI
 
 ## Current Priorities
 
-1. Complete AUTO-0009-06 documentation reconciliation and its Quality/post-merge gates.
-2. Preserve AUTO-0007 read-only behavior and AUTO-0008 sole one-step apply authority.
-3. Preserve AUTO-0009 bounded replan-between-writes orchestration semantics.
-4. Do not expand writable scope, migration edges, transaction claims, or publication authority without a separate approved contract.
+1. Preserve AUTO-0007 read-only behavior and AUTO-0008 sole one-step apply authority.
+2. Preserve AUTO-0009 bounded replan-between-writes orchestration semantics.
+3. Keep authoritative documentation synchronized with the final AUTO-0009 verified baseline.
+4. Define the next milestone separately before new production capability work begins.
