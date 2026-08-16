@@ -273,12 +273,6 @@ def evaluate_reconciliation_policy(
 ) -> ReconciliationPolicyDecision:
     """Evaluate one fresh candidate; allowance never grants execution authority."""
 
-    git_evidence = {
-        "git_branch": git_readiness.branch,
-        "staged_paths": git_readiness.staged_paths,
-        "unstaged_paths": git_readiness.unstaged_paths,
-        "untracked_paths": git_readiness.untracked_paths,
-    }
     if loaded.state != "loaded" or loaded.policy is None:
         return ReconciliationPolicyDecision(
             source=loaded.source,
@@ -286,7 +280,10 @@ def evaluate_reconciliation_policy(
             workflow=workflow,
             effective_max_steps=requested_max_steps,
             issues=loaded.issues,
-            **git_evidence,
+            git_branch=git_readiness.branch,
+            staged_paths=git_readiness.staged_paths,
+            unstaged_paths=git_readiness.unstaged_paths,
+            untracked_paths=git_readiness.untracked_paths,
         )
 
     policy = loaded.policy
@@ -377,5 +374,8 @@ def evaluate_reconciliation_policy(
         workflow=workflow,
         effective_max_steps=effective_limit,
         issues=issues,
-        **git_evidence,
+        git_branch=git_readiness.branch,
+        staged_paths=git_readiness.staged_paths,
+        unstaged_paths=git_readiness.unstaged_paths,
+        untracked_paths=git_readiness.untracked_paths,
     )
