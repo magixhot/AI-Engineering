@@ -1,8 +1,10 @@
 from __future__ import annotations
 
+from pathlib import Path
 from typing import Mapping
 
 from .project_templates import (
+    ProjectTemplateError,
     ProjectTemplateGenerator,
     StandaloneProject,
     StandaloneProjectRequest,
@@ -35,6 +37,11 @@ PYTHON_ENGINEERING_V2_GITIGNORE = (
     ".vscode/\n"
 )
 
+_V2_MACHINE_OWNED_PATHS = (
+    ".gitignore",
+    PYTHON_ENGINEERING_IDENTITY_PATH,
+)
+
 
 class _PythonEngineeringV2Generator(ProjectTemplateGenerator):
     """Bounded AUTO-0005 profile augmentation over the SDK generator."""
@@ -44,6 +51,24 @@ class _PythonEngineeringV2Generator(ProjectTemplateGenerator):
         files[".gitignore"] = PYTHON_ENGINEERING_V2_GITIGNORE
         files[PYTHON_ENGINEERING_IDENTITY_PATH] = PYTHON_ENGINEERING_V2_IDENTITY
         return files
+
+    def _write_scaffold_files(
+        self,
+        target_directory: Path,
+        scaffold_files: Mapping[str, str],
+    ) -> None:
+        generic_files = {
+            relative_path: content
+            for relative_path, content in scaffold_files.items()
+            if relative_path not in _V2_MACHINE_OWNED_PATHS
+        }
+        super()._write_scaffold_files(target_directory, generic_files)
+
+        for relative_path in _V2_MACHINE_OWNED_PATHS:
+            path = target_directory / relative_path
+            if path.exists():
+                raise ProjectTemplateError(f"File already exists: {path}")
+            path.write_bytes(scaffold_files[relative_path].encode("utf-8"))
 
 
 def create_python_engineering_v2_project(
