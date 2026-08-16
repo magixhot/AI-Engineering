@@ -9,6 +9,11 @@ from pathlib import Path
 from typing import Sequence
 
 from .documentation_apply import apply_documentation_sync
+from .documentation_ownership import (
+    DocumentationOwnershipError,
+    apply_documentation_ownership_initialization,
+    plan_documentation_ownership_initialization,
+)
 from .documentation_sync import (
     DocumentationDriftReport,
     DocumentationSyncError,
@@ -61,6 +66,15 @@ def _parser() -> argparse.ArgumentParser:
     for action in ("check", "plan", "apply"):
         docs_command = docs_actions.add_parser(action)
         docs_command.add_argument("--project", required=True)
+
+    ownership_project = docs_actions.add_parser("ownership")
+    ownership_actions = ownership_project.add_subparsers(
+        dest="ownership_action",
+        required=True,
+    )
+    for action in ("check", "plan", "apply"):
+        ownership_command = ownership_actions.add_parser(action)
+        ownership_command.add_argument("--project", required=True)
 
     return parser
 
@@ -174,8 +188,68 @@ def _docs_apply(project_root: Path) -> int:
     return 0
 
 
+def _ownership_plan(project_root: Path):
+    snapshot = inspect_project_state(ProjectInspectionRequest(project_root))
+    return plan_documentation_ownership_initialization(snapshot)
+
+
+def _ownership_status(plan) -> str:
+    if plan.manual_review:
+        return "manual_review"
+    if plan.updates:
+        return "ready"
+    return "initialized"
+
+
+def _ownership_check(project_root: Path) -> int:
+    plan = _ownership_plan(project_root)
+    status = _ownership_status(plan)
+
+    print(f"project={plan.project_root}")
+    print(f"classification_count={len(plan.classifications)}")
+    print(f"initialization_count={len(plan.updates)}")
+    print(f"manual_review_count={len(plan.manual_review)}")
+    for item in plan.classifications:
+        print(f"ownership={item.document}:{item.state}")
+    print(f"status={status}")
+    return 0 if status == "initialized" else 1
+
+
+def _ownership_plan_command(project_root: Path) -> int:
+    plan = _ownership_plan(project_root)
+    status = _ownership_status(plan)
+
+    print(f"project={plan.project_root}")
+    print(f"update_count={len(plan.updates)}")
+    print(f"manual_review_count={len(plan.manual_review)}")
+    for update in plan.updates:
+        print(f"update={update.document}:{update.original_sha256}")
+    for document in plan.manual_review:
+        print(f"manual_review={document}")
+    print(f"status={status}")
+    return 1 if plan.manual_review else 0
+
+
+def _ownership_apply(project_root: Path) -> int:
+    plan = _ownership_plan(project_root)
+    result = apply_documentation_ownership_initialization(plan)
+
+    print(f"project={result.project_root}")
+    print(f"changed_count={len(result.changed_documents)}")
+    for document in result.changed_documents:
+        print(f"changed_document={document}")
+    print("verification=passed")
+    return 0
+
+
 def _project_docs(args: argparse.Namespace) -> int:
     project_root = Path(args.project).resolve()
+    if args.docs_action == "ownership":
+        if args.ownership_action == "check":
+            return _ownership_check(project_root)
+        if args.ownership_action == "plan":
+            return _ownership_plan_command(project_root)
+        return _ownership_apply(project_root)
     if args.docs_action == "check":
         return _docs_check(project_root)
     if args.docs_action == "plan":
@@ -192,6 +266,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             return _project_docs(args)
         return _create_project(args)
     except (
+        DocumentationOwnershipError,
         DocumentationSyncError,
         EngineeringBootstrapError,
         ProjectInspectionError,
