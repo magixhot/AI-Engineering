@@ -45,7 +45,8 @@
 | AUTO-0003_VERIFICATION_EVIDENCE.md | Classification/planning, guarded apply, AUTO-0002 handoff, CLI, installed-wheel, and CI evidence | Complete / Verified |
 | AUTO-0004_PROJECT_UPDATE_MIGRATION_DESIGN.md | Preserve-originals project update/migration identity, planning, guarded apply, rollback, and verification contract | Implemented / Verified |
 | AUTO-0004_VERIFICATION_EVIDENCE.md | Project identity, registry, deterministic planning, guarded apply/rollback, CLI, installed-wheel, and CI evidence | Complete / Verified |
-| AUTO-0005_PYTHON_ENGINEERING_V2_DESIGN.md | Python-engineering V2 identity/hygiene baseline and first production V1-to-V2 migration contract | Design / Proposed |
+| AUTO-0005_PYTHON_ENGINEERING_V2_DESIGN.md | Python-engineering V2 identity/hygiene baseline and first production V1-to-V2 migration contract | Implemented / Verified |
+| AUTO-0005_VERIFICATION_EVIDENCE.md | V2 bootstrap, dual identity, first production edge, installed-wheel migration, and CI evidence | Complete / Verified |
 
 ## Active Engineering Work
 
@@ -64,7 +65,7 @@
 | AUTO-0002 project documentation synchronization | COMPLETE / VERIFIED |
 | AUTO-0003 documentation ownership initialization | COMPLETE / VERIFIED |
 | AUTO-0004 engineering project update/migration framework | COMPLETE / VERIFIED |
-| AUTO-0005 python-engineering V2 + first production migration edge | DESIGN / PROPOSED |
+| AUTO-0005 python-engineering V2 + first production migration edge | COMPLETE / VERIFIED |
 | Additional MCP client interoperability | OPTIONAL / FUTURE EVIDENCE |
 | Diagnostics maintenance | ACTIVE |
 
@@ -90,7 +91,7 @@
 | M3 / AUTO-0002 Project Documentation Synchronization | COMPLETE / VERIFIED |
 | M3 / AUTO-0003 Documentation Ownership Initialization | COMPLETE / VERIFIED |
 | M3 / AUTO-0004 Engineering Project Update / Migration | COMPLETE / VERIFIED |
-| M3 / AUTO-0005 Python Engineering Baseline V2 / First Production Migration | DESIGN |
+| M3 / AUTO-0005 Python Engineering Baseline V2 / First Production Migration | COMPLETE / VERIFIED |
 | Additional client and IDE interoperability | PLANNED |
 
 ## Published Release
@@ -104,24 +105,13 @@
 
 ## Current Quality Baseline
 
-- Exact 0.2.0 candidate passed post-merge GitHub Actions Quality #79 on Linux/Python 3.11.
-- Readiness documentation passed PR Quality #80 and post-merge Quality #81.
-- Post-v0.2.0 reconciliation passed PR Quality #82 and post-merge Quality #83.
-- AUTO-0003 design passed Quality #84 and post-merge Quality #85.
-- AUTO-0003 classification/planning passed corrected Quality #87 and post-merge Quality #88 after a formatting-only Ruff defect in #86.
-- AUTO-0003 guarded apply passed Quality #89 and post-merge Quality #90.
-- AUTO-0003 CLI and installed-wheel verification passed Quality #91 and post-merge Quality #92 on `67163df307975bc061f5aebb748cbbb7e40304cb`.
-- AUTO-0003 final reconciliation passed Quality #93 and post-merge Quality #94.
-- Post-AUTO-0003 context reconciliation passed PR Quality #95 and post-merge Quality #96 on `7f1122669314ffd7759268dbf1f695aebee55d9a`.
-- AUTO-0004 design passed Quality #97 and post-merge Quality #98.
-- AUTO-0004 identity/registry passed corrected Quality #100 and post-merge Quality #101 after a formatting-only Ruff defect in #99.
-- AUTO-0004 deterministic planning passed Quality #102 and post-merge Quality #103.
-- AUTO-0004 guarded apply passed corrected Quality #107 and post-merge Quality #108 after formatting-only #104 and a deterministic CI fixture correction exposed by #106.
-- AUTO-0004 CLI and installed-wheel verification passed Quality #109 and post-merge Quality #110 on `54355abf4b509e3fd72416a031152a6e7680dd13`.
 - AUTO-0004 final reconciliation passed Quality #111 and post-merge Quality #112 on `4cc71a1c46cd0b98acd6702aae5bda0e19eea651`.
-- Quality #94 exact Linux baseline: pytest 174 passed; Ruff clean; mypy clean in 83 source files.
+- AUTO-0005 design passed Quality #113 and post-merge Quality #114.
+- AUTO-0005 V2 bootstrap passed corrected Quality #120 and post-merge Quality #121 after stale legacy-V1 fixtures were separated from the new V2 engineering bootstrap.
+- AUTO-0005 production identity/registry edge passed corrected Quality #123 and post-merge Quality #124 after a formatting-only Ruff defect in #122.
+- AUTO-0005 installed-wheel production migration passed Quality #125 and post-merge Quality #126 on `8a2ea40ff61873c91c9bfb77529f2486068dab2c`.
 - Windows 0.2.0 candidate evidence remains: pytest 153 passed, 2 permitted symlink-fixture skips due to `WinError 1314`; Ruff 0; mypy 0 in 79 source files; focused release distribution test 1 passed; `git diff --check` passed; working tree clean.
-- Installed-wheel verification covers `ai-engineering project create`, `project bootstrap`, `project docs check/plan/apply`, `project docs ownership check/plan/apply`, and the AUTO-0004 `project migrate check/plan/apply` command surface.
+- Installed-wheel verification covers `ai-engineering project create`, `project bootstrap`, `project docs check/plan/apply`, `project docs ownership check/plan/apply`, and real `project migrate check/plan/apply` execution for `python-engineering-v1-to-v2`.
 
 ## Source Tree
 
@@ -135,7 +125,8 @@ src/ai_engineering/
 ├── documentation_apply.py
 ├── documentation_ownership.py
 ├── project_migration.py
-└── project_migration_apply.py
+├── project_migration_apply.py
+└── python_engineering_baseline.py
 ```
 
 The repository has no `transport/` package.
