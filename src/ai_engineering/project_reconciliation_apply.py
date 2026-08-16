@@ -162,7 +162,10 @@ def _prewrite_gate(
             sequence,
             workflow,
             "manual_review",
-            issues=_issue("PLAN_MANUAL_REVIEW", "reconciliation plan requires manual review"),
+            issues=_issue(
+                "PLAN_MANUAL_REVIEW",
+                "reconciliation plan requires manual review",
+            ),
         )
     if selected is None:
         return None, _result(
@@ -170,7 +173,10 @@ def _prewrite_gate(
             sequence,
             workflow,
             "manual_review",
-            issues=_issue("STEP_NOT_FOUND", "selected reconciliation step does not exist"),
+            issues=_issue(
+                "STEP_NOT_FOUND",
+                "selected reconciliation step does not exist",
+            ),
         )
     if selected.state != "ready":
         return None, _result(
@@ -178,7 +184,10 @@ def _prewrite_gate(
             sequence,
             selected.workflow,
             "manual_review",
-            issues=_issue("STEP_NOT_EXECUTABLE", "selected step is a reinspection boundary"),
+            issues=_issue(
+                "STEP_NOT_EXECUTABLE",
+                "selected step is a reinspection boundary",
+            ),
         )
     if selected.workflow not in _DELEGATED_SUBSYSTEMS:
         return None, _result(
@@ -186,7 +195,10 @@ def _prewrite_gate(
             sequence,
             selected.workflow,
             "manual_review",
-            issues=_issue("WORKFLOW_NOT_ALLOWED", "selected workflow has no approved executor mapping"),
+            issues=_issue(
+                "WORKFLOW_NOT_ALLOWED",
+                "selected workflow has no approved executor mapping",
+            ),
         )
 
     fresh = plan_project_reconciliation(plan.project_root)
@@ -196,7 +208,10 @@ def _prewrite_gate(
             sequence,
             selected.workflow,
             "unsupported",
-            issues=_issue("CURRENT_STATE_UNSUPPORTED", "current project state is unsupported"),
+            issues=_issue(
+                "CURRENT_STATE_UNSUPPORTED",
+                "current project state is unsupported",
+            ),
         )
     if fresh.state == "manual_review":
         return None, _result(
@@ -204,7 +219,10 @@ def _prewrite_gate(
             sequence,
             selected.workflow,
             "manual_review",
-            issues=_issue("CURRENT_STATE_MANUAL_REVIEW", "current project state requires manual review"),
+            issues=_issue(
+                "CURRENT_STATE_MANUAL_REVIEW",
+                "current project state requires manual review",
+            ),
         )
     if fresh.state == "clean":
         return None, _result(
@@ -220,7 +238,10 @@ def _prewrite_gate(
             sequence,
             selected.workflow,
             "stale_plan",
-            issues=_issue("STALE_PLAN", "project or Git state changed after reconciliation planning"),
+            issues=_issue(
+                "STALE_PLAN",
+                "project or Git state changed after reconciliation planning",
+            ),
         )
 
     return selected, None
@@ -230,7 +251,9 @@ def _apply_ownership(plan: ProjectReconciliationPlan) -> tuple[bool, RollbackSta
     snapshot = inspect_project_state(ProjectInspectionRequest(plan.project_root))
     ownership_plan = plan_documentation_ownership_initialization(snapshot)
     if ownership_plan.manual_review:
-        raise DocumentationOwnershipError("ownership initialization now requires manual review")
+        raise DocumentationOwnershipError(
+            "ownership initialization now requires manual review"
+        )
     if not ownership_plan.updates:
         return False, "not_applicable"
     apply_documentation_ownership_initialization(ownership_plan)
@@ -317,7 +340,11 @@ def apply_project_reconciliation_step(
             rollback_status="failed",
             reinspect_required=True,
         )
-    except (ProjectMigrationApplyError, DocumentationOwnershipError, DocumentationSyncError) as exc:
+    except (
+        ProjectMigrationApplyError,
+        DocumentationOwnershipError,
+        DocumentationSyncError,
+    ) as exc:
         return _result(
             plan,
             sequence,
