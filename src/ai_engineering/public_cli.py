@@ -1,4 +1,4 @@
-"""Public console entry point with AUTO-0009 orchestration routing."""
+"""Public console entry point with reconciliation orchestration routing."""
 
 from __future__ import annotations
 
@@ -16,6 +16,7 @@ def _run_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="ai-engineering project reconcile run")
     parser.add_argument("--project", required=True)
     parser.add_argument("--max-steps", type=int, default=DEFAULT_MAX_STEPS)
+    parser.add_argument("--policy")
     return parser
 
 
@@ -24,7 +25,7 @@ def _is_reconciliation_run(argv: Sequence[str]) -> bool:
 
 
 def main(argv: Sequence[str] | None = None) -> int:
-    """Route AUTO-0009 run while preserving all existing CLI commands."""
+    """Route reconciliation run while preserving all existing CLI commands."""
 
     arguments = list(sys.argv[1:] if argv is None else argv)
     if not _is_reconciliation_run(arguments):
@@ -37,7 +38,9 @@ def main(argv: Sequence[str] | None = None) -> int:
             file=sys.stderr,
         )
         return 2
+    policy_path = Path(args.policy).resolve() if args.policy is not None else None
     return run_reconciliation_orchestration(
         Path(args.project).resolve(),
         max_steps=args.max_steps,
+        policy_path=policy_path,
     )
