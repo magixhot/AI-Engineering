@@ -184,7 +184,7 @@ def test_registry_is_deterministic_and_resolves_exact_edge(tmp_path: Path) -> No
     assert registry.resolve("migration-a", identity) == first
 
 
-def test_registry_accepts_exact_target_for_idempotent_resolution(tmp_path: Path) -> None:
+def test_registry_accepts_exact_target_for_idempotency(tmp_path: Path) -> None:
     identity = detect_project_identity(_bootstrap_v2(tmp_path))
 
     contract = DEFAULT_MIGRATION_REGISTRY.resolve(
