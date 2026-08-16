@@ -43,6 +43,7 @@
 | AUTO-0002_VERIFICATION_EVIDENCE.md | Inspection, drift, apply, CLI, installed-wheel, and CI evidence | Complete / Verified |
 | AUTO-0003_DOCUMENTATION_OWNERSHIP_INITIALIZATION_DESIGN.md | Safe deterministic initialization of AUTO-0002 ownership markers and managed sections | Implemented / Verified |
 | AUTO-0003_VERIFICATION_EVIDENCE.md | Classification/planning, guarded apply, AUTO-0002 handoff, CLI, installed-wheel, and CI evidence | Complete / Verified |
+| AUTO-0004_PROJECT_UPDATE_MIGRATION_DESIGN.md | Preserve-originals project update/migration identity, planning, guarded apply, rollback, and verification contract | Design / Proposed |
 
 ## Active Engineering Work
 
@@ -60,6 +61,7 @@
 | AUTO-0001 engineering project bootstrap | COMPLETE / VERIFIED |
 | AUTO-0002 project documentation synchronization | COMPLETE / VERIFIED |
 | AUTO-0003 documentation ownership initialization | COMPLETE / VERIFIED |
+| AUTO-0004 engineering project update/migration | DESIGN / PROPOSED |
 | Additional MCP client interoperability | OPTIONAL / FUTURE EVIDENCE |
 | Diagnostics maintenance | ACTIVE |
 
@@ -84,6 +86,7 @@
 | M3 / AUTO-0001 Engineering Project Bootstrap | COMPLETE / VERIFIED |
 | M3 / AUTO-0002 Project Documentation Synchronization | COMPLETE / VERIFIED |
 | M3 / AUTO-0003 Documentation Ownership Initialization | COMPLETE / VERIFIED |
+| M3 / AUTO-0004 Engineering Project Update / Migration | DESIGN |
 | Additional client and IDE interoperability | PLANNED |
 
 ## Published Release
@@ -104,6 +107,9 @@
 - AUTO-0003 classification/planning passed corrected Quality #87 and post-merge Quality #88 after a formatting-only Ruff defect in #86.
 - AUTO-0003 guarded apply passed Quality #89 and post-merge Quality #90.
 - AUTO-0003 CLI and installed-wheel verification passed Quality #91 and post-merge Quality #92 on `67163df307975bc061f5aebb748cbbb7e40304cb`.
+- AUTO-0003 final reconciliation passed Quality #93 and post-merge Quality #94.
+- Post-AUTO-0003 context reconciliation passed PR Quality #95; post-merge Quality #96 is the gate for `7f1122669314ffd7759268dbf1f695aebee55d9a`.
+- Quality #94 exact Linux baseline: pytest 174 passed; Ruff clean; mypy clean in 83 source files.
 - Windows 0.2.0 candidate evidence remains: pytest 153 passed, 2 permitted symlink-fixture skips due to `WinError 1314`; Ruff 0; mypy 0 in 79 source files; focused release distribution test 1 passed; `git diff --check` passed; working tree clean.
 - Installed-wheel verification now covers `ai-engineering project create`, `project bootstrap`, `project docs check/plan/apply`, and `project docs ownership check/plan/apply` outside the source checkout.
 
