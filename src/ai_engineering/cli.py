@@ -26,6 +26,7 @@ from .engineering_bootstrap import (
     EngineeringBootstrapRequest,
     bootstrap_engineering_project,
 )
+from .project_health import ProjectHealthReport, audit_project_health
 from .project_inspection import (
     ProjectInspectionError,
     ProjectInspectionRequest,
@@ -71,6 +72,9 @@ def _parser() -> argparse.ArgumentParser:
         "--profile",
         default=PYTHON_ENGINEERING_PROFILE,
     )
+
+    health_project = actions.add_parser("health")
+    health_project.add_argument("--project", required=True)
 
     docs_project = actions.add_parser("docs")
     docs_actions = docs_project.add_subparsers(dest="docs_action", required=True)
@@ -145,6 +149,39 @@ def _bootstrap_project(args: argparse.Namespace) -> int:
     print("initial_commit=created")
     print("verification=passed")
     return 0
+
+
+def _single_line(value: str) -> str:
+    return " ".join(value.replace("\r", "\n").splitlines()).strip()
+
+
+def _print_health_report(report: ProjectHealthReport) -> None:
+    identity = report.identity
+    print(f"project={report.project_root}")
+    print(f"overall={report.overall_state}")
+    print(f"identity={identity.profile if identity is not None else 'unsupported'}")
+    print(f"baseline={identity.baseline if identity is not None else 'unknown'}")
+    print(f"git={report.git_state}")
+    print(f"docs_ownership={report.documentation_ownership_state}")
+    print(f"docs_sync={report.documentation_sync_state}")
+    print(f"migration={report.migration_state}")
+    if report.git_readiness is not None:
+        print(f"git_staged_count={len(report.git_readiness.staged_paths)}")
+        print(f"git_unstaged_count={len(report.git_readiness.unstaged_paths)}")
+        print(f"git_untracked_count={len(report.git_readiness.untracked_paths)}")
+    print(f"issue_count={len(report.issues)}")
+    for issue in report.issues:
+        print(
+            f"issue={issue.code}:{issue.state}:"
+            f"{_single_line(issue.detail)}"
+        )
+    print(f"next_action={report.next_action}")
+
+
+def _project_health(args: argparse.Namespace) -> int:
+    report = audit_project_health(Path(args.project).resolve())
+    _print_health_report(report)
+    return 0 if report.overall_state == "healthy" else 1
 
 
 def _documentation_report(project_root: Path) -> DocumentationDriftReport:
@@ -346,6 +383,8 @@ def main(argv: Sequence[str] | None = None) -> int:
     try:
         if args.action == "bootstrap":
             return _bootstrap_project(args)
+        if args.action == "health":
+            return _project_health(args)
         if args.action == "docs":
             return _project_docs(args)
         if args.action == "migrate":
