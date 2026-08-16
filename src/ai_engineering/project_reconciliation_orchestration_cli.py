@@ -32,10 +32,14 @@ def print_reconciliation_run_result(
         )
     print(f"policy_decision_count={len(result.policy_decisions)}")
     for decision in result.policy_decisions:
+        effective_max_steps = (
+            str(decision.effective_max_steps)
+            if decision.effective_max_steps is not None
+            else "none"
+        )
         print(
             "policy_decision="
-            f"{decision.workflow}:{decision.state}:"
-            f"{decision.effective_max_steps if decision.effective_max_steps is not None else 'none'}"
+            f"{decision.workflow}:{decision.state}:{effective_max_steps}"
         )
         for issue in decision.issues:
             print(f"policy_issue={issue.code}:{_single_line(issue.detail)}")
