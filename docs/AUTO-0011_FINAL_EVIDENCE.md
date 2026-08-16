@@ -2,7 +2,7 @@
 
 **Milestone:** Reconciliation Approval  
 **Closure stage:** AUTO-0011-06 Final Evidence / Documentation Reconciliation  
-**State:** CLOSURE IN PROGRESS
+**State:** COMPLETE / VERIFIED
 
 ## Scope Delivered
 
@@ -45,17 +45,17 @@ AUTO-0009 replans after each successful write. Therefore an approval can authori
 | AUTO-0011-03 Approval Verification / Safety Invariants | #115 | #235 SUCCESS | #236 SUCCESS | COMPLETE / VERIFIED |
 | AUTO-0011-04 Guarded Integration | #116 | #238 SUCCESS | #239 SUCCESS | COMPLETE / VERIFIED |
 | AUTO-0011-05 Installed Distribution Verification | #117 | #240 SUCCESS | #241 SUCCESS | COMPLETE / VERIFIED |
-| AUTO-0011-06 Final Evidence / Documentation Reconciliation | pending | pending | pending | IN PROGRESS |
+| AUTO-0011-06 Final Evidence / Documentation Reconciliation | #118 | #242 SUCCESS | #243 SUCCESS | COMPLETE / VERIFIED |
 
 Earlier failed corrective runs remain historical evidence: #230/#231 during stage 02, #234 during stage 03, and #237 during stage 04. Each was corrected before the successful pre-merge gate listed above.
 
-## Verified Implementation Baseline Entering Closure
+## Final Verified Baseline
 
 ```text
-master = 2d181d38d26087bb672eaaa0691b27f071353eb7
+master = 94449b8754bb0bd803b5d60f38292e1530b82b1e
 ```
 
-This exact commit is the squash merge of PR #117. Post-merge Quality #241 completed successfully on the `push` event for that exact `master` SHA.
+This exact commit is the squash merge of PR #118. Post-merge Quality #243 completed successfully on the `push` event for that exact `master` SHA. This establishes AUTO-0011 stages 01–06 as COMPLETE / VERIFIED.
 
 ## Verification Coverage
 
@@ -94,8 +94,6 @@ The verified scope supports these claims only:
 
 AUTO-0011 does **not** claim cryptographic signer identity, non-repudiation, remote approval service security, rollback, atomic multi-step transactions, arbitrary command authorization, or publication authority.
 
-## Closure Rule
+## Closure
 
-This document intentionally records the verified implementation baseline entering AUTO-0011-06. AUTO-0011 must not be marked fully COMPLETE / VERIFIED until the documentation-only stage-06 PR itself passes pre-merge Quality, merges, and exact post-merge Quality succeeds on the resulting `master` commit.
-
-If the authoritative documentation needs the resulting final merge SHA/run identifiers recorded literally, perform one final documentation-only baseline reconciliation after that post-merge gate, without changing production behavior.
+AUTO-0011 is COMPLETE / VERIFIED. The exact capability baseline produced by stage 06 is `94449b8754bb0bd803b5d60f38292e1530b82b1e`, with post-merge Quality #243 SUCCESS. This final documentation-only reconciliation records that already-verified fact and does not change production behavior or authority.
