@@ -1,171 +1,67 @@
 # AI-Engineering Roadmap
 
-## Completed
+## Completed / Verified
 
-### Sprint 0 — Documentation Foundation
+The documentation foundation, MCP foundation, SDK-0001 project templates/scaffold/CLI, TOOL-0001 core tool verification, REL-0001/REL-0002/REL-0003 release work, CI-0001 quality gates, SAFE-0001/SAFE-0002 safety boundaries, and AUTO-0001 through AUTO-0006 are COMPLETE / VERIFIED for their approved scopes.
 
-**Status:** COMPLETED
+## AUTO-0007 — Engineering Project Reconciliation Plan
 
-The core project documentation foundation has been established and is maintained as part of the delivery workflow.
+**Status:** FINAL RECONCILIATION / CLOSING
 
-## Implemented / Verified
+AUTO-0007 composes existing project identity, inspection, documentation ownership/synchronization, migration readiness, and Git invariants into a deterministic, read-only reconciliation planner. The contract is fail-closed and adds no write/apply authority, new migration edge, or publication behavior.
 
-### Sprint 1 — MCP Foundation
-
-**Status:** IMPLEMENTED / VERIFIED
-
-Implemented repository components include MCP bootstrap, the official SDK adapter, Composite Registry, Runtime, Discovery, STDIO, diagnostics, and registered Workspace/Git/Python tool subsystems. Runtime and Discovery remain repository subsystems, not steps in the active SDK request path.
-
-### Official Python MCP SDK Migration
-
-**Status:** COMPLETE
-
-The official Python MCP SDK is integrated as the protocol/server boundary. MCP-0002 automated contracts, VS Code 1.132.1 manual interoperability, and the separately recorded Antigravity contract are verified.
-
-### SDK-0001 Project Templates V1, SDK-0001.1 Python Scaffold, and SDK-0001.2 CLI
+### AUTO-0007-01 — Reconciliation Planner Design
 
 **Status:** COMPLETE / VERIFIED
 
-The document-first standalone project template, optional generic Python scaffold, and installed `ai-engineering project create` frontend are implemented and verified.
+The authoritative design defines planner states, ordered steps, blockers/issues, affected paths, reinspection boundaries, expected-state semantics, determinism, and project/Git preservation requirements.
 
-### AUTO-0001 Engineering Project Bootstrap
-
-**Status:** COMPLETE / VERIFIED
-
-AUTO-0001 provides the bounded `python-engineering` bootstrap workflow over SDK-0001, including typed API, fail-closed verification, installed CLI, and isolated-wheel evidence.
-
-### AUTO-0002 Project Documentation Synchronization
+### AUTO-0007-02 — Planner Implementation
 
 **Status:** COMPLETE / VERIFIED
 
-AUTO-0002 provides deterministic local project inspection, documentation drift detection, explicit synchronization planning, SHA-256 guarded ownership-preserving apply, post-apply verification, and installed `project docs check|plan|apply` commands.
+PR #83 merged. Quality #147 and the resulting master verification passed.
 
-### AUTO-0003 Documentation Ownership Initialization
-
-**Status:** COMPLETE / VERIFIED
-
-AUTO-0003 provides explicit deterministic initialization of approved AUTO-0002 ownership markers, guarded apply/rollback, handoff verification, idempotency, Git invariants, and installed ownership CLI verification. Evidence: `AUTO-0003_VERIFICATION_EVIDENCE.md`.
-
-### AUTO-0004 Engineering Project Update / Migration Framework
+### AUTO-0007-03 — Reconciliation Invariants
 
 **Status:** COMPLETE / VERIFIED
 
-AUTO-0004 provides the bounded framework for updating positively identified engineering projects without rewriting or guessing human-owned content. The verified contract includes explicit named migration contracts, deterministic read-only planning, ownership/change-state classification, SHA-256 guards, guarded atomic create/replace/delete operations, rollback verification, idempotency, and Git HEAD/branch/index/remotes invariants.
+Test-only invariant stage. PR #84 merged at `cbbfc382d5b094a21ae3e7dc9d7fc441f12df569`. Quality #148 and post-merge #149 passed.
 
-Installed commands are:
-
-```text
-ai-engineering project migrate check --project PATH --migration ID
-ai-engineering project migrate plan --project PATH --migration ID
-ai-engineering project migrate apply --project PATH --migration ID
-```
-
-Evidence: `AUTO-0004_VERIFICATION_EVIDENCE.md`.
-
-### AUTO-0005 Python Engineering Baseline V2 / First Production Migration
+### AUTO-0007-04 — Public CLI
 
 **Status:** COMPLETE / VERIFIED
 
-AUTO-0005 defines `python-engineering-v2` as the active engineering bootstrap baseline and registers the first production migration edge, `python-engineering-v1-to-v2`.
+PR #85 merged at `b5ddb0af7ff38276f67bda4eccb0ff765f8fa318`. Corrected implementation Quality #157 passed and post-merge Quality #160 passed.
 
-New `python-engineering` bootstraps create `.ai-engineering.toml` and the V2 `.gitignore` in the same initial Git commit. The generic SDK-0001/SDK-0001.1 scaffold remains separate and compatible with the legacy V1 fixture contract.
-
-Project identity positively recognizes supported V1 and V2 projects. Malformed or unapproved V2 identity markers fail closed. The production registry contains exactly the approved V1-to-V2 edge, which touches only `.ai-engineering.toml` and exact machine-owned `.gitignore` content using existing AUTO-0004 operation types.
-
-Installed-wheel verification proves the public CLI path from a legacy V1 project through `check`, `plan`, and guarded `apply`, then verifies V2 identity, unchanged Git HEAD/staged index, approved working-tree changes only, and idempotent repeated plan/apply. Unsupported migration ids remain controlled fail-closed errors.
-
-Evidence: `AUTO-0005_VERIFICATION_EVIDENCE.md`.
-
-### AUTO-0006 Engineering Project Health / Readiness Audit
-
-**Status:** COMPLETE / VERIFIED
-
-AUTO-0006 provides one deterministic read-only entry point for engineering project readiness. It composes existing project inspection, documentation ownership/synchronization, migration readiness, and bounded Git observations into a typed health report without modifying the target project.
-
-Installed command:
-
-```text
-ai-engineering project health --project PATH
-```
-
-Stable overall states are `healthy`, `action_required`, `manual_review`, and `unsupported`. Next-action recommendations point only to already-approved workflows. Dirty staged/unstaged/untracked Git state is observable but is not by itself an automatic blocker.
-
-Installed-wheel verification covers V1 action-required, V2 healthy, and unsupported states; deterministic output/exit codes; controlled traceback-free failures; and preservation of Git HEAD, branch, staged index, working-tree status, and remotes.
-
-Evidence: `AUTO-0006_VERIFICATION_EVIDENCE.md`.
-
-### AUTO-0007 Engineering Project Reconciliation Plan
-
-**Status:** IN PROGRESS
-
-AUTO-0007 composes the existing project identity, inspection, documentation ownership/synchronization, migration readiness, and Git invariants into a deterministic, read-only reconciliation planner. The contract is explicitly fail-closed and does not add write/apply authority, publication scope, or a new migration edge.
-
-#### AUTO-0007-01 — Reconciliation Planner Design
-
-**Status:** COMPLETE / VERIFIED
-
-The authoritative design defines the planner contract, supported plan states, ordered steps, blockers/issues, affected paths, reinspection boundaries, expected-state semantics, determinism, and Git/project-byte preservation requirements.
-
-#### AUTO-0007-02 — Planner Implementation
-
-**Status:** COMPLETE / VERIFIED
-
-PR #83 merged. Post-merge Quality #147 passed. The resulting master base for the invariant stage was `006e1677efae525207e49d8c1eb3f1429583c603`.
-
-#### AUTO-0007-03 — Reconciliation Invariants
-
-**Status:** COMPLETE / VERIFIED
-
-Test-only stage. It verifies manual-review/unsupported fail-closed behavior, determinism, ordering, project-byte preservation, and Git invariants without changing production code, CLI authority, write authority, or publication scope.
-
-PR #84 merged at `cbbfc382d5b094a21ae3e7dc9d7fc441f12df569`. Quality #148 and post-merge Quality #149 passed.
-
-#### AUTO-0007-04 — Public CLI
-
-**Status:** IN PROGRESS
-
-PR #85 is active on `agent/auto-0007-04-public-cli` at head `cbb961dd4bd76547254de027cc380a354bbb8ca1`.
-
-The stage exposes:
+Public command:
 
 ```text
 ai-engineering project reconcile plan --project PATH
 ```
 
-The CLI preserves the planner's deterministic `key=value` representation, plan states, ordered steps, blockers, affected paths, reinspection boundaries, expected-state semantics, and fail-closed exit behavior. It adds no apply/write authority.
+The CLI preserves deterministic `key=value` output, fail-closed states and controlled exit behavior. No apply/write authority was added.
 
-Quality #150 is currently in progress. AUTO-0007-05 does not start until #150 succeeds, PR #85 merges, and the post-merge gate passes.
-
-#### AUTO-0007-05 — Installed Distribution Verification
-
-**Status:** PLANNED
-
-Verify the real installed-wheel/public CLI path for the reconciliation planner, including representative clean/ready/manual-review/unsupported states, deterministic output and controlled exit codes, and preservation of project bytes and Git invariants.
-
-#### AUTO-0007-06 — Final Reconciliation / Documentation
-
-**Status:** PLANNED
-
-Reconcile the authoritative project documentation with the final AUTO-0007 implementation/evidence and close the milestone before selecting the next milestone.
-
-### SAFE-0002 Git/Python Execution Safety
+### AUTO-0007-05 — Installed Distribution Verification
 
 **Status:** COMPLETE / VERIFIED
 
-SAFE-0002 binds active MCP Git and path-taking Python operations to `MCPConfig.workspace_root` and preserves the approved subprocess and path safety boundary. SAFE-0002 remains a bounded execution contract, not an operating-system sandbox.
+PR #86 merged at `2c2a0b1a7c1d1f26f2723a5a64662b921a986dc2`. Quality #161 passed and post-merge Quality #162 passed on the exact merge commit.
+
+The stage verifies the installed wheel/public CLI path in an isolated environment, deterministic output, controlled unsupported behavior, and preservation of project/Git invariants.
+
+### AUTO-0007-06 — Final Reconciliation / Documentation
+
+**Status:** IN PROGRESS / CLOSING
+
+This stage reconciles authoritative documentation with the final verified AUTO-0007 implementation/evidence. It must leave no contradiction between `CURRENT_STATUS.md`, `ROADMAP.md`, `MASTER_INDEX.md`, `AI_CHAT_START.md`, and the actual `master`/Quality state.
 
 ## Current Priority
 
-Complete AUTO-0007-04 Public CLI while preserving the established read-only, deterministic, fail-closed reconciliation boundary. After Quality #150 succeeds, merge PR #85, run the post-merge gate, then proceed to AUTO-0007-05 installed distribution verification.
+Complete AUTO-0007-06, run the repository quality gate for the documentation-only reconciliation, merge it, run the post-merge gate, then close AUTO-0007. A new implementation milestone must not start before this final documentation gate is complete.
 
-Documentation is reconciled at every milestone boundary. A stage is not considered fully closed until implementation evidence, quality/post-merge evidence, and authoritative documentation agree.
+## Next Milestone
 
-## Planned
+No next implementation milestone is approved by AUTO-0007 itself. Candidate future work remains subject to a separate design/contract and evidence.
 
-### Client and IDE Interoperability
-
-Validate interoperability with additional MCP clients and IDE integration surfaces. VS Code 1.132.1 and Antigravity are already verified for their recorded contracts; other clients remain unverified until separately evidenced.
-
-### Future Engineering Capabilities
-
-Potential future work includes additional bootstrap profiles, additional explicit production migration edges, new bounded execution tools, publication expansion, additional client/IDE interoperability, and additional engineering automation. None of these are implied by existing verified contracts and each requires its own approved design and evidence.
+Documentation is reconciled at every milestone boundary. A stage is not fully closed until implementation evidence, quality/post-merge evidence, and authoritative documentation agree.
