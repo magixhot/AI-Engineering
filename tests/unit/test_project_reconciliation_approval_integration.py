@@ -86,15 +86,14 @@ def test_stale_approval_refuses_before_any_write(tmp_path: Path) -> None:
     approval_path = _approval_file(tmp_path, root)
     before_head = _git(root, "rev-parse", "HEAD")
     before_status = _git(root, "status", "--porcelain=v1")
-
-    data = approval_path.read_text(encoding="utf-8")
-    approval_path.write_text(data.replace("baseline", "stale"), encoding="utf-8")
+    _git(root, "switch", "-c", "approval-drift")
 
     result = run_project_reconciliation(root, approval_path=approval_path)
 
-    assert result.state == "approval_error"
+    assert result.state == "approval_refused"
     assert result.successful_steps == 0
     assert result.attempts == ()
+    assert [issue.code for issue in result.issues] == ["APPROVAL_GIT_MISMATCH"]
     assert _git(root, "rev-parse", "HEAD") == before_head
     assert _git(root, "status", "--porcelain=v1") == before_status
 
