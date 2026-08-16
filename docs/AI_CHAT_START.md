@@ -18,7 +18,7 @@ After reading them, continue from `CURRENT_STATUS.md`; it is authoritative for c
 
 ## Current Working State
 
-AI-Engineering has completed and verified AUTO-0001 through AUTO-0009. AUTO-0010 stages 01–05 are COMPLETE / VERIFIED; AUTO-0010-06 final evidence/documentation reconciliation is active.
+AI-Engineering has completed and verified AUTO-0001 through AUTO-0010 for their approved scopes.
 
 Permanent reconciliation boundaries:
 
@@ -31,19 +31,19 @@ ai-engineering project reconcile run --project PATH --policy POLICY.toml [--max-
 
 AUTO-0007 is permanently read-only. AUTO-0008 remains the sole guarded one-step apply boundary. AUTO-0009 is bounded orchestration over repeated fresh planning plus exactly one AUTO-0008 apply per iteration. AUTO-0010 policy can only restrict those existing authorities.
 
-Verified implementation baseline entering AUTO-0010-06:
+Final verified AUTO-0010 baseline:
 
 ```text
-master = 272b9328a819f9a4fc281f41aed9970cd05e208f
+master = 1abd853da67cfb3954baa04f310837388b60b4f8
 ```
 
-PR #110 merged AUTO-0010-05 and passed Quality #222 plus exact post-merge Quality #223.
+PR #111 merged AUTO-0010-06 and passed Quality #224 plus exact post-merge Quality #225.
 
 ## Active Milestone
 
-AUTO-0010-06 — Final Evidence / Documentation Reconciliation.
+No new AUTO capability milestone is active. A future capability milestone must begin with a separate approved design/contract before production implementation starts.
 
-Read `AUTO-0010_RECONCILIATION_POLICY_DESIGN.md` and `AUTO-0010_FINAL_EVIDENCE.md`.
+Read `AUTO-0010_RECONCILIATION_POLICY_DESIGN.md` and `AUTO-0010_FINAL_EVIDENCE.md` for the verified policy contract and closure evidence.
 
 ```text
 AUTO-0010-01 design                  COMPLETE / VERIFIED
@@ -51,7 +51,7 @@ AUTO-0010-02 policy core             COMPLETE / VERIFIED
 AUTO-0010-03 safety invariants       COMPLETE / VERIFIED
 AUTO-0010-04 orchestration + CLI     COMPLETE / VERIFIED
 AUTO-0010-05 installed distribution  COMPLETE / VERIFIED
-AUTO-0010-06 final reconciliation    IN PROGRESS
+AUTO-0010-06 final reconciliation    COMPLETE / VERIFIED
 ```
 
 ## AUTO-0010 Guardrails
