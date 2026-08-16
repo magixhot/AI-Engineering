@@ -23,10 +23,12 @@ AUTO-0001 through AUTO-0006 are COMPLETE / VERIFIED. AUTO-0007 is COMPLETE / VER
 The verified project baseline is:
 
 ```text
-master = 6695dda55ef127581e655902c14893fac9ed2a6e
+master = 865f45d155b63b0c366f8c4ff0c66d1d141b165a
 ```
 
-Post-merge Quality #164 ran on the `push` to `master` for that exact merge commit and completed successfully. The working tree was verified clean locally at the same commit.
+PR #89 reconciled the authoritative AUTO-0007 baseline documentation and passed Quality #167 plus post-merge Quality #168. PR #90 closed the remaining stale AUTO-0007 project-map state and passed Quality #169 plus post-merge Quality #170.
+
+Post-merge Quality #170 ran on the `push` to `master` for exact merge commit `865f45d155b63b0c366f8c4ff0c66d1d141b165a` and completed successfully. The working tree was subsequently verified clean locally at the same commit.
 
 ## AUTO-0007 Contract
 
