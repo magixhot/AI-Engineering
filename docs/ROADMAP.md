@@ -84,6 +84,31 @@ fail closed. Existing AUTO-0002 commands remain unchanged and never initialize m
 The ownership workflow is exercised through an isolated installed wheel outside the source checkout.
 Verification evidence is recorded in `AUTO-0003_VERIFICATION_EVIDENCE.md`.
 
+### AUTO-0004 Engineering Project Update / Migration Framework
+
+**Status:** COMPLETE / VERIFIED
+
+AUTO-0004 provides the bounded framework for updating positively identified engineering projects
+without rewriting or guessing human-owned content. The verified V1 contract includes positive
+`python-engineering-v1` identity, explicit named migration contracts, deterministic read-only
+planning, ownership/change-state classification, SHA-256 guards, complete preflight, guarded atomic
+create/replace/delete operations, rollback and rollback verification, idempotency, and Git
+HEAD/branch/index/remotes invariants.
+
+Installed commands are:
+
+```text
+ai-engineering project migrate check --project PATH --migration ID
+ai-engineering project migrate plan --project PATH --migration ID
+ai-engineering project migrate apply --project PATH --migration ID
+```
+
+The production `DEFAULT_MIGRATION_REGISTRY` intentionally remains empty. AUTO-0004 therefore
+establishes and verifies the migration mechanism and safety boundary without implicitly authorizing a
+synthetic production migration edge. Concrete source-to-target migration edges remain explicit future
+work and unsupported ids fail closed. Verification evidence is recorded in
+`AUTO-0004_VERIFICATION_EVIDENCE.md`.
+
 ### SAFE-0002 Git/Python Execution Safety
 
 **Status:** COMPLETE / VERIFIED
@@ -101,10 +126,10 @@ code already authorized to execute inside the workspace.
 
 ## Current Priority
 
-Preserve the verified MCP, SDK-0001, SAFE-0001, SAFE-0002, CI-0001, release, AUTO-0001, AUTO-0002,
-and AUTO-0003 contracts. Select the next engineering milestone from a fresh post-AUTO-0003 roadmap
-audit rather than implicitly expanding documentation ownership, execution surfaces, client claims,
-or release scope.
+Preserve the verified MCP, SDK-0001, SAFE-0001, SAFE-0002, CI-0001, release, and AUTO-0001 through
+AUTO-0004 contracts. Select the next engineering milestone from a fresh post-AUTO-0004 roadmap audit
+rather than implicitly adding production migration edges, expanding execution surfaces, broadening
+client claims, or changing release/publication scope.
 
 ## Planned
 
@@ -116,7 +141,7 @@ and other clients remain unverified.
 
 ### Future Engineering Capabilities
 
-Potential future work includes additional bootstrap profiles, broader project update/migration
-behavior, new bounded execution tools, publication expansion, additional client/IDE interoperability,
+Potential future work includes explicitly designed production migration edges, additional bootstrap
+profiles, new bounded execution tools, publication expansion, additional client/IDE interoperability,
 and additional engineering automation. None of these are implied by existing verified contracts and
 each requires its own approved design and evidence.
