@@ -18,7 +18,7 @@ After reading them, continue from `CURRENT_STATUS.md` and the current roadmap. `
 
 ## Current Working State
 
-AI-Engineering has completed and verified AUTO-0001 through AUTO-0008 for their approved scopes. AUTO-0009 stages 01–05 are COMPLETE / VERIFIED; stage 06 final documentation reconciliation is active.
+AI-Engineering has completed and verified AUTO-0001 through AUTO-0009 for their approved scopes. AUTO-0009 stages 01–06 are COMPLETE / VERIFIED.
 
 Permanent reconciliation boundaries:
 
@@ -30,19 +30,19 @@ ai-engineering project reconcile run --project PATH [--max-steps N]
 
 AUTO-0007 is permanently read-only. AUTO-0008 remains the sole guarded one-step apply boundary. AUTO-0009 is bounded orchestration over repeated fresh planning plus exactly one AUTO-0008 apply per iteration.
 
-Verified baseline entering AUTO-0009-06:
+Final verified AUTO-0009 baseline:
 
 ```text
-master = 9564f8ffdc869bb0d8058f74c78c1e5138e5a37c
+master = 87419229713c93e869d596ffcfabafb12aec4c00
 ```
 
-AUTO-0009-05 merged in PR #103 and passed Quality #201 plus post-merge Quality #202 on that exact commit.
+AUTO-0009-06 merged in PR #104 and passed Quality #203 plus post-merge Quality #204 on that exact commit.
 
 ## Active Milestone
 
-**AUTO-0009-06 — Final Evidence / Documentation Reconciliation**
+No new AUTO milestone is active. A future capability milestone must begin with a separate approved design/contract before production capability work starts.
 
-Read `AUTO-0009_MULTI_STEP_RECONCILIATION_ORCHESTRATION_DESIGN.md` for the orchestration contract.
+Read `AUTO-0009_MULTI_STEP_RECONCILIATION_ORCHESTRATION_DESIGN.md` and `AUTO-0009_FINAL_EVIDENCE.md` for the verified orchestration contract and evidence.
 
 ```text
 AUTO-0009-01 design                  COMPLETE / VERIFIED
@@ -50,7 +50,7 @@ AUTO-0009-02 orchestrator core       COMPLETE / VERIFIED
 AUTO-0009-03 safety invariants       COMPLETE / VERIFIED
 AUTO-0009-04 public CLI              COMPLETE / VERIFIED
 AUTO-0009-05 installed distribution  COMPLETE / VERIFIED
-AUTO-0009-06 final reconciliation    IN PROGRESS
+AUTO-0009-06 final reconciliation    COMPLETE / VERIFIED
 ```
 
 ## AUTO-0009 Guardrails
