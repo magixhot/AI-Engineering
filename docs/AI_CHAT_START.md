@@ -4,32 +4,37 @@
 
 For a new or continued session, restore context in this order:
 
-1. README.md
-2. PROJECT_CONTEXT.md
-3. PROJECT_MAP.md
-4. CURRENT_STATUS.md
-5. ROADMAP.md
-6. DECISIONS.md
-7. CODING_STANDARDS.md
-8. MASTER_INDEX.md
+1. `README.md`
+2. `PROJECT_CONTEXT.md`
+3. `PROJECT_MAP.md`
+4. `CURRENT_STATUS.md`
+5. `ROADMAP.md`
+6. `DECISIONS.md`
+7. `CODING_STANDARDS.md`
+8. `MASTER_INDEX.md`
+9. The design/evidence document for the active milestone listed in `MASTER_INDEX.md`
 
-After reading them, continue from `CURRENT_STATUS.md` and the current roadmap.
+After reading them, continue from `CURRENT_STATUS.md` and the current roadmap. `CURRENT_STATUS.md` is the authoritative current-state document.
 
 ## Current Working State
 
-AI-Engineering has completed and verified the documentation foundation, MCP-0002, MCP-0003, SDK-0001 Project Templates V1, SDK-0001.1 Standalone Python Project Scaffold, SDK-0001.2 Project Template CLI, TOOL-0001 Core Tool Operation Verification, REL-0001 Local Distribution Verification, CI-0001 Quality Gate Automation, SAFE-0001 Workspace Path Safety Boundary, SAFE-0002 Git/Python Execution Safety, REL-0002 publication governance, REL-0003 v0.2.0 GitHub publication, AUTO-0001 Engineering Project Bootstrap, AUTO-0002 Project Documentation Synchronization, and AUTO-0003 Documentation Ownership Initialization for their approved scopes.
+AI-Engineering has completed and verified the documentation foundation, MCP-0002, MCP-0003, SDK-0001 Project Templates V1, SDK-0001.1 Standalone Python Project Scaffold, SDK-0001.2 Project Template CLI, TOOL-0001 Core Tool Operation Verification, REL-0001 Local Distribution Verification, CI-0001 Quality Gate Automation, SAFE-0001 Workspace Path Safety Boundary, SAFE-0002 Git/Python Execution Safety, REL-0002 publication governance, REL-0003 v0.2.0 GitHub publication, AUTO-0001 Engineering Project Bootstrap, AUTO-0002 Project Documentation Synchronization, AUTO-0003 Documentation Ownership Initialization, AUTO-0004 Project Update/Migration Framework, AUTO-0005 Python Engineering Baseline V2 / first production migration, and AUTO-0006 Project Health/Readiness Audit for their approved scopes.
 
-The installed `ai-engineering` console script provides bounded project creation/bootstrap plus two separate documentation workflows. AUTO-0002 exposes `project docs check/plan/apply` for deterministic synchronization of the machine-owned sections in exactly `CURRENT_STATUS.md`, `MASTER_INDEX.md`, and `PROJECT_MAP.md`. AUTO-0003 exposes `project docs ownership check/plan/apply` to initialize those ownership sections only when the approved marker pair is completely absent and deterministic initialization is safe.
+AUTO-0007 Engineering Project Reconciliation Plan is now the active milestone. AUTO-0007-01 design, AUTO-0007-02 planner implementation, and AUTO-0007-03 reconciliation invariants are complete/verified. AUTO-0007-04 Public CLI is active in PR #85 on branch `agent/auto-0007-04-public-cli`; current head is `cbb961dd4bd76547254de027cc380a354bbb8ca1` and Quality #150 is the current gate.
 
-AUTO-0003 preserves human-authored content outside the insertion boundary, preserves LF/CRLF convention, uses SHA-256 stale-plan guards, verifies AUTO-0002 handoff and idempotency, and leaves Git HEAD/index unchanged. Partial, duplicate, malformed, unsupported, missing-document, mixed-newline, and stale-plan states fail closed. AUTO-0002 itself still never initializes markers implicitly.
+AUTO-0007 is explicitly read-only. The planner is deterministic and fail-closed. AUTO-0007-03 verifies manual-review/unsupported behavior, ordering, determinism, project-byte preservation, and Git invariants. AUTO-0007-04 exposes the planner through `ai-engineering project reconcile plan --project PATH` without adding apply/write authority, new migration edges, or publication behavior.
 
-SAFE-0002 makes `MCPConfig.workspace_root` the active MCP authority root for Git and path-taking Python operations. Git operations require the configured root to be the repository top level; Python syntax/package/test targets must remain inside the resolved root. Authorized pytest execution uses the current interpreter, workspace-root cwd, no shell, closed stdin, captured output, and a bounded timeout. SAFE-0002 does not sandbox malicious code already authorized to execute inside the workspace.
+The immediate sequence is:
 
-Current Linux CI baseline after AUTO-0003 is Quality #94 on `master` commit `a3a8716f861e568d0444f49aebc5c0ea6c7c4fc9`: pytest **174 passed**, Ruff **0 findings**, and mypy **0 issues in 83 source files**. Distribution verification builds wheel and sdist, installs the wheel into fresh external virtual environments, and executes installed create, bootstrap, AUTO-0002 synchronization, and AUTO-0003 ownership workflows outside the source checkout.
+```text
+Quality #150 SUCCESS
+    → PR #85 ready/reviewed and merged
+    → post-merge quality gate
+    → AUTO-0007-05 Installed Distribution Verification
+    → AUTO-0007-06 Final Reconciliation / Documentation
+```
 
-The published release is `v0.2.0` / `AI-Engineering 0.2.0`, targeting immutable candidate `1faf14c121b7b5da7c8781e3de4e836f85838a76` with approved wheel/sdist assets. AUTO-0003 was completed later on `master` and is not retroactively part of the published v0.2.0 artifact. Historical `v0.1.0` remains preserved. PyPI remains not approved and not published.
-
-SAFE-0001 is a Workspace path-authorization boundary. SAFE-0002 is an active-MCP Git/Python authority-root and subprocess-construction boundary. Neither is an OS-level sandbox. ChatGPT/OpenAI, Claude Desktop, and other MCP clients remain unverified unless separately recorded.
+No later AUTO-0007 stage starts before the current stage passes its quality and post-merge gates.
 
 ## Engineering Guardrails
 
@@ -41,7 +46,8 @@ SAFE-0001 is a Workspace path-authorization boundary. SAFE-0002 is an active-MCP
 - Keep environment-specific absolute paths out of project code and documentation contracts.
 - Make compatibility and security claims only from recorded evidence.
 - Treat published tags/releases as immutable historical evidence; post-release `master` work does not retroactively change them.
-- Do not expand AUTO-0002/AUTO-0003 writable documents or ownership semantics without a separate approved contract.
+- Do not expand writable documents, ownership semantics, migration scope, or publication scope without a separate approved contract.
+- Preserve AUTO-0007 read-only, deterministic, fail-closed boundaries unless explicitly redesigned.
 - Do not expand SAFE-0002 claims to OS sandboxing, arbitrary-command containment, or future Git/Python tools without a separate contract and evidence.
 
 ## Project Context
