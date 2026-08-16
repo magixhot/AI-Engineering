@@ -23,15 +23,16 @@ def _plan() -> ProjectReconciliationPlan:
 
 
 def test_public_cli_routes_run_with_default_limit(monkeypatch, tmp_path: Path) -> None:
-    captured: list[tuple[Path, int, Path | None]] = []
+    captured: list[tuple[Path, int, Path | None, Path | None]] = []
 
     def fake_run(
         project_root: Path,
         *,
         max_steps: int,
         policy_path: Path | None,
+        approval_path: Path | None,
     ) -> int:
-        captured.append((project_root, max_steps, policy_path))
+        captured.append((project_root, max_steps, policy_path, approval_path))
         return 0
 
     monkeypatch.setattr(public_cli, "run_reconciliation_orchestration", fake_run)
@@ -39,14 +40,14 @@ def test_public_cli_routes_run_with_default_limit(monkeypatch, tmp_path: Path) -
     assert public_cli.main(
         ["project", "reconcile", "run", "--project", str(tmp_path)]
     ) == 0
-    assert captured == [(tmp_path.resolve(), 8, None)]
+    assert captured == [(tmp_path.resolve(), 8, None, None)]
 
 
 def test_public_cli_routes_run_with_bounded_limit_and_policy(
     monkeypatch,
     tmp_path: Path,
 ) -> None:
-    captured: list[tuple[int, Path | None]] = []
+    captured: list[tuple[int, Path | None, Path | None]] = []
     policy = tmp_path / "policy.toml"
 
     def fake_run(
@@ -54,8 +55,9 @@ def test_public_cli_routes_run_with_bounded_limit_and_policy(
         *,
         max_steps: int,
         policy_path: Path | None,
+        approval_path: Path | None,
     ) -> int:
-        captured.append((max_steps, policy_path))
+        captured.append((max_steps, policy_path, approval_path))
         return 1
 
     monkeypatch.setattr(public_cli, "run_reconciliation_orchestration", fake_run)
@@ -73,7 +75,7 @@ def test_public_cli_routes_run_with_bounded_limit_and_policy(
             str(policy),
         ]
     ) == 1
-    assert captured == [(3, policy.resolve())]
+    assert captured == [(3, policy.resolve(), None)]
 
 
 def test_public_cli_rejects_unbounded_or_invalid_limits(tmp_path: Path) -> None:

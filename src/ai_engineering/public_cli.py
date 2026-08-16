@@ -8,6 +8,12 @@ from pathlib import Path
 from typing import Sequence
 
 from .cli import main as legacy_main
+from .project_reconciliation import plan_project_reconciliation
+from .project_reconciliation_approval import serialize_reconciliation_approval
+from .project_reconciliation_approval_context import (
+    ReconciliationApprovalContextError,
+    build_approval_for_plan,
+)
 from .project_reconciliation_orchestration import DEFAULT_MAX_STEPS, MAX_MAX_STEPS
 from .project_reconciliation_orchestration_cli import run_reconciliation_orchestration
 
@@ -17,18 +23,42 @@ def _run_parser() -> argparse.ArgumentParser:
     parser.add_argument("--project", required=True)
     parser.add_argument("--max-steps", type=int, default=DEFAULT_MAX_STEPS)
     parser.add_argument("--policy")
+    parser.add_argument("--approval")
     return parser
 
 
-def _is_reconciliation_run(argv: Sequence[str]) -> bool:
-    return len(argv) >= 3 and list(argv[:3]) == ["project", "reconcile", "run"]
+def _approval_parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(prog="ai-engineering project reconcile approve")
+    parser.add_argument("--project", required=True)
+    parser.add_argument("--policy")
+    return parser
+
+
+def _is_reconciliation_action(argv: Sequence[str], action: str) -> bool:
+    return len(argv) >= 3 and list(argv[:3]) == ["project", "reconcile", action]
+
+
+def _approval_command(arguments: Sequence[str]) -> int:
+    args = _approval_parser().parse_args(arguments)
+    root = Path(args.project).resolve()
+    policy_path = Path(args.policy).resolve() if args.policy is not None else None
+    plan = plan_project_reconciliation(root)
+    try:
+        approval = build_approval_for_plan(plan, policy_path=policy_path)
+    except ReconciliationApprovalContextError as exc:
+        print(f"error: {exc}", file=sys.stderr)
+        return 1
+    print(serialize_reconciliation_approval(approval).decode("utf-8"), end="")
+    return 0
 
 
 def main(argv: Sequence[str] | None = None) -> int:
-    """Route reconciliation run while preserving all existing CLI commands."""
+    """Route approval/run while preserving all existing CLI commands."""
 
     arguments = list(sys.argv[1:] if argv is None else argv)
-    if not _is_reconciliation_run(arguments):
+    if _is_reconciliation_action(arguments, "approve"):
+        return _approval_command(arguments[3:])
+    if not _is_reconciliation_action(arguments, "run"):
         return legacy_main(arguments)
 
     args = _run_parser().parse_args(arguments[3:])
@@ -39,8 +69,12 @@ def main(argv: Sequence[str] | None = None) -> int:
         )
         return 2
     policy_path = Path(args.policy).resolve() if args.policy is not None else None
+    approval_path = (
+        Path(args.approval).resolve() if args.approval is not None else None
+    )
     return run_reconciliation_orchestration(
         Path(args.project).resolve(),
         max_steps=args.max_steps,
         policy_path=policy_path,
+        approval_path=approval_path,
     )
