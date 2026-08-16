@@ -4,156 +4,97 @@
 
 ```text
 AI-Engineering/
-├── docs/                 Project, MCP, release, SDK, safety, CI, and automation documentation
+├── docs/
 ├── src/
 │   └── ai_engineering/
-│       ├── discovery/    Built-in tool metadata and discovery registry
-│       ├── git/          Git service, models, exceptions, and tools
-│       ├── ide/          IDE models, protocol, sessions, projects, and adapters/
-│       │   └── adapters/ Antigravity and VS Code adapters
-│       ├── mcp/          Official SDK integration, bootstrap, configuration, and debug/
-│       │   └── debug/    MCP diagnostics configuration, logging, and stream helpers
-│       ├── python/       Python service, models, exceptions, and tools
-│       ├── registry/     Composite registry, descriptors, and server integration
-│       ├── runtime/      Runtime context, dispatcher, events, and lifecycle
-│       ├── shared/       Shared package boundary
-│       ├── stdio/        `python -m ai_engineering.stdio` entry point
-│       ├── tools/        Shared tool package boundary
-│       ├── workspace/    Workspace service, models, exceptions, and tools
-│       ├── cli.py        Installed project create/bootstrap/docs/health/reconciliation frontend
-│       ├── engineering_bootstrap.py  AUTO-0001 typed bootstrap and verification API
-│       ├── project_inspection.py     AUTO-0002 read-only project-state inspection
-│       ├── documentation_sync.py    AUTO-0002 drift detection and deterministic planning
-│       ├── documentation_apply.py   AUTO-0002 guarded apply and post-write verification
-│       ├── documentation_ownership.py AUTO-0003 ownership classification and guarded initialization
-│       ├── project_migration.py      AUTO-0004 migration identity, registry, and planning
-│       ├── project_migration_apply.py AUTO-0004 guarded migration application/rollback
-│       ├── python_engineering_baseline.py AUTO-0005 V2 engineering baseline
-│       ├── project_git_readiness.py AUTO-0006 bounded Git readiness observations
-│       ├── project_health.py         AUTO-0006 deterministic read-only health aggregation
-│       ├── project_reconciliation.py AUTO-0007 deterministic read-only reconciliation planner
-│       ├── project_reconciliation_cli.py AUTO-0007 public reconciliation plan CLI adapter
-│       ├── project_reconciliation_apply.py AUTO-0008 guarded one-step reconciliation executor
-│       ├── project_reconciliation_apply_cli.py AUTO-0008 public guarded apply CLI adapter
-│       ├── project_templates.py      SDK-0001 standalone template/scaffold API
+│       ├── discovery/
+│       ├── git/
+│       ├── ide/
+│       ├── mcp/
+│       ├── python/
+│       ├── registry/
+│       ├── runtime/
+│       ├── shared/
+│       ├── stdio/
+│       ├── tools/
+│       ├── workspace/
+│       ├── cli.py
+│       ├── public_cli.py
+│       ├── engineering_bootstrap.py
+│       ├── project_inspection.py
+│       ├── documentation_sync.py
+│       ├── documentation_apply.py
+│       ├── documentation_ownership.py
+│       ├── project_migration.py
+│       ├── project_migration_apply.py
+│       ├── project_git_readiness.py
+│       ├── project_health.py
+│       ├── project_reconciliation.py
+│       ├── project_reconciliation_cli.py
+│       ├── project_reconciliation_apply.py
+│       ├── project_reconciliation_apply_cli.py
+│       ├── project_reconciliation_orchestration.py
+│       ├── project_reconciliation_orchestration_cli.py
 │       └── server.py
 ├── tests/
 │   ├── unit/
 │   ├── integration/
-│   └── release/          Distribution/artifact and installed-CLI verification
+│   └── release/
 ├── README.md
 ├── LICENSE
 ├── pyproject.toml
 └── uv.lock
 ```
 
-`transport/` is not a current source directory and is intentionally not represented above.
+## Reconciliation Architecture
 
-## Existing Repository Subsystems
-
-Runtime, Registry, Discovery, diagnostics, IDE adapters, SDK project templates, engineering bootstrap,
-documentation synchronization/ownership, project migration, project health, project reconciliation
-planning, and guarded reconciliation execution are implemented repository subsystems. Their presence
-does not by itself make each subsystem part of every MCP request.
-
-## Active MCP SDK Execution Path
+AUTO-0007 is the permanent read-only planner:
 
 ```text
-MCP client
-    │ STDIO / official Python MCP SDK boundary
-    ▼
-`python -m ai_engineering.stdio`
-    → `ai_engineering.mcp.bootstrap`
-    → `EngineeringMCPServer`
-    → `CompositeRegistry` + `SDKAdapter`
-    → official `mcp.server.stdio.stdio_server`
-    → official SDK handlers
+project state → project_reconciliation.py → deterministic plan
 ```
 
-The official SDK owns protocol/server handling. `MCPRuntime`, `DiscoveryRegistry`, and diagnostic
-`wrap_stdio()` exist but are not invoked by this active path. MCP diagnostics are a separate
-supporting subsystem; IDE adapters represent integration surfaces, not confirmed client
-interoperability.
-
-## Project Creation and Bootstrap Paths
-
-`project_templates.py` owns the SDK-0001 standalone project creation/scaffold contract.
-`engineering_bootstrap.py` owns AUTO-0001's additive `python-engineering` orchestration and read-only
-fail-closed verification while delegating creation to SDK-0001.
-
-## Documentation Synchronization Path
-
-AUTO-0002 is intentionally separate from project generation:
+AUTO-0008 is the sole guarded one-step apply boundary:
 
 ```text
-project root
-    → `project_inspection.py`
-    → `documentation_sync.py` drift report
-    → deterministic sync plan + original SHA-256 digests
-    → `documentation_apply.py` guarded apply
-    → post-apply reinspection and drift verification
+fresh plan + exact eligible step
+    → project_reconciliation_apply.py
+    → one allow-listed subsystem write
+    → fresh reinspection
 ```
 
-The installed `cli.py` adapter exposes `ai-engineering project docs check`, `plan`, and `apply` over
-those public boundaries. `check` and `plan` are read-only. V1 writes only machine-owned marked
-sections of `CURRENT_STATUS.md`, `MASTER_INDEX.md`, and `PROJECT_MAP.md`; missing/malformed markers
-require manual review.
-
-## Reconciliation Paths
-
-AUTO-0007 is the permanent read-only planning layer:
+AUTO-0009 composes those existing boundaries into bounded multi-step orchestration:
 
 ```text
-project root
-    → project inspection / identity
-    → documentation ownership + synchronization state
-    → migration readiness
-    → bounded Git observations / invariants
-    → `project_reconciliation.py`
-    → deterministic reconciliation plan
-    → `project_reconciliation_cli.py`
-    → `ai-engineering project reconcile plan --project PATH`
+fresh AUTO-0007 plan
+    → select canonical next eligible step
+    → exactly one AUTO-0008 apply
+    → fresh AUTO-0007 plan
+    → repeat until terminal state or bounded limit
 ```
 
-AUTO-0008 is a separate guarded execution boundary over that plan:
+Public orchestration adapter: `project_reconciliation_orchestration_cli.py`.
+Installed public dispatcher: `public_cli.py`.
+
+Verified command:
 
 ```text
-reconciliation plan + exact step sequence
-    → `project_reconciliation_apply.py`
-    → pre-write reinspection / stale-plan and eligibility gate
-    → one allow-listed existing subsystem apply primitive
-    → post-apply reconciliation reinspection
-    → bounded apply result
-    → `project_reconciliation_apply_cli.py`
-    → `ai-engineering project reconcile apply --project PATH --step SEQUENCE`
+ai-engineering project reconcile run --project PATH [--max-steps N]
 ```
 
-AUTO-0007 gains no apply/write authority. AUTO-0008 does not introduce arbitrary writes, arbitrary
-commands, new migration edges, `apply all`, `force`, stale-plan bypasses, or publication behavior.
-Its mutation authority is restricted to one exact eligible step delegated to the subsystem that
-already owns the approved write primitive.
+AUTO-0009 owns no direct mutation primitive. It does not bypass AUTO-0008 stale-state validation and does not add arbitrary writes, new migration edges, parallel apply, force/stale bypass, publication, or direct Git mutation authority.
 
 ## Implementation State
 
-- Sprint 0 — Documentation Foundation: completed and continuously reconciled at milestone boundaries.
-- Sprint 1 — MCP Foundation: implemented and verified by MCP-0002.
-- SDK-0001 and AUTO-0001 project creation/bootstrap contracts: complete / verified.
-- AUTO-0002 Project Documentation Synchronization: complete / verified, including installed-wheel
-  `project docs check/plan/apply` behavior.
-- AUTO-0003 Documentation Ownership Initialization: complete / verified.
-- AUTO-0004 Project Update/Migration Framework: complete / verified.
-- AUTO-0005 Python Engineering V2 / first production migration: complete / verified.
-- AUTO-0006 Project Health/Readiness Audit: complete / verified.
-- AUTO-0007 stages 01–06: COMPLETE / VERIFIED; final/post-completion evidence closed through PR #91 / Quality #171 / post-merge #172.
-- AUTO-0008-01 design/authority contract: COMPLETE / VERIFIED; PR #92; Quality #173; post-merge #174.
-- AUTO-0008-02 guarded executor core: COMPLETE / VERIFIED; PR #93; corrected Quality #176; post-merge #177.
-- AUTO-0008-03 safety/failure invariants: COMPLETE / VERIFIED; PR #94; Quality #178; post-merge #179.
-- AUTO-0008-04 public guarded apply CLI: COMPLETE / VERIFIED; PR #95; corrected Quality #181; post-merge #182.
-- AUTO-0008-05 installed distribution verification: COMPLETE / VERIFIED; PR #96; Quality #183; post-merge #184.
-- AUTO-0008-06 final evidence/documentation reconciliation: COMPLETE / VERIFIED; PR #97; Quality #185; post-merge #186.
+- AUTO-0007 stages 01–06: COMPLETE / VERIFIED.
+- AUTO-0008 stages 01–06: COMPLETE / VERIFIED.
+- AUTO-0009-01 design: COMPLETE / VERIFIED; PR #99; Quality #189; post-merge #190.
+- AUTO-0009-02 guarded orchestrator core: COMPLETE / VERIFIED; PR #100; corrected Quality #193; post-merge #194.
+- AUTO-0009-03 safety/progress/failure invariants: COMPLETE / VERIFIED; PR #101; Quality #195; post-merge #196.
+- AUTO-0009-04 public CLI: COMPLETE / VERIFIED; PR #102; corrected Quality #199; post-merge #200.
+- AUTO-0009-05 installed distribution verification: COMPLETE / VERIFIED; PR #103; Quality #201; post-merge #202.
+- AUTO-0009-06 final evidence/documentation reconciliation: IN PROGRESS.
 
-Final verified AUTO-0008 baseline: `68f6d6f5d68b501582ecda7d83fe77e099c12e15`.
+Verified implementation baseline entering AUTO-0009-06: `9564f8ffdc869bb0d8058f74c78c1e5138e5a37c`.
 
-`tests/release/` verifies wheel/sdist artifacts, isolated wheel installation, and installed CLI behavior
-outside the source checkout, including AUTO-0007 read-only planning and AUTO-0008 guarded one-step
-apply behavior.
+`tests/release/` verifies wheel/sdist artifacts and installed CLI behavior outside the source checkout, including AUTO-0007 planning, AUTO-0008 guarded one-step apply, and AUTO-0009 bounded orchestration.

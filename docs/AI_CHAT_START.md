@@ -14,53 +14,54 @@ For a new or continued session, restore context in this order:
 8. `MASTER_INDEX.md`
 9. The design/evidence document for the active milestone listed in `MASTER_INDEX.md`, if one exists
 
-After reading them, continue from `CURRENT_STATUS.md` and the current roadmap. `CURRENT_STATUS.md` is the authoritative current-state document.
+After reading them, continue from `CURRENT_STATUS.md` and the current roadmap. `CURRENT_STATUS.md` is authoritative for current state.
 
 ## Current Working State
 
-AI-Engineering has completed and verified AUTO-0001 through AUTO-0008 for their approved scopes.
+AI-Engineering has completed and verified AUTO-0001 through AUTO-0008 for their approved scopes. AUTO-0009 stages 01–05 are COMPLETE / VERIFIED; stage 06 final documentation reconciliation is active.
 
-AUTO-0007 remains a deterministic, fail-closed, read-only reconciliation planner exposed through:
+Permanent reconciliation boundaries:
 
 ```text
 ai-engineering project reconcile plan --project PATH
+ai-engineering project reconcile apply --project PATH --step SEQUENCE
+ai-engineering project reconcile run --project PATH [--max-steps N]
 ```
 
-AUTO-0008 provides a separate guarded one-step execution boundary exposed through:
+AUTO-0007 is permanently read-only. AUTO-0008 remains the sole guarded one-step apply boundary. AUTO-0009 is bounded orchestration over repeated fresh planning plus exactly one AUTO-0008 apply per iteration.
+
+Verified baseline entering AUTO-0009-06:
 
 ```text
-ai-engineering project reconcile apply --project PATH --step SEQUENCE
+master = 9564f8ffdc869bb0d8058f74c78c1e5138e5a37c
 ```
 
-AUTO-0008 stages 01 through 06 are COMPLETE / VERIFIED. The final verified AUTO-0008 baseline is `68f6d6f5d68b501582ecda7d83fe77e099c12e15`, with stage-06 Quality #185 and post-merge Quality #186.
+AUTO-0009-05 merged in PR #103 and passed Quality #201 plus post-merge Quality #202 on that exact commit.
 
 ## Active Milestone
 
-No new AUTO milestone is active. A future milestone must be defined by a separate approved design/contract before new production capability work begins.
+**AUTO-0009-06 — Final Evidence / Documentation Reconciliation**
 
-Read `AUTO-0008_GUARDED_PROJECT_RECONCILIATION_APPLY_DESIGN.md` for the guarded execution authority contract.
+Read `AUTO-0009_MULTI_STEP_RECONCILIATION_ORCHESTRATION_DESIGN.md` for the orchestration contract.
 
 ```text
-AUTO-0007 read-only planner       COMPLETE / VERIFIED
-AUTO-0008-01 design               COMPLETE / VERIFIED
-AUTO-0008-02 executor core        COMPLETE / VERIFIED
-AUTO-0008-03 safety invariants    COMPLETE / VERIFIED
-AUTO-0008-04 public CLI           COMPLETE / VERIFIED
-AUTO-0008-05 installed wheel      COMPLETE / VERIFIED
-AUTO-0008-06 final reconciliation COMPLETE / VERIFIED
+AUTO-0009-01 design                  COMPLETE / VERIFIED
+AUTO-0009-02 orchestrator core       COMPLETE / VERIFIED
+AUTO-0009-03 safety invariants       COMPLETE / VERIFIED
+AUTO-0009-04 public CLI              COMPLETE / VERIFIED
+AUTO-0009-05 installed distribution  COMPLETE / VERIFIED
+AUTO-0009-06 final reconciliation    IN PROGRESS
 ```
 
-## AUTO-0008 Guardrails
+## AUTO-0009 Guardrails
 
-- Preserve AUTO-0007 read-only behavior unchanged.
-- No arbitrary file writes or arbitrary command execution.
-- No new migration edges, ownership semantics, writable document classes, or publication authority.
-- One actionable step per executor call.
-- Reinspect current reconciliation state before delegation and after successful apply where required.
-- Stale plan, unsupported identity, manual-review condition, or reinspection boundary must fail closed with zero unauthorized writes.
-- Delegate mutation to the existing subsystem that already owns the approved write primitive.
-- Do not claim stronger atomicity or rollback guarantees than the delegated subsystem provides.
-- No `apply all`, `force`, stale-plan bypass, Git commit/tag/push behavior, TestPyPI, or PyPI behavior.
+- Fresh AUTO-0007 planning before every mutation.
+- Exactly one AUTO-0008 delegated apply per orchestration iteration.
+- Canonical deterministic ordering only.
+- Finite progress bound; public default 8, hard maximum 100.
+- Stop fail-closed on stale, manual-review, unsupported, failed, or limit-reached state.
+- No arbitrary step list, parallel writes, `force`, stale bypass, new migration edges, publication, or direct Git mutation authority.
+- Partial progress must be reported truthfully; no invented whole-run atomicity or rollback guarantee.
 
 ## General Engineering Guardrails
 
@@ -68,13 +69,5 @@ AUTO-0008-06 final reconciliation COMPLETE / VERIFIED
 - Extend, never replace.
 - Documentation before implementation.
 - Keep changes small, testable, deterministic, and reviewable.
-- Keep environment-specific absolute paths out of project code and documentation contracts.
 - Make compatibility and security claims only from recorded evidence.
 - Treat published tags/releases as immutable historical evidence.
-- Do not expand SAFE-0002 claims without a separate contract and evidence.
-
-## Project Context
-
-AI-Engineering is the Engineering MCP Server and engineering-automation foundation for the AI Infrastructure ecosystem. It uses the official Python MCP SDK at the protocol/server boundary while preserving the internal Runtime and Registry architecture.
-
-Reference project: AI-Archive-Server.
