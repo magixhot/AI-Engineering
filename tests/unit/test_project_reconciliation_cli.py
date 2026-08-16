@@ -103,7 +103,10 @@ def test_cli_reconcile_v1_is_deterministic_and_read_only(
     assert "state=ready" in first
     assert "current_overall=action_required" in first
     assert "step_count=1" in first
-    assert "step=1:project migrate plan --migration python-engineering-v1-to-v2:ready:" in first
+    assert (
+        "step=1:project migrate plan --migration "
+        "python-engineering-v1-to-v2:ready:"
+    ) in first
     assert "step_migration=1:python-engineering-v1-to-v2" in first
     assert "step_reinspect=1:true" in first
     assert "reinspect_required=true" in first
