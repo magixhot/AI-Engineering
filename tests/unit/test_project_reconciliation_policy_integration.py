@@ -7,7 +7,10 @@ from ai_engineering.engineering_bootstrap import (
     EngineeringBootstrapRequest,
     bootstrap_engineering_project,
 )
-from ai_engineering.project_health import NEXT_DOCS_PLAN, NEXT_MIGRATION_PLAN
+from ai_engineering.project_health import (
+    NEXT_MIGRATION_PLAN,
+    NEXT_OWNERSHIP_PLAN,
+)
 from ai_engineering.project_reconciliation_orchestration import (
     run_project_reconciliation,
 )
@@ -123,7 +126,7 @@ def test_later_policy_refusal_preserves_partial_progress(
         "\n".join(
             [
                 "version = 1",
-                f"denied_workflows = [{NEXT_DOCS_PLAN!r}]",
+                f"denied_workflows = [{NEXT_OWNERSHIP_PLAN!r}]",
                 "",
             ]
         ),
@@ -135,7 +138,7 @@ def test_later_policy_refusal_preserves_partial_progress(
     assert result.successful_steps >= 1
     assert len(result.attempts) == result.successful_steps
     assert result.policy_decisions[-1].state == "policy_refused"
-    assert result.policy_decisions[-1].workflow == NEXT_DOCS_PLAN
+    assert result.policy_decisions[-1].workflow == NEXT_OWNERSHIP_PLAN
     assert result.issues[0].code == "POLICY_WORKFLOW_DENIED"
 
 
