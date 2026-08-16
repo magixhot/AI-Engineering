@@ -41,7 +41,8 @@
 | AUTO-0002_PROJECT_DOCUMENTATION_SYNCHRONIZATION_DESIGN.md | Bounded inspection, drift, deterministic planning, guarded apply, and ownership contract | Implemented / Verified |
 | AUTO-0002_4_CLI_AND_DISTRIBUTION_VERIFICATION.md | Exact installed `project docs check/plan/apply` CLI and isolated-distribution contract | Implemented / Verified |
 | AUTO-0002_VERIFICATION_EVIDENCE.md | Inspection, drift, apply, CLI, installed-wheel, and CI evidence | Complete / Verified |
-| AUTO-0003_DOCUMENTATION_OWNERSHIP_INITIALIZATION_DESIGN.md | Safe deterministic initialization of AUTO-0002 ownership markers and managed sections | Design / Proposed |
+| AUTO-0003_DOCUMENTATION_OWNERSHIP_INITIALIZATION_DESIGN.md | Safe deterministic initialization of AUTO-0002 ownership markers and managed sections | Implemented / Verified |
+| AUTO-0003_VERIFICATION_EVIDENCE.md | Classification/planning, guarded apply, AUTO-0002 handoff, CLI, installed-wheel, and CI evidence | Complete / Verified |
 
 ## Active Engineering Work
 
@@ -58,7 +59,7 @@
 | REL-0003 v0.2.0 GitHub publication | COMPLETE / VERIFIED |
 | AUTO-0001 engineering project bootstrap | COMPLETE / VERIFIED |
 | AUTO-0002 project documentation synchronization | COMPLETE / VERIFIED |
-| AUTO-0003 documentation ownership initialization | DESIGN / PROPOSED |
+| AUTO-0003 documentation ownership initialization | COMPLETE / VERIFIED |
 | Additional MCP client interoperability | OPTIONAL / FUTURE EVIDENCE |
 | Diagnostics maintenance | ACTIVE |
 
@@ -82,7 +83,7 @@
 | REL-0003 v0.2.0 publication | COMPLETE / VERIFIED |
 | M3 / AUTO-0001 Engineering Project Bootstrap | COMPLETE / VERIFIED |
 | M3 / AUTO-0002 Project Documentation Synchronization | COMPLETE / VERIFIED |
-| M3 / AUTO-0003 Documentation Ownership Initialization | DESIGN |
+| M3 / AUTO-0003 Documentation Ownership Initialization | COMPLETE / VERIFIED |
 | Additional client and IDE interoperability | PLANNED |
 
 ## Published Release
@@ -99,8 +100,12 @@
 - Exact 0.2.0 candidate passed post-merge GitHub Actions Quality #79 on Linux/Python 3.11.
 - Readiness documentation passed PR Quality #80 and post-merge Quality #81.
 - Post-v0.2.0 reconciliation passed PR Quality #82 and post-merge Quality #83.
-- Windows candidate evidence: pytest 153 passed, 2 permitted symlink-fixture skips due to `WinError 1314`; Ruff 0; mypy 0 in 79 source files; focused release distribution test 1 passed; `git diff --check` passed; working tree clean.
-- Installed-wheel verification covers `ai-engineering project create`, `project bootstrap`, and `project docs check/plan/apply` outside the source checkout.
+- AUTO-0003 design passed Quality #84 and post-merge Quality #85.
+- AUTO-0003 classification/planning passed corrected Quality #87 and post-merge Quality #88 after a formatting-only Ruff defect in #86.
+- AUTO-0003 guarded apply passed Quality #89 and post-merge Quality #90.
+- AUTO-0003 CLI and installed-wheel verification passed Quality #91 and post-merge Quality #92 on `67163df307975bc061f5aebb748cbbb7e40304cb`.
+- Windows 0.2.0 candidate evidence remains: pytest 153 passed, 2 permitted symlink-fixture skips due to `WinError 1314`; Ruff 0; mypy 0 in 79 source files; focused release distribution test 1 passed; `git diff --check` passed; working tree clean.
+- Installed-wheel verification now covers `ai-engineering project create`, `project bootstrap`, `project docs check/plan/apply`, and `project docs ownership check/plan/apply` outside the source checkout.
 
 ## Source Tree
 
@@ -111,7 +116,8 @@ src/ai_engineering/
 ├── stdio/       ├── tools/     ├── workspace/
 ├── project_inspection.py
 ├── documentation_sync.py
-└── documentation_apply.py
+├── documentation_apply.py
+└── documentation_ownership.py
 ```
 
 The repository has no `transport/` package.
