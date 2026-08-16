@@ -6,10 +6,17 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Iterable
 
-from .engineering_bootstrap import PYTHON_ENGINEERING_PROFILE
 from .project_templates import ProjectTemplateGenerator
+from .python_engineering_baseline import (
+    PYTHON_ENGINEERING_IDENTITY_PATH,
+    PYTHON_ENGINEERING_PROFILE,
+    PYTHON_ENGINEERING_V2_BASELINE,
+    PYTHON_ENGINEERING_V2_GITIGNORE,
+    PYTHON_ENGINEERING_V2_IDENTITY,
+)
 
 PYTHON_ENGINEERING_V1_BASELINE = "python-engineering-v1"
+PYTHON_ENGINEERING_V1_TO_V2_MIGRATION = "python-engineering-v1-to-v2"
 
 OWNERSHIP_MACHINE = "machine_owned"
 OWNERSHIP_HUMAN = "human_owned"
@@ -43,7 +50,7 @@ _ALLOWED_ACTIONS = {
     ACTION_DELETE_MACHINE_FILE,
 }
 
-_EXPECTED_GITIGNORE = (
+PYTHON_ENGINEERING_V1_GITIGNORE = (
     "__pycache__/\n"
     "*.py[cod]\n"
     ".venv/\n"
@@ -55,7 +62,9 @@ _EXPECTED_GITIGNORE = (
     "*.egg-info/\n"
     ".idea/\n"
     ".vscode/\n"
-).encode()
+).encode("utf-8")
+PYTHON_ENGINEERING_V2_GITIGNORE_BYTES = PYTHON_ENGINEERING_V2_GITIGNORE.encode("utf-8")
+PYTHON_ENGINEERING_V2_IDENTITY_BYTES = PYTHON_ENGINEERING_V2_IDENTITY.encode("utf-8")
 
 
 class ProjectMigrationError(Exception):
@@ -192,7 +201,10 @@ class MigrationRegistry:
                 f"Migration {migration_id!r} does not support profile "
                 f"{identity.profile!r}"
             )
-        if identity.baseline not in match.source_baselines:
+        if (
+            identity.baseline not in match.source_baselines
+            and identity.baseline != match.target_baseline
+        ):
             raise UnsupportedMigrationError(
                 f"Migration {migration_id!r} does not support source baseline "
                 f"{identity.baseline!r}"
@@ -246,7 +258,31 @@ class ProjectMigrationPlan:
         return not self.manual_review
 
 
-DEFAULT_MIGRATION_REGISTRY = MigrationRegistry()
+DEFAULT_MIGRATION_REGISTRY = MigrationRegistry(
+    (
+        MigrationContract(
+            migration_id=PYTHON_ENGINEERING_V1_TO_V2_MIGRATION,
+            source_baselines=(PYTHON_ENGINEERING_V1_BASELINE,),
+            target_baseline=PYTHON_ENGINEERING_V2_BASELINE,
+            profiles=(PYTHON_ENGINEERING_PROFILE,),
+            rules=(
+                MigrationPathRule(
+                    path=".gitignore",
+                    action=ACTION_REPLACE_MACHINE_FILE,
+                    ownership=OWNERSHIP_MACHINE,
+                    source_content=PYTHON_ENGINEERING_V1_GITIGNORE,
+                    target_content=PYTHON_ENGINEERING_V2_GITIGNORE_BYTES,
+                ),
+                MigrationPathRule(
+                    path=PYTHON_ENGINEERING_IDENTITY_PATH,
+                    action=ACTION_CREATE_FILE,
+                    ownership=OWNERSHIP_GENERATED_ABSENT,
+                    target_content=PYTHON_ENGINEERING_V2_IDENTITY_BYTES,
+                ),
+            ),
+        ),
+    )
+)
 
 
 def _digest(content: bytes) -> str:
@@ -296,9 +332,12 @@ def _parse_pyproject(content: bytes) -> dict[str, Any]:
     return parsed
 
 
-def _validate_python_engineering_v1(
+def _validate_python_scaffold(
     root: Path,
     pyproject_content: bytes,
+    *,
+    baseline: str,
+    expected_gitignore: bytes,
 ) -> ProjectIdentity:
     data = _parse_pyproject(pyproject_content)
     build_system = data.get("build-system")
@@ -371,7 +410,7 @@ def _validate_python_engineering_v1(
 
     evidence: list[tuple[str, str]] = [("pyproject.toml", _digest(pyproject_content))]
     expected_files = {
-        ".gitignore": _EXPECTED_GITIGNORE,
+        ".gitignore": expected_gitignore,
         f"src/{package_name}/__init__.py": (
             f'"""{package_name} package."""\n'.encode()
         ),
@@ -387,8 +426,7 @@ def _validate_python_engineering_v1(
         content = _read_supported_file(root, relative_path)
         if content != expected_content:
             raise UnsupportedProjectIdentityError(
-                f"Required baseline file differs from python-engineering V1: "
-                f"{relative_path}"
+                f"Required baseline file differs from {baseline}: {relative_path}"
             )
         evidence.append((relative_path, _digest(content)))
 
@@ -396,10 +434,18 @@ def _validate_python_engineering_v1(
         content = _read_supported_file(root, relative_path)
         evidence.append((relative_path, _digest(content)))
 
+    if baseline == PYTHON_ENGINEERING_V2_BASELINE:
+        marker = _read_supported_file(root, PYTHON_ENGINEERING_IDENTITY_PATH)
+        if marker != PYTHON_ENGINEERING_V2_IDENTITY_BYTES:
+            raise UnsupportedProjectIdentityError(
+                "Engineering identity marker differs from python-engineering V2"
+            )
+        evidence.append((PYTHON_ENGINEERING_IDENTITY_PATH, _digest(marker)))
+
     return ProjectIdentity(
         project_root=root,
         profile=PYTHON_ENGINEERING_PROFILE,
-        baseline=PYTHON_ENGINEERING_V1_BASELINE,
+        baseline=baseline,
         distribution_name=distribution_name,
         package_name=package_name,
         project_version="0.1.0",
@@ -420,8 +466,28 @@ def detect_project_identity(project_root: Path) -> ProjectIdentity:
         raise UnsupportedProjectIdentityError(
             f"Project root is not a directory: {project_root}"
         )
+
     pyproject_content = _read_supported_file(root, "pyproject.toml")
-    return _validate_python_engineering_v1(root, pyproject_content)
+    identity_path = root / PYTHON_ENGINEERING_IDENTITY_PATH
+    if identity_path.exists() or identity_path.is_symlink():
+        marker = _read_supported_file(root, PYTHON_ENGINEERING_IDENTITY_PATH)
+        if marker != PYTHON_ENGINEERING_V2_IDENTITY_BYTES:
+            raise UnsupportedProjectIdentityError(
+                "Engineering identity marker is not the approved V2 marker"
+            )
+        return _validate_python_scaffold(
+            root,
+            pyproject_content,
+            baseline=PYTHON_ENGINEERING_V2_BASELINE,
+            expected_gitignore=PYTHON_ENGINEERING_V2_GITIGNORE_BYTES,
+        )
+
+    return _validate_python_scaffold(
+        root,
+        pyproject_content,
+        baseline=PYTHON_ENGINEERING_V1_BASELINE,
+        expected_gitignore=PYTHON_ENGINEERING_V1_GITIGNORE,
+    )
 
 
 def _observation(
