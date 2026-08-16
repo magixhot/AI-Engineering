@@ -24,27 +24,35 @@ AI-Engineering has completed and verified AUTO-0001 through AUTO-0007 for their 
 ai-engineering project reconcile plan --project PATH
 ```
 
-The post-AUTO-0007 documentation reconciliation is closed through PR #91. The AUTO-0008 milestone-start baseline is `4af3f7ff6933ab614705e2fdfeada65c23ad1496`, verified by Quality #171 and post-merge Quality #172.
+AUTO-0008 stages 01 through 05 are COMPLETE / VERIFIED. The current verified implementation baseline entering the final reconciliation stage is `35196bde98e8436265dd85ac397e4fc6b6f51037`, verified by AUTO-0008-05 Quality #183 and post-merge Quality #184.
 
 ## Active Milestone
 
-AUTO-0008 — Guarded Project Reconciliation Apply is active at **AUTO-0008-01 — Apply Design / Authority Contract**.
+AUTO-0008 — Guarded Project Reconciliation Apply is active at **AUTO-0008-06 — Final Evidence / Documentation Reconciliation**.
 
-Read `AUTO-0008_GUARDED_PROJECT_RECONCILIATION_APPLY_DESIGN.md` before any AUTO-0008 implementation work.
+Read `AUTO-0008_GUARDED_PROJECT_RECONCILIATION_APPLY_DESIGN.md` for the authority contract.
 
-AUTO-0008 introduces a separate execution-authority boundary. It must not add write behavior to AUTO-0007. It may apply at most one exact eligible reconciliation step per call and may delegate only to an already-approved existing subsystem apply primitive.
-
-AUTO-0008-01 is documentation-only. AUTO-0008-02 remains blocked until the design stage passes Quality, merge, and post-merge verification.
+Verified public apply command:
 
 ```text
-AUTO-0007 COMPLETE / VERIFIED / READ-ONLY
-        ↓
-AUTO-0008-01 DESIGN / AUTHORITY CONTRACT
-        ↓
-Quality → merge → post-merge gate
-        ↓
-AUTO-0008-02 only after successful gate
+ai-engineering project reconcile apply --project PATH --step SEQUENCE
 ```
+
+AUTO-0008 is a separate execution-authority boundary. It does not add write behavior to AUTO-0007. It applies at most one exact eligible reconciliation step per call and delegates only to an already-approved existing subsystem apply primitive.
+
+```text
+AUTO-0008-01 design             COMPLETE / VERIFIED
+AUTO-0008-02 executor core      COMPLETE / VERIFIED
+AUTO-0008-03 safety invariants  COMPLETE / VERIFIED
+AUTO-0008-04 public CLI         COMPLETE / VERIFIED
+AUTO-0008-05 installed wheel    COMPLETE / VERIFIED
+        ↓
+AUTO-0008-06 final reconciliation — ACTIVE
+        ↓
+Quality → merge → post-merge gate → final closure evidence
+```
+
+AUTO-0008 is not fully closed until stage 06 itself passes Quality, merge, and post-merge verification and authoritative closure evidence is recorded.
 
 ## AUTO-0008 Guardrails
 
@@ -52,7 +60,7 @@ AUTO-0008-02 only after successful gate
 - No arbitrary file writes or arbitrary command execution.
 - No new migration edges, ownership semantics, writable document classes, or publication authority.
 - One actionable step per executor call.
-- Reinspect before every write and after every successful apply.
+- Reinspect current reconciliation state before delegation and after successful apply where required.
 - Stale plan, unsupported identity, manual-review condition, or reinspection boundary must fail closed with zero unauthorized writes.
 - Delegate mutation to the existing subsystem that already owns the approved write primitive.
 - Do not claim stronger atomicity or rollback guarantees than the delegated subsystem provides.
