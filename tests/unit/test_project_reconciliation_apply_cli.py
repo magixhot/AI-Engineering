@@ -13,7 +13,7 @@ from ai_engineering.project_reconciliation_apply import (
 
 
 def _result(root: Path, state: str) -> ProjectReconciliationApplyResult:
-    issues = ()
+    issues: tuple[ProjectReconciliationApplyIssue, ...] = ()
     if state == "stale_plan":
         issues = (
             ProjectReconciliationApplyIssue(
