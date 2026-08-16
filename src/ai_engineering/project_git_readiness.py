@@ -46,7 +46,9 @@ def _run_git(root: Path, *args: str) -> str:
             stdin=subprocess.DEVNULL,
         )
     except OSError as exc:
-        raise ProjectGitReadinessError("Git readiness inspection could not start") from exc
+        raise ProjectGitReadinessError(
+            "Git readiness inspection could not start"
+        ) from exc
     if result.returncode != 0:
         raise ProjectGitReadinessError(
             "Git readiness inspection failed for: " + " ".join(args)
