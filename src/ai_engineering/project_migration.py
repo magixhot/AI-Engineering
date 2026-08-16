@@ -11,6 +11,38 @@ from .project_templates import ProjectTemplateGenerator
 
 PYTHON_ENGINEERING_V1_BASELINE = "python-engineering-v1"
 
+OWNERSHIP_MACHINE = "machine_owned"
+OWNERSHIP_HUMAN = "human_owned"
+OWNERSHIP_MANAGED_SECTION = "managed_section"
+OWNERSHIP_GENERATED_ABSENT = "generated_absent"
+OWNERSHIP_UNKNOWN = "unknown"
+
+ACTION_CREATE_FILE = "create_file"
+ACTION_REPLACE_MACHINE_FILE = "replace_machine_owned_file"
+ACTION_DELETE_MACHINE_FILE = "delete_machine_owned_file"
+
+STATE_UNCHANGED_SOURCE = "unchanged_source"
+STATE_ALREADY_TARGET = "already_target"
+STATE_MISSING = "missing"
+STATE_LOCALLY_MODIFIED = "locally_modified"
+STATE_UNEXPECTED_PRESENT = "unexpected_present"
+STATE_UNSUPPORTED_TYPE = "unsupported_type"
+STATE_OUTSIDE_ROOT = "outside_root"
+STATE_MANUAL_REVIEW = "manual_review"
+
+_ALLOWED_OWNERSHIP = {
+    OWNERSHIP_MACHINE,
+    OWNERSHIP_HUMAN,
+    OWNERSHIP_MANAGED_SECTION,
+    OWNERSHIP_GENERATED_ABSENT,
+    OWNERSHIP_UNKNOWN,
+}
+_ALLOWED_ACTIONS = {
+    ACTION_CREATE_FILE,
+    ACTION_REPLACE_MACHINE_FILE,
+    ACTION_DELETE_MACHINE_FILE,
+}
+
 _EXPECTED_GITIGNORE = (
     "__pycache__/\n"
     "*.py[cod]\n"
@@ -52,6 +84,45 @@ class ProjectIdentity:
 
 
 @dataclass(frozen=True)
+class MigrationPathRule:
+    """One declared path rule within a registered migration contract."""
+
+    path: str
+    action: str
+    ownership: str
+    source_content: bytes | None = None
+    target_content: bytes | None = None
+
+    def __post_init__(self) -> None:
+        normalized = Path(self.path)
+        if not self.path or normalized.is_absolute() or ".." in normalized.parts:
+            raise ValueError("migration rule path must be a bounded relative path")
+        normalized_path = normalized.as_posix()
+        if normalized_path in {".", ""}:
+            raise ValueError("migration rule path must identify a project child")
+        if self.action not in _ALLOWED_ACTIONS:
+            raise ValueError(f"unsupported migration rule action: {self.action!r}")
+        if self.ownership not in _ALLOWED_OWNERSHIP:
+            raise ValueError(f"unsupported migration ownership: {self.ownership!r}")
+        if self.action == ACTION_CREATE_FILE:
+            if self.source_content is not None or self.target_content is None:
+                raise ValueError(
+                    "create_file requires target_content and no source_content"
+                )
+        elif self.action == ACTION_REPLACE_MACHINE_FILE:
+            if self.source_content is None or self.target_content is None:
+                raise ValueError(
+                    "replace_machine_owned_file requires source and target content"
+                )
+        elif self.action == ACTION_DELETE_MACHINE_FILE:
+            if self.source_content is None or self.target_content is not None:
+                raise ValueError(
+                    "delete_machine_owned_file requires source content only"
+                )
+        object.__setattr__(self, "path", normalized_path)
+
+
+@dataclass(frozen=True)
 class MigrationContract:
     """One explicit registered source-to-target migration edge."""
 
@@ -59,12 +130,14 @@ class MigrationContract:
     source_baselines: tuple[str, ...]
     target_baseline: str
     profiles: tuple[str, ...]
+    rules: tuple[MigrationPathRule, ...] = ()
 
     def __post_init__(self) -> None:
         migration_id = self.migration_id.strip()
         target_baseline = self.target_baseline.strip()
         source_baselines = tuple(sorted(set(self.source_baselines)))
         profiles = tuple(sorted(set(self.profiles)))
+        rules = tuple(sorted(self.rules, key=lambda item: (item.path, item.action)))
         if not migration_id:
             raise ValueError("migration_id must not be empty")
         if not target_baseline:
@@ -77,10 +150,14 @@ class MigrationContract:
             raise ValueError("source_baselines must not contain empty values")
         if any(not value.strip() for value in profiles):
             raise ValueError("profiles must not contain empty values")
+        paths = [rule.path.casefold() for rule in rules]
+        if len(paths) != len(set(paths)):
+            raise ValueError("migration rule paths must be unique")
         object.__setattr__(self, "migration_id", migration_id)
         object.__setattr__(self, "target_baseline", target_baseline)
         object.__setattr__(self, "source_baselines", source_baselines)
         object.__setattr__(self, "profiles", profiles)
+        object.__setattr__(self, "rules", rules)
 
 
 class MigrationRegistry:
@@ -121,6 +198,52 @@ class MigrationRegistry:
                 f"{identity.baseline!r}"
             )
         return match
+
+
+@dataclass(frozen=True)
+class ProjectMigrationRequest:
+    """Read-only request for one exact registered migration edge."""
+
+    project_root: Path
+    migration_id: str
+
+
+@dataclass(frozen=True)
+class ProjectMigrationObservation:
+    """Observed state for one migration-declared project path."""
+
+    path: str
+    ownership: str
+    state: str
+    original_sha256: str | None
+
+
+@dataclass(frozen=True)
+class ProjectMigrationOperation:
+    """One safe operation produced by read-only migration planning."""
+
+    path: str
+    action: str
+    ownership: str
+    original_sha256: str | None
+    replacement_content: bytes | None
+
+
+@dataclass(frozen=True)
+class ProjectMigrationPlan:
+    """Deterministic AUTO-0004 dry-run plan with explicit blockers."""
+
+    project_root: Path
+    migration_id: str
+    source_baseline: str
+    target_baseline: str
+    observations: tuple[ProjectMigrationObservation, ...]
+    operations: tuple[ProjectMigrationOperation, ...]
+    manual_review: tuple[str, ...]
+
+    @property
+    def is_applicable(self) -> bool:
+        return not self.manual_review
 
 
 DEFAULT_MIGRATION_REGISTRY = MigrationRegistry()
@@ -299,3 +422,148 @@ def detect_project_identity(project_root: Path) -> ProjectIdentity:
         )
     pyproject_content = _read_supported_file(root, "pyproject.toml")
     return _validate_python_engineering_v1(root, pyproject_content)
+
+
+def _observation(
+    rule: MigrationPathRule,
+    state: str,
+    content: bytes | None = None,
+) -> ProjectMigrationObservation:
+    return ProjectMigrationObservation(
+        path=rule.path,
+        ownership=rule.ownership,
+        state=state,
+        original_sha256=_digest(content) if content is not None else None,
+    )
+
+
+def _blocked(
+    rule: MigrationPathRule,
+    state: str,
+    content: bytes | None = None,
+) -> tuple[ProjectMigrationObservation, None, str]:
+    return (
+        _observation(rule, state, content),
+        None,
+        f"{rule.path}: {state}",
+    )
+
+
+def _inspect_rule(
+    root: Path,
+    rule: MigrationPathRule,
+) -> tuple[
+    ProjectMigrationObservation,
+    ProjectMigrationOperation | None,
+    str | None,
+]:
+    path = root / rule.path
+    try:
+        resolved = path.resolve(strict=False)
+    except OSError:
+        return _blocked(rule, STATE_UNSUPPORTED_TYPE)
+    if not resolved.is_relative_to(root):
+        return _blocked(rule, STATE_OUTSIDE_ROOT)
+    if path.is_symlink():
+        return _blocked(rule, STATE_UNSUPPORTED_TYPE)
+
+    if rule.ownership in {
+        OWNERSHIP_HUMAN,
+        OWNERSHIP_MANAGED_SECTION,
+        OWNERSHIP_UNKNOWN,
+    }:
+        content = path.read_bytes() if path.is_file() else None
+        return _blocked(rule, STATE_MANUAL_REVIEW, content)
+
+    if rule.action == ACTION_CREATE_FILE:
+        if not path.exists():
+            observation = _observation(rule, STATE_MISSING)
+            operation = ProjectMigrationOperation(
+                path=rule.path,
+                action=rule.action,
+                ownership=rule.ownership,
+                original_sha256=None,
+                replacement_content=rule.target_content,
+            )
+            return observation, operation, None
+        if not path.is_file():
+            return _blocked(rule, STATE_UNSUPPORTED_TYPE)
+        content = path.read_bytes()
+        if content == rule.target_content:
+            return _observation(rule, STATE_ALREADY_TARGET, content), None, None
+        return _blocked(rule, STATE_UNEXPECTED_PRESENT, content)
+
+    if not path.exists():
+        if rule.action == ACTION_DELETE_MACHINE_FILE:
+            return _observation(rule, STATE_ALREADY_TARGET), None, None
+        return _blocked(rule, STATE_MISSING)
+    if not path.is_file():
+        return _blocked(rule, STATE_UNSUPPORTED_TYPE)
+
+    content = path.read_bytes()
+    if rule.action == ACTION_REPLACE_MACHINE_FILE:
+        if content == rule.target_content:
+            return _observation(rule, STATE_ALREADY_TARGET, content), None, None
+        if content != rule.source_content:
+            return _blocked(rule, STATE_LOCALLY_MODIFIED, content)
+        if rule.ownership != OWNERSHIP_MACHINE:
+            return _blocked(rule, STATE_MANUAL_REVIEW, content)
+        digest = _digest(content)
+        observation = _observation(rule, STATE_UNCHANGED_SOURCE, content)
+        operation = ProjectMigrationOperation(
+            path=rule.path,
+            action=rule.action,
+            ownership=rule.ownership,
+            original_sha256=digest,
+            replacement_content=rule.target_content,
+        )
+        return observation, operation, None
+
+    if content != rule.source_content:
+        return _blocked(rule, STATE_LOCALLY_MODIFIED, content)
+    if rule.ownership != OWNERSHIP_MACHINE:
+        return _blocked(rule, STATE_MANUAL_REVIEW, content)
+    digest = _digest(content)
+    observation = _observation(rule, STATE_UNCHANGED_SOURCE, content)
+    operation = ProjectMigrationOperation(
+        path=rule.path,
+        action=rule.action,
+        ownership=rule.ownership,
+        original_sha256=digest,
+        replacement_content=None,
+    )
+    return observation, operation, None
+
+
+def plan_project_migration(
+    request: ProjectMigrationRequest,
+    registry: MigrationRegistry = DEFAULT_MIGRATION_REGISTRY,
+) -> ProjectMigrationPlan:
+    """Produce a deterministic read-only plan for one registered migration."""
+
+    identity = detect_project_identity(request.project_root)
+    contract = registry.resolve(request.migration_id, identity)
+    observations: list[ProjectMigrationObservation] = []
+    operations: list[ProjectMigrationOperation] = []
+    manual_review: list[str] = []
+
+    for rule in contract.rules:
+        observation, operation, blocker = _inspect_rule(
+            identity.project_root,
+            rule,
+        )
+        observations.append(observation)
+        if operation is not None:
+            operations.append(operation)
+        if blocker is not None:
+            manual_review.append(blocker)
+
+    return ProjectMigrationPlan(
+        project_root=identity.project_root,
+        migration_id=contract.migration_id,
+        source_baseline=identity.baseline,
+        target_baseline=contract.target_baseline,
+        observations=tuple(observations),
+        operations=tuple(operations),
+        manual_review=tuple(manual_review),
+    )
