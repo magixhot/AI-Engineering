@@ -1,6 +1,6 @@
 # AUTO-0010 — Reconciliation Policy Design
 
-**Status:** IMPLEMENTED THROUGH AUTO-0010-05 / AUTO-0010-06 CLOSURE IN PROGRESS
+**Status:** COMPLETE / VERIFIED
 
 ## Purpose
 
@@ -118,14 +118,14 @@ AUTO-0010 does not authorize new reconciliation workflows or migration edges, ar
 3. **AUTO-0010-03 — Safety / Determinism / Git Invariants** — PR #108; corrected Quality #214; post-merge #215.
 4. **AUTO-0010-04 — Orchestration + Public CLI Integration** — PR #109; corrected Quality #220; post-merge #221.
 5. **AUTO-0010-05 — Installed Distribution Verification** — PR #110; Quality #222; post-merge #223.
-6. **AUTO-0010-06 — Final Evidence / Documentation Reconciliation** — active closure stage; gates pending.
+6. **AUTO-0010-06 — Final Evidence / Documentation Reconciliation** — PR #111; Quality #224; post-merge #225.
 
-Verified implementation baseline entering AUTO-0010-06:
+Final verified AUTO-0010 baseline:
 
 ```text
-master = 272b9328a819f9a4fc281f41aed9970cd05e208f
+master = 1abd853da67cfb3954baa04f310837388b60b4f8
 ```
 
 ## Definition of Done
 
-AUTO-0010 is complete only when policy remains restriction-only, invalid/unknown/contradictory policy fails closed, policy is freshly evaluated before candidate mutation, AUTO-0007/AUTO-0008/AUTO-0009 authority boundaries remain intact, Git safety/determinism and installed-wheel behavior are verified, and AUTO-0010-06 itself passes pre-merge and exact post-merge Quality with authoritative documentation reconciled to the resulting final master baseline.
+AUTO-0010 is COMPLETE / VERIFIED: policy remains restriction-only, invalid/unknown/contradictory policy fails closed, policy is freshly evaluated before candidate mutation, AUTO-0007/AUTO-0008/AUTO-0009 authority boundaries remain intact, Git safety/determinism and installed-wheel behavior are verified, and AUTO-0010-06 passed pre-merge Quality #224 plus exact post-merge Quality #225 on the final master baseline.
