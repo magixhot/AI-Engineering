@@ -38,7 +38,7 @@
 | AUTO-0005_VERIFICATION_EVIDENCE.md | AUTO-0005 evidence | Complete / Verified |
 | AUTO-0006_ENGINEERING_PROJECT_HEALTH_READINESS_AUDIT_DESIGN.md | Health/readiness contract | Complete / Verified |
 | AUTO-0006_VERIFICATION_EVIDENCE.md | AUTO-0006 evidence | Complete / Verified |
-| AUTO-0007_ENGINEERING_PROJECT_RECONCILIATION_PLAN_DESIGN.md | AUTO-0007 reconciliation contract and staged delivery | Complete / Verified after stages 01–05 |
+| AUTO-0007_ENGINEERING_PROJECT_RECONCILIATION_PLAN_DESIGN.md | AUTO-0007 reconciliation contract and staged delivery | Complete / Verified |
 
 ## Active Engineering Work
 
@@ -54,8 +54,7 @@
 | AUTO-0004 | COMPLETE / VERIFIED |
 | AUTO-0005 | COMPLETE / VERIFIED |
 | AUTO-0006 | COMPLETE / VERIFIED |
-| AUTO-0007 stages 01–05 | COMPLETE / VERIFIED |
-| AUTO-0007-06 final documentation reconciliation | IN PROGRESS / CLOSING |
+| AUTO-0007 | COMPLETE / VERIFIED |
 | Additional MCP client interoperability | OPTIONAL / FUTURE EVIDENCE |
 | Diagnostics maintenance | ACTIVE |
 
@@ -76,7 +75,7 @@
 | AUTO-0007-03 Invariants | COMPLETE / VERIFIED — PR #84 / Quality #148 + #149 |
 | AUTO-0007-04 Public CLI | COMPLETE / VERIFIED — PR #85 / Quality #157 + #160 |
 | AUTO-0007-05 Installed Distribution Verification | COMPLETE / VERIFIED — PR #86 / Quality #161 + #162 |
-| AUTO-0007-06 Final Reconciliation / Documentation | IN PROGRESS / CLOSING |
+| AUTO-0007-06 Final Reconciliation / Documentation | COMPLETE / VERIFIED — PR #87 / Quality #163 + #164 |
 
 ## Current Quality Baseline
 
@@ -84,6 +83,7 @@
 - AUTO-0007-03: Quality #148 and post-merge #149 passed.
 - AUTO-0007-04: corrected Quality #157 and post-merge #160 passed.
 - AUTO-0007-05: Quality #161 and post-merge #162 passed.
+- AUTO-0007-06: Quality #163 and post-merge #164 passed.
 - The AUTO-0007-04 formatting-only failure #150 is historical evidence and is superseded by the corrected passing run #157.
 
 ## Published Release
