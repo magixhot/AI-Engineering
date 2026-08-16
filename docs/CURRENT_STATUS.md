@@ -3,7 +3,7 @@
 **Snapshot date:** 2026-08-16
 **Status:** ACTIVE
 **Release line:** 0.2.0 published
-**Current phase:** AUTO-0003 Complete / Verified
+**Current phase:** AUTO-0004 Complete / Verified
 
 ## State by Delivery Area
 
@@ -25,20 +25,23 @@
 | AUTO-0001 Engineering Project Bootstrap | COMPLETE / VERIFIED | Typed bootstrap API, fail-closed verification, installed bootstrap CLI, and isolated-wheel smoke are verified. |
 | AUTO-0002 Project Documentation Synchronization | COMPLETE / VERIFIED | Read-only inspection, bounded drift detection/planning, SHA-256 guarded apply, ownership preservation, installed `project docs check/plan/apply`, and isolated-wheel verification are complete. |
 | AUTO-0003 Documentation Ownership Initialization | COMPLETE / VERIFIED | Ownership classification/planning, guarded atomic apply, AUTO-0002 handoff, idempotency, Git invariants, installed `project docs ownership check/plan/apply`, and isolated-wheel verification are complete. Evidence: `AUTO-0003_VERIFICATION_EVIDENCE.md`. |
-| Quality gates | PASS | AUTO-0003 design passed Quality #84/#85; classification/planning passed corrected Quality #87 and post-merge #88; guarded apply passed #89/#90; CLI/wheel verification passed #91/#92. |
+| AUTO-0004 Engineering Project Update / Migration Framework | COMPLETE / VERIFIED | Positive project identity, explicit migration registry, deterministic planning, SHA-256 guards, guarded atomic apply/rollback, Git invariants, installed `project migrate check/plan/apply`, and isolated-wheel verification are complete. Evidence: `AUTO-0004_VERIFICATION_EVIDENCE.md`. |
+| Quality gates | PASS | AUTO-0004 design passed #97/#98; identity/registry passed corrected #100 and post-merge #101; deterministic planning passed #102/#103; guarded apply passed corrected #107 and post-merge #108; CLI/wheel verification passed #109/#110. |
 
 ## Current Priorities
 
 1. Preserve the published `v0.2.0` release and its exact tag target.
-2. Preserve SAFE-0001/SAFE-0002, AUTO-0002, and AUTO-0003 boundaries unless separately redesigned.
+2. Preserve SAFE-0001/SAFE-0002 and AUTO-0001 through AUTO-0004 boundaries unless separately redesigned.
 3. Keep PyPI explicitly not approved/not published.
-4. Select the next engineering milestone from a fresh post-AUTO-0003 roadmap audit.
+4. Select the next engineering milestone from a fresh post-AUTO-0004 roadmap audit.
 
 ## Implemented Baseline
 
-The current verified baseline includes the official Python MCP SDK boundary, 15 registered tool operations, SDK project creation/scaffold CLI, AUTO-0001 project bootstrap, AUTO-0003 ownership initialization, AUTO-0002 deterministic documentation synchronization, local wheel/sdist verification, automated GitHub Actions quality gates, SAFE-0001 Workspace path authorization, and SAFE-0002 active-MCP Git/Python execution safety.
+The current verified baseline includes the official Python MCP SDK boundary, 15 registered tool operations, SDK project creation/scaffold CLI, AUTO-0001 project bootstrap, AUTO-0003 ownership initialization, AUTO-0002 deterministic documentation synchronization, AUTO-0004 project identity/migration framework, local wheel/sdist verification, automated GitHub Actions quality gates, SAFE-0001 Workspace path authorization, and SAFE-0002 active-MCP Git/Python execution safety.
 
-AUTO-0003 establishes the explicit bridge from newly bootstrapped projects to AUTO-0002 synchronization. It initializes only the approved `CURRENT_STATUS.md`, `MASTER_INDEX.md`, and `PROJECT_MAP.md` ownership sections when marker pairs are completely absent and deterministic initialization is safe. Partial, duplicate, malformed, unsupported, missing-document, mixed-newline, and stale-plan states fail closed.
+AUTO-0004 adds positive identification of the approved `python-engineering-v1` project baseline, explicit named migration contracts, deterministic read-only planning, ownership/change-state classification, exact digest/absence guards, complete preflight, guarded atomic create/replace/delete operations, rollback verification, idempotency, and Git HEAD/branch/index/remotes invariants. Installed CLI support is `ai-engineering project migrate check|plan|apply --project PATH --migration ID`.
+
+The production `DEFAULT_MIGRATION_REGISTRY` intentionally remains empty. Therefore AUTO-0004 establishes the safe migration framework but does not implicitly authorize or invent a concrete production source-to-target migration edge. Unsupported migration requests fail closed until a future edge is explicitly designed and registered.
 
 REL-0003 published version `0.2.0` to GitHub. The immutable tag `v0.2.0` points to exact candidate SHA `1faf14c121b7b5da7c8781e3de4e836f85838a76`. The GitHub Release contains the approved wheel and sdist assets. Post-release engineering commits do not change the published artifact/tag target.
 
@@ -46,8 +49,8 @@ Published asset SHA-256 digests are recorded in `docs/REL-0003_POST_RELEASE_RECO
 
 ## Active Work
 
-AUTO-0003 is complete and verified. MCP-0002, MCP-0003, SDK-0001 V1/1.1/1.2, TOOL-0001, REL-0001, CI-0001, SAFE-0001, SAFE-0002, REL-0002, REL-0003, AUTO-0001, AUTO-0002, and AUTO-0003 remain complete and verified for their approved scopes.
+AUTO-0004 is complete and verified for its approved framework scope. MCP-0002, MCP-0003, SDK-0001 V1/1.1/1.2, TOOL-0001, REL-0001, CI-0001, SAFE-0001, SAFE-0002, REL-0002, REL-0003, AUTO-0001, AUTO-0002, AUTO-0003, and AUTO-0004 remain complete and verified for their approved scopes.
 
 ## Planned Work
 
-The next milestone is intentionally not preselected. Broader engineering automation, additional client/IDE interoperability, additional bootstrap profiles, future execution/security boundaries for new tools, migration/update workflows, and any future publication expansion remain separately scoped work.
+The next milestone is intentionally not preselected. Concrete production migration edges, additional bootstrap profiles, additional client/IDE interoperability, new bounded execution tools, publication expansion, and additional engineering automation remain separately scoped work.
