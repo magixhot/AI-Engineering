@@ -2,92 +2,71 @@
 
 ## Completed / Verified
 
-The documentation foundation, MCP foundation, SDK-0001 project templates/scaffold/CLI, TOOL-0001 core tool verification, REL-0001/REL-0002/REL-0003 release work, CI-0001 quality gates, SAFE-0001/SAFE-0002 safety boundaries, and AUTO-0001 through AUTO-0008 are COMPLETE / VERIFIED for their approved scopes.
+The documentation foundation, MCP foundation, SDK-0001 project templates/scaffold/CLI, TOOL-0001, REL-0001/REL-0002/REL-0003, CI-0001, SAFE-0001/SAFE-0002, and AUTO-0001 through AUTO-0008 are COMPLETE / VERIFIED for their approved scopes.
 
-## AUTO-0007 — Engineering Project Reconciliation Plan
+AUTO-0007 remains the permanent read-only reconciliation planner. AUTO-0008 remains the guarded one-step apply boundary.
 
-**Status:** COMPLETE / VERIFIED
+## AUTO-0009 — Multi-step Reconciliation Orchestration
 
-AUTO-0007 composes existing project identity, inspection, documentation ownership/synchronization, migration readiness, and Git invariants into a deterministic, read-only reconciliation planner. The contract is fail-closed and adds no write/apply authority, new migration edge, or publication behavior.
+**Status:** IN PROGRESS — stage 06 final documentation reconciliation
 
-Public planning command:
+AUTO-0009 adds bounded deterministic orchestration over existing AUTO-0007 planning and AUTO-0008 one-step execution. It requires a fresh plan before every mutation and never authorizes all future steps from one captured plan.
 
-```text
-ai-engineering project reconcile plan --project PATH
-```
-
-AUTO-0007 remains permanently read-only under AUTO-0008.
-
-## AUTO-0008 — Guarded Project Reconciliation Apply
-
-**Status:** COMPLETE / VERIFIED
-
-AUTO-0008 adds a separate guarded execution boundary for applying one exact eligible reconciliation step through an already-approved subsystem write primitive. It does not add write behavior to AUTO-0007 and does not authorize arbitrary writes, commands, new migration edges, publication, `apply all`, `force`, or stale-plan bypass behavior.
-
-Public apply command:
+Public command:
 
 ```text
-ai-engineering project reconcile apply --project PATH --step SEQUENCE
+ai-engineering project reconcile run --project PATH
+ai-engineering project reconcile run --project PATH --max-steps N
 ```
 
-### AUTO-0008-01 — Apply Design / Authority Contract
+The default progress limit is 8 and the hard maximum is 100. No `force`, stale bypass, arbitrary step lists, parallel apply, new migration edges, publication, direct Git mutation, or whole-run transaction/rollback guarantee is added.
+
+### AUTO-0009-01 — Multi-step Orchestration Design
 
 **Status:** COMPLETE / VERIFIED
 
-Merged in PR #92. Quality #173 passed and post-merge Quality #174 passed. The authoritative design defines the authority mapping, eligibility, stale-plan detection, one-step execution, reinspection, bounded rollback/failure reporting, CLI boundary, verification matrix, and Definition of Done.
+PR #99; Quality #189; post-merge Quality #190.
 
-### AUTO-0008-02 — Guarded Executor Core
-
-**Status:** COMPLETE / VERIFIED
-
-Merged in PR #93. Initial Quality #175 exposed formatting defects; corrected Quality #176 passed and post-merge Quality #177 passed. The typed executor delegates only one exact allow-listed step and revalidates the reconciliation state before mutation.
-
-### AUTO-0008-03 — Stale Plan / Failure / Git Safety Invariants
+### AUTO-0009-02 — Guarded Orchestrator Core
 
 **Status:** COMPLETE / VERIFIED
 
-Merged in PR #94. Quality #178 passed and post-merge Quality #179 passed. Verification covers zero-write fail-closed behavior, determinism, Git invariants, one-step/reinspection boundaries, and bounded failure/rollback evidence.
+PR #100; corrected Quality #193; post-merge Quality #194.
 
-### AUTO-0008-04 — Public CLI
-
-**Status:** COMPLETE / VERIFIED
-
-Merged in PR #95. Initial Quality #180 exposed a mypy-only test typing defect; corrected Quality #181 passed and post-merge Quality #182 passed.
-
-Verified command:
-
-```text
-ai-engineering project reconcile apply --project PATH --step SEQUENCE
-```
-
-No `apply all`, `force`, stale bypass, arbitrary workflow, publication, or hidden interactive write path was added.
-
-### AUTO-0008-05 — Installed Distribution Verification
+### AUTO-0009-03 — Safety / Progress / Failure Invariants
 
 **Status:** COMPLETE / VERIFIED
 
-Merged in PR #96. Quality #183 passed and post-merge Quality #184 passed on exact master `35196bde98e8436265dd85ac397e4fc6b6f51037`.
+PR #101; Quality #195; post-merge Quality #196.
 
-The built wheel is installed into an isolated virtual environment and the public guarded apply path is exercised outside the source checkout, including successful existing-subsystem delegation and unsupported-project zero-write refusal.
-
-### AUTO-0008-06 — Final Evidence / Documentation Reconciliation
+### AUTO-0009-04 — Public CLI
 
 **Status:** COMPLETE / VERIFIED
 
-Merged in PR #97. Quality #185 passed and post-merge Quality #186 passed on exact master `68f6d6f5d68b501582ecda7d83fe77e099c12e15`.
+PR #102; corrected Quality #199; post-merge Quality #200. The installed console entry point now routes through `ai_engineering.public_cli:main` while preserving legacy CLI commands.
 
-The authoritative status, roadmap, repository map, session bootstrap, and documentation index were reconciled with verified AUTO-0008 implementation and installed-distribution evidence.
+### AUTO-0009-05 — Installed Distribution Verification
+
+**Status:** COMPLETE / VERIFIED
+
+PR #103; Quality #201; post-merge Quality #202 on exact master `9564f8ffdc869bb0d8058f74c78c1e5138e5a37c`.
+
+Verification builds and installs the wheel outside the source checkout and exercises multi-step completion, bounded `limit_reached`, unsupported zero-write refusal, and Git invariants.
+
+### AUTO-0009-06 — Final Evidence / Documentation Reconciliation
+
+**Status:** IN PROGRESS
+
+Authoritative documentation is being reconciled from verified implementation baseline `9564f8ffdc869bb0d8058f74c78c1e5138e5a37c`. This stage is not complete until its own pre-merge and exact post-merge Quality gates pass.
 
 ## Delivery Gates
 
-AUTO-0008 stages executed strictly in order:
+AUTO-0009 stages execute strictly in order:
 
 `01 → 02 → 03 → 04 → 05 → 06`
 
-All six stages completed their normal pre-merge and post-merge Quality gates. The final verified AUTO-0008 baseline is `68f6d6f5d68b501582ecda7d83fe77e099c12e15`.
+Stages 01–05 are complete / verified. Stage 06 is the only remaining gate.
 
 ## Current Priority
 
-Preserve the verified AUTO-0007 read-only planner and AUTO-0008 one-step, stale-safe, fail-closed, delegated execution boundary. Any next milestone must be defined separately before new production capability work begins.
-
-A stage is not fully closed until implementation/design evidence, Quality/post-merge evidence, and authoritative documentation agree.
+Finish AUTO-0009-06 without broadening authority. After closure, any next milestone must be defined separately before new production capability work begins.
