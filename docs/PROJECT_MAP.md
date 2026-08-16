@@ -36,6 +36,9 @@ AI-Engineering/
 │       ├── project_reconciliation_orchestration.py
 │       ├── project_reconciliation_orchestration_cli.py
 │       ├── project_reconciliation_policy.py
+│       ├── project_reconciliation_approval.py
+│       ├── project_reconciliation_approval_context.py
+│       ├── project_reconciliation_approval_verification.py
 │       └── server.py
 ├── tests/
 │   ├── unit/
@@ -49,42 +52,46 @@ AI-Engineering/
 
 ## Reconciliation Architecture
 
-AUTO-0007 is the permanent read-only planner. AUTO-0008 is the sole guarded one-step apply boundary. AUTO-0009 composes repeated fresh planning and one-step application into bounded orchestration.
-
-AUTO-0010 adds a restriction-only policy gate before each AUTO-0008 delegation:
+AUTO-0007 is the permanent read-only planner. AUTO-0008 is the sole guarded one-step apply boundary. AUTO-0009 composes repeated fresh planning and one-step application into bounded orchestration. AUTO-0010 adds restriction-only policy evaluation. AUTO-0011 adds an optional explicit single-candidate approval gate without adding mutation authority.
 
 ```text
 fresh AUTO-0007 plan
     → canonical candidate
-    → optional explicit AUTO-0010 policy evaluation
-    → if allowed: exactly one AUTO-0008 apply
+    → optional AUTO-0010 policy evaluation
+    → optional AUTO-0011 approval verification
+    → if all gates allow: exactly one AUTO-0008 apply
     → fresh AUTO-0007 plan
     → repeat within effective bound
 ```
 
-Public adapters are `project_reconciliation_orchestration_cli.py` and `public_cli.py`. Policy parsing/evaluation is implemented in `project_reconciliation_policy.py`.
+Approval model/canonicalization lives in `project_reconciliation_approval.py`. Fresh project/Git/policy binding is assembled in `project_reconciliation_approval_context.py`. Pure deterministic matching is implemented in `project_reconciliation_approval_verification.py`. Public routing remains in `public_cli.py`, while orchestration continues to delegate mutation only through the existing apply boundary.
 
 Verified commands:
 
 ```text
 ai-engineering project reconcile run --project PATH [--max-steps N]
 ai-engineering project reconcile run --project PATH --policy POLICY.toml [--max-steps N]
+ai-engineering project reconcile approve --project PATH [--policy POLICY.toml]
+ai-engineering project reconcile run --project PATH --approval APPROVAL.json [--policy POLICY.toml] [--max-steps N]
 ```
 
-AUTO-0010 policy can restrict known workflow identities, progress limits, and approved observable Git/root conditions. It cannot create write authority, bypass AUTO-0008 stale-state checks, execute arbitrary commands, discover remote policy, add migration edges, mutate Git directly, publish artifacts, or provide force/stale bypass.
+Approval is deterministic and scoped to one candidate. It binds authority-relevant candidate inputs, portable project identity, Git HEAD/branch state, and explicit policy context. Malformed/stale/mismatched approval fails closed before that candidate write. Because orchestration replans after a successful write, the same approval cannot authorize the next candidate.
+
+AUTO-0011 cannot create write authority, bypass AUTO-0008 stale-state checks, override AUTO-0010 refusal, execute arbitrary commands, add workflows, mutate Git directly, approve a whole run, publish artifacts, or provide force/stale bypass.
 
 ## Implementation State
 
 - AUTO-0007 stages 01–06: COMPLETE / VERIFIED.
 - AUTO-0008 stages 01–06: COMPLETE / VERIFIED.
 - AUTO-0009 stages 01–06: COMPLETE / VERIFIED.
-- AUTO-0010-01 design: COMPLETE / VERIFIED; PR #106; Quality #207; post-merge #208.
-- AUTO-0010-02 typed policy core: COMPLETE / VERIFIED; PR #107; corrected Quality #211; post-merge #212.
-- AUTO-0010-03 safety/determinism/Git invariants: COMPLETE / VERIFIED; PR #108; corrected Quality #214; post-merge #215.
-- AUTO-0010-04 orchestration/public CLI integration: COMPLETE / VERIFIED; PR #109; corrected Quality #220; post-merge #221.
-- AUTO-0010-05 installed distribution verification: COMPLETE / VERIFIED; PR #110; Quality #222; post-merge #223.
-- AUTO-0010-06 final evidence/documentation reconciliation: COMPLETE / VERIFIED; PR #111; Quality #224; post-merge #225.
+- AUTO-0010 stages 01–06: COMPLETE / VERIFIED.
+- AUTO-0011-01 design: COMPLETE / VERIFIED; PR #113; Quality #228; post-merge #229.
+- AUTO-0011-02 typed approval model/canonicalization: COMPLETE / VERIFIED; PR #114; corrected Quality #232; post-merge #233.
+- AUTO-0011-03 verification/safety invariants: COMPLETE / VERIFIED; PR #115; corrected Quality #235; post-merge #236.
+- AUTO-0011-04 guarded integration: COMPLETE / VERIFIED; PR #116; corrected Quality #238; post-merge #239.
+- AUTO-0011-05 installed distribution verification: COMPLETE / VERIFIED; PR #117; Quality #240; post-merge #241.
+- AUTO-0011-06 final evidence/documentation reconciliation: IN PROGRESS.
 
-Final verified AUTO-0010 baseline: `1abd853da67cfb3954baa04f310837388b60b4f8`.
+Verified implementation baseline entering closure: `2d181d38d26087bb672eaaa0691b27f071353eb7`.
 
-`tests/release/` verifies installed-wheel behavior outside the source checkout, including AUTO-0010 policy refusal, policy progress limits, malformed-policy fail-closed behavior, and Git safety evidence.
+`tests/release/` verifies installed-wheel behavior outside the source checkout, including AUTO-0011 deterministic approval generation, one-bound-candidate execution, stale approval refusal, malformed approval fail-closed behavior, and preservation of the existing Git safety boundary.
