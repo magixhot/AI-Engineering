@@ -6,7 +6,7 @@
 
 **Status:** COMPLETED
 
-The core project documentation foundation has been established.
+The core project documentation foundation has been established and is maintained as part of the delivery workflow.
 
 ## Implemented / Verified
 
@@ -94,6 +94,60 @@ Installed-wheel verification covers V1 action-required, V2 healthy, and unsuppor
 
 Evidence: `AUTO-0006_VERIFICATION_EVIDENCE.md`.
 
+### AUTO-0007 Engineering Project Reconciliation Plan
+
+**Status:** IN PROGRESS
+
+AUTO-0007 composes the existing project identity, inspection, documentation ownership/synchronization, migration readiness, and Git invariants into a deterministic, read-only reconciliation planner. The contract is explicitly fail-closed and does not add write/apply authority, publication scope, or a new migration edge.
+
+#### AUTO-0007-01 — Reconciliation Planner Design
+
+**Status:** COMPLETE / VERIFIED
+
+The authoritative design defines the planner contract, supported plan states, ordered steps, blockers/issues, affected paths, reinspection boundaries, expected-state semantics, determinism, and Git/project-byte preservation requirements.
+
+#### AUTO-0007-02 — Planner Implementation
+
+**Status:** COMPLETE / VERIFIED
+
+PR #83 merged. Post-merge Quality #147 passed. The resulting master base for the invariant stage was `006e1677efae525207e49d8c1eb3f1429583c603`.
+
+#### AUTO-0007-03 — Reconciliation Invariants
+
+**Status:** COMPLETE / VERIFIED
+
+Test-only stage. It verifies manual-review/unsupported fail-closed behavior, determinism, ordering, project-byte preservation, and Git invariants without changing production code, CLI authority, write authority, or publication scope.
+
+PR #84 merged at `cbbfc382d5b094a21ae3e7dc9d7fc441f12df569`. Quality #148 and post-merge Quality #149 passed.
+
+#### AUTO-0007-04 — Public CLI
+
+**Status:** IN PROGRESS
+
+PR #85 is active on `agent/auto-0007-04-public-cli` at head `cbb961dd4bd76547254de027cc380a354bbb8ca1`.
+
+The stage exposes:
+
+```text
+ai-engineering project reconcile plan --project PATH
+```
+
+The CLI preserves the planner's deterministic `key=value` representation, plan states, ordered steps, blockers, affected paths, reinspection boundaries, expected-state semantics, and fail-closed exit behavior. It adds no apply/write authority.
+
+Quality #150 is currently in progress. AUTO-0007-05 does not start until #150 succeeds, PR #85 merges, and the post-merge gate passes.
+
+#### AUTO-0007-05 — Installed Distribution Verification
+
+**Status:** PLANNED
+
+Verify the real installed-wheel/public CLI path for the reconciliation planner, including representative clean/ready/manual-review/unsupported states, deterministic output and controlled exit codes, and preservation of project bytes and Git invariants.
+
+#### AUTO-0007-06 — Final Reconciliation / Documentation
+
+**Status:** PLANNED
+
+Reconcile the authoritative project documentation with the final AUTO-0007 implementation/evidence and close the milestone before selecting the next milestone.
+
 ### SAFE-0002 Git/Python Execution Safety
 
 **Status:** COMPLETE / VERIFIED
@@ -102,7 +156,9 @@ SAFE-0002 binds active MCP Git and path-taking Python operations to `MCPConfig.w
 
 ## Current Priority
 
-Preserve the verified MCP, SDK-0001, SAFE-0001, SAFE-0002, CI-0001, release, and AUTO-0001 through AUTO-0006 contracts. Select the next engineering milestone from a fresh post-AUTO-0006 roadmap audit rather than implicitly expanding migration scope, execution surfaces, client claims, bootstrap profiles, or publication scope.
+Complete AUTO-0007-04 Public CLI while preserving the established read-only, deterministic, fail-closed reconciliation boundary. After Quality #150 succeeds, merge PR #85, run the post-merge gate, then proceed to AUTO-0007-05 installed distribution verification.
+
+Documentation is reconciled at every milestone boundary. A stage is not considered fully closed until implementation evidence, quality/post-merge evidence, and authoritative documentation agree.
 
 ## Planned
 

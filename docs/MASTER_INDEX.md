@@ -49,6 +49,7 @@
 | AUTO-0005_VERIFICATION_EVIDENCE.md | V2 bootstrap, dual identity, first production edge, installed-wheel migration, and CI evidence | Complete / Verified |
 | AUTO-0006_ENGINEERING_PROJECT_HEALTH_READINESS_AUDIT_DESIGN.md | Deterministic read-only engineering project health/readiness aggregation and next-action contract | Implemented / Verified |
 | AUTO-0006_VERIFICATION_EVIDENCE.md | Typed health aggregation, bounded Git readiness, public health CLI, installed-wheel E2E, and CI evidence | Complete / Verified |
+| AUTO-0007_ENGINEERING_PROJECT_RECONCILIATION_PLAN_DESIGN.md | Deterministic read-only reconciliation planner contract, invariants, CLI boundary, and staged delivery sequence | Implemented / In progress |
 
 ## Active Engineering Work
 
@@ -69,6 +70,8 @@
 | AUTO-0004 engineering project update/migration framework | COMPLETE / VERIFIED |
 | AUTO-0005 python-engineering V2 + first production migration edge | COMPLETE / VERIFIED |
 | AUTO-0006 engineering project health/readiness audit | COMPLETE / VERIFIED |
+| AUTO-0007 reconciliation planner — stages 01–03 | COMPLETE / VERIFIED |
+| AUTO-0007-04 public CLI | IN PROGRESS — PR #85 / Quality #150 |
 | Additional MCP client interoperability | OPTIONAL / FUTURE EVIDENCE |
 | Diagnostics maintenance | ACTIVE |
 
@@ -96,6 +99,13 @@
 | M3 / AUTO-0004 Engineering Project Update / Migration | COMPLETE / VERIFIED |
 | M3 / AUTO-0005 Python Engineering Baseline V2 / First Production Migration | COMPLETE / VERIFIED |
 | M3 / AUTO-0006 Engineering Project Health / Readiness Audit | COMPLETE / VERIFIED |
+| M3 / AUTO-0007 Engineering Project Reconciliation Plan | IN PROGRESS |
+| └─ AUTO-0007-01 Design | COMPLETE / VERIFIED |
+| └─ AUTO-0007-02 Planner | COMPLETE / VERIFIED — PR #83 / Quality #147 |
+| └─ AUTO-0007-03 Invariants | COMPLETE / VERIFIED — PR #84 / Quality #148 + post-merge #149 |
+| └─ AUTO-0007-04 Public CLI | IN PROGRESS — PR #85 / Quality #150 |
+| └─ AUTO-0007-05 Installed Distribution Verification | PLANNED |
+| └─ AUTO-0007-06 Final Reconciliation / Documentation | PLANNED |
 | Additional client and IDE interoperability | PLANNED |
 
 ## Published Release
@@ -119,6 +129,9 @@
 - AUTO-0006 bounded Git readiness passed corrected Quality #134 and post-merge Quality #135 after a formatting-only Ruff defect in #133.
 - AUTO-0006 public health CLI passed Quality #136 and post-merge Quality #137.
 - AUTO-0006 installed-wheel health E2E passed corrected Quality #139 and post-merge Quality #140 on `bfc18eb3306250fa92fe3882c1f8cbb2bc394a71` after a formatting-only Ruff defect in #138.
+- AUTO-0007-02 planner implementation passed Quality #147 and post-merge verification.
+- AUTO-0007-03 reconciliation invariants passed Quality #148 and post-merge Quality #149.
+- AUTO-0007-04 Public CLI is currently under Quality #150 on `cbb961dd4bd76547254de027cc380a354bbb8ca1`.
 - Windows 0.2.0 candidate evidence remains: pytest 153 passed, 2 permitted symlink-fixture skips due to `WinError 1314`; Ruff 0; mypy 0 in 79 source files; focused release distribution test 1 passed; `git diff --check` passed; working tree clean.
 - Installed-wheel verification covers `ai-engineering project create`, `project bootstrap`, `project docs check/plan/apply`, `project docs ownership check/plan/apply`, real `project migrate check/plan/apply` execution for `python-engineering-v1-to-v2`, and `project health` for representative V1/V2/unsupported states.
 
@@ -132,6 +145,8 @@ src/ai_engineering/
 ├── project_inspection.py
 ├── project_git_readiness.py
 ├── project_health.py
+├── project_reconciliation.py
+├── project_reconciliation_cli.py
 ├── documentation_sync.py
 ├── documentation_apply.py
 ├── documentation_ownership.py
