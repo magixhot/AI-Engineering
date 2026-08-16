@@ -61,6 +61,7 @@ def run_reconciliation_orchestration(
     *,
     max_steps: int = DEFAULT_MAX_STEPS,
     policy_path: Path | None = None,
+    approval_path: Path | None = None,
 ) -> int:
     """Run bounded reconciliation orchestration and return its public exit code."""
 
@@ -68,6 +69,7 @@ def run_reconciliation_orchestration(
         project_root,
         max_steps=max_steps,
         policy_path=policy_path,
+        approval_path=approval_path,
     )
     print_reconciliation_run_result(result)
     return 0 if result.state in {"complete", "no_change"} else 1
