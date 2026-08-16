@@ -18,6 +18,8 @@
 | AUTO-0009_FINAL_EVIDENCE.md | AUTO-0009 final verified evidence | Complete / Verified |
 | AUTO-0010_RECONCILIATION_POLICY_DESIGN.md | Restriction-only reconciliation policy contract | Complete / Verified |
 | AUTO-0010_FINAL_EVIDENCE.md | AUTO-0010 final verified evidence | Complete / Verified |
+| AUTO-0011_RECONCILIATION_APPROVAL_DESIGN.md | Single-candidate reconciliation approval contract | Implemented; closure in progress |
+| AUTO-0011_FINAL_EVIDENCE.md | AUTO-0011 staged delivery and closure evidence | Closure in progress |
 
 ## Active Engineering Work
 
@@ -28,28 +30,30 @@
 | Workspace/Git/Python safety | COMPLETE / VERIFIED |
 | REL-0003 v0.2.0 publication | COMPLETE / VERIFIED |
 | AUTO-0001 through AUTO-0010 | COMPLETE / VERIFIED |
+| AUTO-0011 stages 01–05 | COMPLETE / VERIFIED |
+| AUTO-0011-06 final evidence / documentation reconciliation | IN PROGRESS |
 | Diagnostics maintenance | ACTIVE |
 
-## AUTO-0010 Delivery State
+## AUTO-0011 Delivery State
 
 | Stage | Status |
 |---|---|
-| AUTO-0010-01 Reconciliation Policy Design | COMPLETE / VERIFIED — PR #106; Quality #207; post-merge #208 |
-| AUTO-0010-02 Typed Policy Parser / Evaluator | COMPLETE / VERIFIED — PR #107; corrected Quality #211; post-merge #212 |
-| AUTO-0010-03 Safety / Determinism / Git Invariants | COMPLETE / VERIFIED — PR #108; corrected Quality #214; post-merge #215 |
-| AUTO-0010-04 Orchestration + Public CLI Integration | COMPLETE / VERIFIED — PR #109; corrected Quality #220; post-merge #221 |
-| AUTO-0010-05 Installed Distribution Verification | COMPLETE / VERIFIED — PR #110; Quality #222; post-merge #223 |
-| AUTO-0010-06 Final Evidence / Documentation Reconciliation | COMPLETE / VERIFIED — PR #111; Quality #224; post-merge #225 |
+| AUTO-0011-01 Reconciliation Approval Design | COMPLETE / VERIFIED — PR #113; Quality #228; post-merge #229 |
+| AUTO-0011-02 Typed Approval Model / Canonicalization | COMPLETE / VERIFIED — PR #114; corrected Quality #232; post-merge #233 |
+| AUTO-0011-03 Approval Verification / Safety Invariants | COMPLETE / VERIFIED — PR #115; corrected Quality #235; post-merge #236 |
+| AUTO-0011-04 Guarded Integration | COMPLETE / VERIFIED — PR #116; corrected Quality #238; post-merge #239 |
+| AUTO-0011-05 Installed Distribution Verification | COMPLETE / VERIFIED — PR #117; Quality #240; post-merge #241 |
+| AUTO-0011-06 Final Evidence / Documentation Reconciliation | IN PROGRESS — documentation-only closure gate |
 
 ## Current Quality Baseline
 
-Final verified AUTO-0010 baseline:
+Verified AUTO-0011 implementation baseline entering closure:
 
 ```text
-master = 1abd853da67cfb3954baa04f310837388b60b4f8
+master = 2d181d38d26087bb672eaaa0691b27f071353eb7
 ```
 
-Post-merge Quality #225 passed on that exact master commit.
+Post-merge Quality #241 passed on that exact master commit. AUTO-0011 is fully COMPLETE / VERIFIED only after the stage-06 documentation PR and exact post-merge Quality succeed.
 
 ## Reconciliation Source Tree
 
@@ -62,7 +66,10 @@ src/ai_engineering/
 ├── project_reconciliation_orchestration.py
 ├── project_reconciliation_orchestration_cli.py
 ├── project_reconciliation_policy.py
+├── project_reconciliation_approval.py
+├── project_reconciliation_approval_context.py
+├── project_reconciliation_approval_verification.py
 └── public_cli.py
 ```
 
-AUTO-0007 stays read-only, AUTO-0008 stays the sole one-step apply authority, AUTO-0009 remains bounded orchestration, and AUTO-0010 policy can only restrict those existing authorities. Any next capability milestone requires a separate approved design/contract.
+AUTO-0007 stays read-only, AUTO-0008 stays the sole one-step apply authority, AUTO-0009 remains bounded orchestration, AUTO-0010 policy can only restrict those existing authorities, and AUTO-0011 approval is an additional single-candidate fail-closed gate. Any later capability milestone requires its own approved design/contract.
