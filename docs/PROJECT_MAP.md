@@ -132,8 +132,8 @@ boundaries.
 - AUTO-0006 Project Health/Readiness Audit: complete / verified.
 - AUTO-0007-01 design, AUTO-0007-02 planner, and AUTO-0007-03 invariants: complete / verified.
 - AUTO-0007-04 public reconciliation CLI: COMPLETE / VERIFIED; merged in PR #85; Quality #157 passed; post-merge Quality #160 passed.
-- AUTO-0007-05 installed distribution verification and AUTO-0007-06 final documentation reconciliation:
-  planned and gated on successful completion of the current stage.
+- AUTO-0007-05 installed distribution verification: COMPLETE / VERIFIED; merged in PR #86; Quality #161 passed; post-merge Quality #162 passed.
+- AUTO-0007-06 final documentation reconciliation: COMPLETE / VERIFIED; merged in PR #87; Quality #163 passed; post-merge Quality #164 passed.
 
 `tests/release/` verifies wheel/sdist artifacts, isolated wheel installation, and installed CLI behavior
 outside the source checkout.
