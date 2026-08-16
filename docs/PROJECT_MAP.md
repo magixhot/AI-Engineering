@@ -32,7 +32,9 @@ AI-Engineering/
 │       ├── project_git_readiness.py AUTO-0006 bounded Git readiness observations
 │       ├── project_health.py         AUTO-0006 deterministic read-only health aggregation
 │       ├── project_reconciliation.py AUTO-0007 deterministic read-only reconciliation planner
-│       ├── project_reconciliation_cli.py AUTO-0007-04 public reconciliation CLI adapter
+│       ├── project_reconciliation_cli.py AUTO-0007 public reconciliation plan CLI adapter
+│       ├── project_reconciliation_apply.py AUTO-0008 guarded one-step reconciliation executor
+│       ├── project_reconciliation_apply_cli.py AUTO-0008 public guarded apply CLI adapter
 │       ├── project_templates.py      SDK-0001 standalone template/scaffold API
 │       └── server.py
 ├── tests/
@@ -50,9 +52,9 @@ AI-Engineering/
 ## Existing Repository Subsystems
 
 Runtime, Registry, Discovery, diagnostics, IDE adapters, SDK project templates, engineering bootstrap,
-documentation synchronization/ownership, project migration, project health, and project reconciliation
-are implemented repository subsystems. Their presence does not by itself make each subsystem part of
-every MCP request.
+documentation synchronization/ownership, project migration, project health, project reconciliation
+planning, and guarded reconciliation execution are implemented repository subsystems. Their presence
+does not by itself make each subsystem part of every MCP request.
 
 ## Active MCP SDK Execution Path
 
@@ -97,10 +99,9 @@ those public boundaries. `check` and `plan` are read-only. V1 writes only machin
 sections of `CURRENT_STATUS.md`, `MASTER_INDEX.md`, and `PROJECT_MAP.md`; missing/malformed markers
 require manual review.
 
-## Reconciliation Path
+## Reconciliation Paths
 
-AUTO-0007 is a separate read-only planning layer over the established project inspection,
-documentation, migration, and Git contracts:
+AUTO-0007 is the permanent read-only planning layer:
 
 ```text
 project root
@@ -114,10 +115,23 @@ project root
     → `ai-engineering project reconcile plan --project PATH`
 ```
 
-The reconciliation planner has no apply/write authority. AUTO-0007-03 verifies fail-closed
-manual-review/unsupported states, deterministic output, ordering, project-byte preservation, and
-Git invariants. AUTO-0007-04 exposes the planner through the public CLI without changing those
-boundaries.
+AUTO-0008 is a separate guarded execution boundary over that plan:
+
+```text
+reconciliation plan + exact step sequence
+    → `project_reconciliation_apply.py`
+    → pre-write reinspection / stale-plan and eligibility gate
+    → one allow-listed existing subsystem apply primitive
+    → post-apply reconciliation reinspection
+    → bounded apply result
+    → `project_reconciliation_apply_cli.py`
+    → `ai-engineering project reconcile apply --project PATH --step SEQUENCE`
+```
+
+AUTO-0007 gains no apply/write authority. AUTO-0008 does not introduce arbitrary writes, arbitrary
+commands, new migration edges, `apply all`, `force`, stale-plan bypasses, or publication behavior.
+Its mutation authority is restricted to one exact eligible step delegated to the subsystem that
+already owns the approved write primitive.
 
 ## Implementation State
 
@@ -130,10 +144,14 @@ boundaries.
 - AUTO-0004 Project Update/Migration Framework: complete / verified.
 - AUTO-0005 Python Engineering V2 / first production migration: complete / verified.
 - AUTO-0006 Project Health/Readiness Audit: complete / verified.
-- AUTO-0007-01 design, AUTO-0007-02 planner, and AUTO-0007-03 invariants: complete / verified.
-- AUTO-0007-04 public reconciliation CLI: COMPLETE / VERIFIED; merged in PR #85; Quality #157 passed; post-merge Quality #160 passed.
-- AUTO-0007-05 installed distribution verification: COMPLETE / VERIFIED; merged in PR #86; Quality #161 passed; post-merge Quality #162 passed.
-- AUTO-0007-06 final documentation reconciliation: COMPLETE / VERIFIED; merged in PR #87; Quality #163 passed; post-merge Quality #164 passed.
+- AUTO-0007 stages 01–06: COMPLETE / VERIFIED; final/post-completion evidence closed through PR #91 / Quality #171 / post-merge #172.
+- AUTO-0008-01 design/authority contract: COMPLETE / VERIFIED; PR #92; Quality #173; post-merge #174.
+- AUTO-0008-02 guarded executor core: COMPLETE / VERIFIED; PR #93; corrected Quality #176; post-merge #177.
+- AUTO-0008-03 safety/failure invariants: COMPLETE / VERIFIED; PR #94; Quality #178; post-merge #179.
+- AUTO-0008-04 public guarded apply CLI: COMPLETE / VERIFIED; PR #95; corrected Quality #181; post-merge #182.
+- AUTO-0008-05 installed distribution verification: COMPLETE / VERIFIED; PR #96; Quality #183; post-merge #184.
+- AUTO-0008-06 final evidence/documentation reconciliation: IN PROGRESS, documentation-only.
 
 `tests/release/` verifies wheel/sdist artifacts, isolated wheel installation, and installed CLI behavior
-outside the source checkout.
+outside the source checkout, including AUTO-0007 read-only planning and AUTO-0008 guarded one-step
+apply behavior.
