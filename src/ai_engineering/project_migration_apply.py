@@ -74,7 +74,11 @@ def _run_git(root: Path, *args: str) -> bytes:
             check=True,
             timeout=10,
         )
-    except (FileNotFoundError, subprocess.CalledProcessError, subprocess.TimeoutExpired) as exc:
+    except (
+        FileNotFoundError,
+        subprocess.CalledProcessError,
+        subprocess.TimeoutExpired,
+    ) as exc:
         raise ProjectMigrationApplyError("Git invariant inspection failed") from exc
     return result.stdout.rstrip(b"\r\n")
 
@@ -143,7 +147,11 @@ def _preflight(plan: ProjectMigrationPlan) -> tuple[Path, _GitSnapshot]:
 
         path = _bounded_path(root, operation.path, must_exist=True)
         current = path.read_bytes()
-        if operation.original_sha256 is None or _digest(current) != operation.original_sha256:
+        digest_matches = (
+            operation.original_sha256 is not None
+            and _digest(current) == operation.original_sha256
+        )
+        if not digest_matches:
             raise ProjectMigrationStalePlanError(
                 f"Digest guard mismatch: {operation.path}"
             )
@@ -278,7 +286,9 @@ def apply_project_migration(plan: ProjectMigrationPlan) -> ProjectMigrationResul
             _restore(root, originals, applied)
         except ProjectMigrationRollbackError as rollback_exc:
             raise rollback_exc from exc
-        raise ProjectMigrationWriteError("Migration write failed; rollback succeeded") from exc
+        raise ProjectMigrationWriteError(
+            "Migration write failed; rollback succeeded"
+        ) from exc
     finally:
         temp_dir.cleanup()
 
