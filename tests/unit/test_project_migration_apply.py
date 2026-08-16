@@ -55,7 +55,7 @@ def _project(tmp_path: Path) -> Path:
     _git(root, "config", "user.name", "Test User")
     _git(root, "config", "user.email", "test@example.invalid")
     _git(root, "add", ".")
-    _git(root, "commit", "-m", "baseline")
+    _git(root, "commit", "--allow-empty", "-m", "baseline")
     return root
 
 
