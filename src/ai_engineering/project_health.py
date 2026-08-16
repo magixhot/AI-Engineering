@@ -15,6 +15,11 @@ from .documentation_sync import (
     detect_documentation_drift,
     plan_documentation_sync,
 )
+from .project_git_readiness import (
+    ProjectGitReadiness,
+    ProjectGitReadinessError,
+    inspect_project_git_readiness,
+)
 from .project_inspection import (
     ProjectInspectionError,
     ProjectInspectionRequest,
@@ -62,6 +67,7 @@ class ProjectHealthReport:
     project_root: Path
     inspection: ProjectStateSnapshot | None
     identity: ProjectIdentity | None
+    git_readiness: ProjectGitReadiness | None
     git_state: str
     documentation_ownership_state: str
     documentation_sync_state: str
@@ -112,6 +118,7 @@ def _unsupported_report(project_root: Path, detail: str) -> ProjectHealthReport:
         project_root=root,
         inspection=None,
         identity=None,
+        git_readiness=None,
         git_state="unknown",
         documentation_ownership_state="blocked",
         documentation_sync_state="blocked",
@@ -122,14 +129,13 @@ def _unsupported_report(project_root: Path, detail: str) -> ProjectHealthReport:
     )
 
 
-def _git_state(snapshot: ProjectStateSnapshot) -> str:
-    if not snapshot.git_repository:
-        return "not_repository"
-    if snapshot.git_head is None:
-        return "repository_without_head"
-    if snapshot.git_branch is None:
-        return "detached_or_unborn"
-    return "ready"
+def _observe_git(snapshot: ProjectStateSnapshot) -> ProjectGitReadiness:
+    return inspect_project_git_readiness(
+        snapshot.project_root,
+        repository=snapshot.git_repository,
+        branch=snapshot.git_branch,
+        head=snapshot.git_head,
+    )
 
 
 def _ownership_readiness(
@@ -275,6 +281,28 @@ def audit_project_health(project_root: Path) -> ProjectHealthReport:
         return _unsupported_report(project_root, str(exc))
 
     try:
+        git_readiness = _observe_git(snapshot)
+    except ProjectGitReadinessError as exc:
+        issue = ProjectHealthIssue(
+            code="GIT_INSPECTION_UNSUPPORTED",
+            state="unsupported",
+            detail=str(exc),
+        )
+        return ProjectHealthReport(
+            project_root=snapshot.project_root,
+            inspection=snapshot,
+            identity=None,
+            git_readiness=None,
+            git_state="unknown",
+            documentation_ownership_state="blocked",
+            documentation_sync_state="blocked",
+            migration_state="unavailable",
+            overall_state="unsupported",
+            next_action=NEXT_MANUAL_REVIEW,
+            issues=(issue,),
+        )
+
+    try:
         identity = detect_project_identity(snapshot.project_root)
     except ProjectMigrationError as exc:
         issue = ProjectHealthIssue(
@@ -286,7 +314,8 @@ def audit_project_health(project_root: Path) -> ProjectHealthReport:
             project_root=snapshot.project_root,
             inspection=snapshot,
             identity=None,
-            git_state=_git_state(snapshot),
+            git_readiness=git_readiness,
+            git_state=git_readiness.state,
             documentation_ownership_state="blocked",
             documentation_sync_state="blocked",
             migration_state="unavailable",
@@ -338,7 +367,8 @@ def audit_project_health(project_root: Path) -> ProjectHealthReport:
         project_root=snapshot.project_root,
         inspection=snapshot,
         identity=identity,
-        git_state=_git_state(snapshot),
+        git_readiness=git_readiness,
+        git_state=git_readiness.state,
         documentation_ownership_state=docs_ownership_state,
         documentation_sync_state=docs_sync_state,
         migration_state=migration_state,
