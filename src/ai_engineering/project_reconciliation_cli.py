@@ -4,7 +4,10 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from .project_reconciliation import ProjectReconciliationPlan, plan_project_reconciliation
+from .project_reconciliation import (
+    ProjectReconciliationPlan,
+    plan_project_reconciliation,
+)
 
 
 def _single_line(value: str) -> str:
