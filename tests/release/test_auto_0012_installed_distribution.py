@@ -6,6 +6,7 @@ import os
 import subprocess
 import sys
 from pathlib import Path
+from typing import cast
 
 from ai_engineering.project_templates import (
     StandaloneProjectRequest,
@@ -141,7 +142,7 @@ def _receipt(
     assert result.stderr == ""
     assert result.stdout.endswith("\n")
     assert "Traceback" not in result.stdout
-    payload = json.loads(result.stdout)
+    payload = cast(dict[str, object], json.loads(result.stdout))
     assert payload["version"] == 1
     assert payload["kind"] == "reconciliation_execution"
     assert isinstance(payload["digest"], str)
@@ -167,7 +168,7 @@ def _approval(venv: Path, project: Path, cwd: Path) -> dict[str, object]:
     )
     assert result.returncode == 0
     assert result.stderr == ""
-    return json.loads(result.stdout)
+    return cast(dict[str, object], json.loads(result.stdout))
 
 
 def test_auto_0012_installed_receipt_records_real_delegated_execution(
