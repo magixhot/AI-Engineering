@@ -39,6 +39,9 @@ AI-Engineering/
 │       ├── project_reconciliation_approval.py
 │       ├── project_reconciliation_approval_context.py
 │       ├── project_reconciliation_approval_verification.py
+│       ├── project_reconciliation_receipt.py
+│       ├── project_reconciliation_receipt_projection.py
+│       ├── project_reconciliation_receipt_cli.py
 │       └── server.py
 ├── tests/
 │   ├── unit/
@@ -52,7 +55,7 @@ AI-Engineering/
 
 ## Reconciliation Architecture
 
-AUTO-0007 is the permanent read-only planner. AUTO-0008 is the sole guarded one-step apply boundary. AUTO-0009 composes repeated fresh planning and one-step application into bounded orchestration. AUTO-0010 adds restriction-only policy evaluation. AUTO-0011 adds an optional explicit single-candidate approval gate without adding mutation authority.
+AUTO-0007 is the permanent read-only planner. AUTO-0008 is the sole guarded one-step apply boundary. AUTO-0009 composes repeated fresh planning and one-step application into bounded orchestration. AUTO-0010 adds restriction-only policy evaluation. AUTO-0011 adds an optional explicit single-candidate approval gate. AUTO-0012 adds deterministic execution evidence after/beside those existing decisions without adding mutation authority.
 
 ```text
 fresh AUTO-0007 plan
@@ -62,22 +65,24 @@ fresh AUTO-0007 plan
     → if all gates allow: exactly one AUTO-0008 apply
     → fresh AUTO-0007 plan
     → repeat within effective bound
+    → AUTO-0012 projects observed run evidence into canonical receipt JSON
 ```
 
-Approval model/canonicalization lives in `project_reconciliation_approval.py`. Fresh project/Git/policy binding is assembled in `project_reconciliation_approval_context.py`. Pure deterministic matching is implemented in `project_reconciliation_approval_verification.py`. Public routing remains in `public_cli.py`, while orchestration continues to delegate mutation only through the existing apply boundary.
+Approval model/canonicalization lives in `project_reconciliation_approval.py`. Fresh project/Git/policy binding is assembled in `project_reconciliation_approval_context.py`. Pure deterministic approval matching is implemented in `project_reconciliation_approval_verification.py`.
 
-Verified commands:
+Receipt v1 model/canonicalization and strict parsing live in `project_reconciliation_receipt.py`. Pure projection from observed orchestration evidence plus bounded read-only context lives in `project_reconciliation_receipt_projection.py`. Explicit receipt-mode execution/output lives in `project_reconciliation_receipt_cli.py`; public routing remains in `public_cli.py`.
+
+Verified commands include:
 
 ```text
 ai-engineering project reconcile run --project PATH [--max-steps N]
 ai-engineering project reconcile run --project PATH --policy POLICY.toml [--max-steps N]
 ai-engineering project reconcile approve --project PATH [--policy POLICY.toml]
 ai-engineering project reconcile run --project PATH --approval APPROVAL.json [--policy POLICY.toml] [--max-steps N]
+ai-engineering project reconcile run --project PATH [--max-steps N] [--policy POLICY.toml] [--approval APPROVAL.json] --receipt-json
 ```
 
-Approval is deterministic and scoped to one candidate. It binds authority-relevant candidate inputs, portable project identity, Git HEAD/branch state, and explicit policy context. Malformed/stale/mismatched approval fails closed before that candidate write. Because orchestration replans after a successful write, the same approval cannot authorize the next candidate.
-
-AUTO-0011 cannot create write authority, bypass AUTO-0008 stale-state checks, override AUTO-0010 refusal, execute arbitrary commands, add workflows, mutate Git directly, approve a whole run, publish artifacts, or provide force/stale bypass.
+AUTO-0012 receipts are deterministic evidence only. They can describe policy decisions, approval verification outcomes, delegated apply attempts, terminal state, final plan and remaining work, but cannot authorize execution, override policy/approval, choose candidates, retry/resume, rollback, or mutate Git/project state.
 
 ## Implementation State
 
@@ -85,14 +90,14 @@ AUTO-0011 cannot create write authority, bypass AUTO-0008 stale-state checks, ov
 - AUTO-0008 stages 01–06: COMPLETE / VERIFIED.
 - AUTO-0009 stages 01–06: COMPLETE / VERIFIED.
 - AUTO-0010 stages 01–06: COMPLETE / VERIFIED.
-- AUTO-0011-01 design: COMPLETE / VERIFIED; PR #113; Quality #228; post-merge #229.
-- AUTO-0011-02 typed approval model/canonicalization: COMPLETE / VERIFIED; PR #114; corrected Quality #232; post-merge #233.
-- AUTO-0011-03 verification/safety invariants: COMPLETE / VERIFIED; PR #115; corrected Quality #235; post-merge #236.
-- AUTO-0011-04 guarded integration: COMPLETE / VERIFIED; PR #116; corrected Quality #238; post-merge #239.
-- AUTO-0011-05 installed distribution verification: COMPLETE / VERIFIED; PR #117; Quality #240; post-merge #241.
-- AUTO-0011-06 final evidence/documentation reconciliation: COMPLETE / VERIFIED; PR #118; Quality #242; post-merge #243.
-- AUTO-0011 administrative closure record: PR #119; Quality #244; post-merge #245.
+- AUTO-0011 stages 01–06: COMPLETE / VERIFIED.
+- AUTO-0012-01 design/contract: COMPLETE / VERIFIED; PR #121; Quality #248; post-merge #249.
+- AUTO-0012-02 typed receipt model/canonicalization: COMPLETE / VERIFIED; PR #122; corrected Quality #251; post-merge #252.
+- AUTO-0012-03 evidence projection/safety invariants: COMPLETE / VERIFIED; PR #123; Quality #253; post-merge #254.
+- AUTO-0012-04 public CLI integration: COMPLETE / VERIFIED; PR #124; corrected Quality #257; post-merge #258.
+- AUTO-0012-05 installed distribution verification: COMPLETE / VERIFIED; PR #125; corrected Quality #260; post-merge #261.
+- AUTO-0012-06 final evidence/documentation reconciliation: documentation closure only.
 
-The stage-06 capability/documentation baseline `94449b8754bb0bd803b5d60f38292e1530b82b1e` and administrative verification commit `b3d3d2f20cb3827f129ef1e6479f89bf015ae1f8` are historical evidence. Later repository progress does not invalidate them.
+The verified implementation baseline `2268f4c8278f3c81b5735e26337984aebd300c6b` and exact post-merge Quality #261 are historical evidence. Later repository progress does not invalidate them.
 
-`tests/release/` verifies installed-wheel behavior outside the source checkout, including AUTO-0011 deterministic approval generation, one-bound-candidate execution, stale approval refusal, malformed approval fail-closed behavior, and preservation of the existing Git safety boundary.
+`tests/release/` verifies installed-wheel behavior outside the source checkout, including AUTO-0012 canonical receipt/digest behavior, real delegated execution evidence, deterministic no-change evidence, policy refusal, stale approval refusal, malformed approval terminal evidence, and zero-write Git invariants for refusal/error cases.
