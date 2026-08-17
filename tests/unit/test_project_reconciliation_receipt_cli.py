@@ -61,10 +61,14 @@ def test_receipt_mode_runs_existing_orchestration_once_and_emits_only_json(
     receipt = cast(ReconciliationExecutionReceipt, object())
     calls: list[tuple[str, object]] = []
 
+    def fake_plan(root: Path) -> ProjectReconciliationPlan:
+        calls.append(("plan", root))
+        return initial_plan
+
     monkeypatch.setattr(
         receipt_cli,
         "plan_project_reconciliation",
-        lambda root: calls.append(("plan", root)) or initial_plan,
+        fake_plan,
     )
 
     def fake_run(
@@ -83,12 +87,18 @@ def test_receipt_mode_runs_existing_orchestration_once_and_emits_only_json(
         "_receipt_context",
         lambda *args, **kwargs: context,
     )
+
+    def fake_project(
+        observed: ProjectReconciliationOrchestrationResult,
+        observed_context: ReconciliationReceiptProjectionContext,
+    ) -> ReconciliationExecutionReceipt:
+        calls.append(("project", (observed, observed_context)))
+        return receipt
+
     monkeypatch.setattr(
         receipt_cli,
         "project_reconciliation_execution_receipt",
-        lambda observed, observed_context: (
-            calls.append(("project", (observed, observed_context))) or receipt
-        ),
+        fake_project,
     )
     monkeypatch.setattr(
         receipt_cli,
