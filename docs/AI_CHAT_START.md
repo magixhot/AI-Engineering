@@ -18,7 +18,7 @@ After reading them, continue from `CURRENT_STATUS.md`; it is authoritative for c
 
 ## Current Working State
 
-AI-Engineering has completed and verified AUTO-0001 through AUTO-0011 for their approved scopes.
+AI-Engineering has completed and verified AUTO-0001 through AUTO-0012 for their approved scopes.
 
 Permanent reconciliation boundaries:
 
@@ -29,39 +29,38 @@ ai-engineering project reconcile run --project PATH [--max-steps N]
 ai-engineering project reconcile run --project PATH --policy POLICY.toml [--max-steps N]
 ai-engineering project reconcile approve --project PATH [--policy POLICY.toml]
 ai-engineering project reconcile run --project PATH --approval APPROVAL.json [--policy POLICY.toml] [--max-steps N]
+ai-engineering project reconcile run --project PATH [--max-steps N] [--policy POLICY.toml] [--approval APPROVAL.json] --receipt-json
 ```
 
-AUTO-0007 is permanently read-only. AUTO-0008 remains the sole guarded one-step apply boundary. AUTO-0009 is bounded orchestration over repeated fresh planning plus exactly one AUTO-0008 apply per iteration. AUTO-0010 policy can only restrict those existing authorities. AUTO-0011 approval is an optional additional single-candidate gate and cannot grant new mutation authority.
+AUTO-0007 is permanently read-only. AUTO-0008 remains the sole guarded one-step apply boundary. AUTO-0009 is bounded orchestration over repeated fresh planning plus exactly one AUTO-0008 apply per iteration. AUTO-0010 policy can only restrict those existing authorities. AUTO-0011 approval is an optional additional single-candidate gate and cannot grant new mutation authority. AUTO-0012 receipts are deterministic execution evidence only and cannot grant or substitute for authority.
 
-AUTO-0011 stage 06 completed through PR #118, Quality #242, and exact post-merge Quality #243. Administrative closure record PR #119 then passed Quality #244 and exact post-merge Quality #245. The recorded SHAs are historical verification evidence rather than a requirement that future `master` remain unchanged.
+AUTO-0012 implementation completed through PR #125, corrected Quality #260, and exact post-merge Quality #261. The verified implementation baseline `2268f4c8278f3c81b5735e26337984aebd300c6b` is historical verification evidence rather than a requirement that future `master` remain unchanged.
 
 ## Active Milestone
 
-No AUTO capability milestone is active.
+No AUTO capability milestone is active after AUTO-0012 documentation closure.
 
-Read `AUTO-0011_RECONCILIATION_APPROVAL_DESIGN.md` and `AUTO-0011_FINAL_EVIDENCE.md` for the verified approval contract and closure evidence.
+Read `AUTO-0012_RECONCILIATION_EXECUTION_EVIDENCE_DESIGN.md` and `AUTO-0012_FINAL_EVIDENCE.md` for the verified receipt contract and closure evidence.
 
 ```text
-AUTO-0011-01 design                   COMPLETE / VERIFIED
-AUTO-0011-02 typed approval model     COMPLETE / VERIFIED
-AUTO-0011-03 approval verification    COMPLETE / VERIFIED
-AUTO-0011-04 guarded integration      COMPLETE / VERIFIED
-AUTO-0011-05 installed distribution   COMPLETE / VERIFIED
-AUTO-0011-06 final reconciliation     COMPLETE / VERIFIED
+AUTO-0012-01 design/contract             COMPLETE / VERIFIED
+AUTO-0012-02 typed receipt model         COMPLETE / VERIFIED
+AUTO-0012-03 evidence projection         COMPLETE / VERIFIED
+AUTO-0012-04 public CLI integration      COMPLETE / VERIFIED
+AUTO-0012-05 installed distribution      COMPLETE / VERIFIED
+AUTO-0012-06 final reconciliation        DOCUMENTATION CLOSURE
 ```
 
 Any next AUTO capability must begin with a separate design/contract before production implementation.
 
-## AUTO-0011 Guardrails
+## AUTO-0012 Guardrails
 
-- Approval is explicit, deterministic, typed, digest-bound, and scoped to one candidate.
-- Approval verification is an additional necessary gate, never sufficient mutation authority.
-- Fresh candidate/Git/policy context must match the approval before the candidate write.
-- Malformed, stale, unknown, or mismatched approval fails closed.
-- A successful candidate is still applied only through AUTO-0008/AUTO-0009.
-- Replanning after a successful write means the next candidate requires a fresh matching approval.
-- AUTO-0010 remains independently restrictive and cannot be overridden by approval.
-- No autonomous approval, whole-run approval, remote signing service, arbitrary commands/scripts/plugins, new workflows, force/stale bypass, direct Git mutation, publication, or rollback guarantee.
+- Receipt v1 is canonical deterministic machine-readable evidence for one reconciliation run.
+- Receipt construction is a pure observational projection from already-observed orchestration evidence plus bounded read-only context.
+- A receipt or its SHA-256 digest is never an authority token and cannot replace AUTO-0010 policy or AUTO-0011 approval.
+- Receipt generation cannot choose/reorder candidates, change bounds/policy, approve, invoke mutation, retry/resume, suppress failure, rollback, or mutate Git/project state.
+- Without explicit `--receipt-json`, existing reconciliation run behavior remains compatible.
+- No receipt-file application writes, signatures/PKI, key management, remote logging, trusted timestamps, replay/resume, force/stale bypass, new workflows, direct Git publication, or release/publication authority.
 
 ## General Engineering Guardrails
 
