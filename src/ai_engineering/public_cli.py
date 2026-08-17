@@ -16,6 +16,9 @@ from .project_reconciliation_approval_context import (
 )
 from .project_reconciliation_orchestration import DEFAULT_MAX_STEPS, MAX_MAX_STEPS
 from .project_reconciliation_orchestration_cli import run_reconciliation_orchestration
+from .project_reconciliation_receipt_cli import (
+    run_reconciliation_orchestration_receipt,
+)
 
 
 def _run_parser() -> argparse.ArgumentParser:
@@ -24,6 +27,7 @@ def _run_parser() -> argparse.ArgumentParser:
     parser.add_argument("--max-steps", type=int, default=DEFAULT_MAX_STEPS)
     parser.add_argument("--policy")
     parser.add_argument("--approval")
+    parser.add_argument("--receipt-json", action="store_true")
     return parser
 
 
@@ -72,7 +76,12 @@ def main(argv: Sequence[str] | None = None) -> int:
     approval_path = (
         Path(args.approval).resolve() if args.approval is not None else None
     )
-    return run_reconciliation_orchestration(
+    runner = (
+        run_reconciliation_orchestration_receipt
+        if args.receipt_json
+        else run_reconciliation_orchestration
+    )
+    return runner(
         Path(args.project).resolve(),
         max_steps=args.max_steps,
         policy_path=policy_path,
