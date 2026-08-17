@@ -43,10 +43,6 @@ class ReconciliationReceiptProjectionContext:
     approval_verifications: tuple[ObservedApprovalVerification, ...] = ()
 
 
-def _issue_pairs(items: object) -> tuple[tuple[str, str], ...]:
-    return tuple((item.code, item.detail) for item in items)  # type: ignore[attr-defined]
-
-
 def _policy_decisions(
     result: ProjectReconciliationOrchestrationResult,
 ) -> tuple[ReceiptPolicyDecision, ...]:
