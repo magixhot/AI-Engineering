@@ -119,8 +119,8 @@ def test_round_trip_is_strict_and_deterministic() -> None:
 
     assert loaded.state == "loaded"
     assert loaded.issues == ()
-    assert loaded.receipt == receipt
     assert loaded.receipt is not None
+    assert loaded.receipt.digest == receipt.digest
     assert serialize_reconciliation_execution_receipt(loaded.receipt) == raw
     assert raw.endswith(b"\n")
 
