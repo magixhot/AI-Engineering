@@ -14,7 +14,6 @@ from urllib.parse import urlparse
 from urllib.request import Request, urlopen
 
 from .opencode_control_protocol import (
-    ControlProtocolError,
     ControlRequest,
     ControlResult,
     ControlResultState,
@@ -36,7 +35,7 @@ class RepositorySnapshot:
     branch: str
     head: str
     status: str
-    index_tree: str
+    index_state_hash: str
     worktree_diff_hash: str
     cached_diff_hash: str
     local_config_hash: str
@@ -91,10 +90,22 @@ def capture_repository_snapshot(repository: Path) -> RepositorySnapshot:
         raise OpenCodeAdapterError("detached HEAD is not allowed")
 
     head = _run_git(root, "rev-parse", "HEAD")
-    status = _run_git(root, "status", "--porcelain=v1", "--untracked-files=all")
-    index_tree = _run_git(root, "write-tree")
+    status = _run_git(
+        root,
+        "--no-optional-locks",
+        "status",
+        "--porcelain=v1",
+        "--untracked-files=all",
+    )
+    index_state = _run_git(root, "ls-files", "--stage")
     worktree_diff = _run_git(root, "diff", "--binary", "--no-ext-diff")
-    cached_diff = _run_git(root, "diff", "--cached", "--binary", "--no-ext-diff")
+    cached_diff = _run_git(
+        root,
+        "diff",
+        "--cached",
+        "--binary",
+        "--no-ext-diff",
+    )
     local_config = _run_git(root, "config", "--local", "--list", "--null")
     remotes = _run_git(root, "remote", "-v")
 
@@ -102,7 +113,7 @@ def capture_repository_snapshot(repository: Path) -> RepositorySnapshot:
         branch=branch,
         head=head,
         status=status,
-        index_tree=index_tree,
+        index_state_hash=_sha256_text(index_state),
         worktree_diff_hash=_sha256_text(worktree_diff),
         cached_diff_hash=_sha256_text(cached_diff),
         local_config_hash=_sha256_text(local_config),
@@ -121,7 +132,9 @@ def _validate_server_url(server_url: str) -> str:
     if parsed.path not in {"", "/"}:
         raise OpenCodeAdapterError("OpenCode server URL must not contain a path")
     if parsed.port is None:
-        raise OpenCodeAdapterError("OpenCode server URL must include an explicit port")
+        raise OpenCodeAdapterError(
+            "OpenCode server URL must include an explicit port"
+        )
     return server_url.rstrip("/")
 
 
@@ -191,7 +204,9 @@ class OpenCodeHttpTransport:
         except (UnicodeDecodeError, json.JSONDecodeError) as exc:
             raise OpenCodeAdapterError("OpenCode returned malformed JSON") from exc
         if not isinstance(decoded, dict):
-            raise OpenCodeAdapterError("OpenCode returned a non-object response")
+            raise OpenCodeAdapterError(
+                "OpenCode returned a non-object response"
+            )
         return decoded
 
 
@@ -257,18 +272,15 @@ class ReadOnlyOpenCodeAdapter:
         if len(text) > request.max_result_chars:
             text = text[: request.max_result_chars]
 
-        try:
-            return ControlResult(
-                request_id=request.request_id,
-                task_class=request.task_class,
-                repository=request.repository,
-                branch=after.branch,
-                head=after.head,
-                pre_clean=before.is_clean,
-                state=ControlResultState.SUCCEEDED,
-                text=text,
-                post_clean=after.is_clean,
-                version=request.version,
-            )
-        except (TypeError, ValueError, ControlProtocolError) as exc:
-            raise OpenCodeAdapterError("could not construct control result") from exc
+        return ControlResult(
+            request_id=request.request_id,
+            task_class=request.task_class,
+            repository=request.repository,
+            branch=after.branch,
+            head=after.head,
+            pre_clean=before.is_clean,
+            state=ControlResultState.SUCCEEDED,
+            text=text,
+            post_clean=after.is_clean,
+            version=request.version,
+        )
