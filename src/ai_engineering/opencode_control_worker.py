@@ -23,6 +23,7 @@ from .opencode_control_protocol import (
 from .opencode_readonly_adapter import (
     OpenCodeAdapterError,
     ReadOnlyOpenCodeAdapter,
+    SnapshotProvider,
     capture_repository_snapshot,
 )
 
@@ -126,10 +127,15 @@ def execute_with_failed_result(
     repository_path: Path,
     adapter: ReadOnlyOpenCodeAdapter,
     request: ControlRequest,
+    *,
+    snapshot_provider: SnapshotProvider | None = None,
 ) -> ControlResult:
     """Convert post-claim execution failures into terminal typed evidence."""
 
-    before = capture_repository_snapshot(repository_path)
+    provider = snapshot_provider or (
+        lambda: capture_repository_snapshot(repository_path)
+    )
+    before = provider()
     try:
         return adapter.execute(request)
     except Exception as exc:
@@ -138,7 +144,7 @@ def execute_with_failed_result(
             file=sys.stderr,
         )
         try:
-            after = capture_repository_snapshot(repository_path)
+            after = provider()
             post_clean = after.is_clean
         except Exception as snapshot_exc:
             print(
