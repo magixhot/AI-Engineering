@@ -138,6 +138,15 @@ def _validate_server_url(server_url: str) -> str:
     return server_url.rstrip("/")
 
 
+def _validate_workspace_directory(directory: Path) -> str:
+    value = str(directory.resolve())
+    if not directory.is_absolute() and not Path(value).is_absolute():
+        raise OpenCodeAdapterError("OpenCode workspace directory must be absolute")
+    if "\n" in value or "\r" in value or "\x00" in value:
+        raise OpenCodeAdapterError("OpenCode workspace directory is invalid")
+    return value
+
+
 def _extract_text(response: Mapping[str, Any]) -> str:
     parts = response.get("parts")
     if not isinstance(parts, list):
@@ -162,11 +171,13 @@ class OpenCodeHttpTransport:
         self,
         server_url: str = DEFAULT_SERVER_URL,
         *,
+        directory: Path,
         username: str = "opencode",
         password: str | None = None,
         timeout_seconds: float = 120.0,
     ) -> None:
         self._server_url = _validate_server_url(server_url)
+        self._directory = _validate_workspace_directory(directory)
         self._username = username
         self._password = password
         self._timeout_seconds = timeout_seconds
@@ -181,7 +192,10 @@ class OpenCodeHttpTransport:
             f"{self._server_url}{path}",
             data=body,
             method="POST",
-            headers={"Content-Type": "application/json"},
+            headers={
+                "Content-Type": "application/json",
+                "x-opencode-directory": self._directory,
+            },
         )
         if self._password is not None:
             credentials = base64.b64encode(
@@ -221,7 +235,9 @@ class ReadOnlyOpenCodeAdapter:
         snapshot_provider: SnapshotProvider | None = None,
     ) -> None:
         self._repository = repository.resolve()
-        self._transport = transport or OpenCodeHttpTransport()
+        self._transport = transport or OpenCodeHttpTransport(
+            directory=self._repository
+        )
         self._snapshot_provider = snapshot_provider or (
             lambda: capture_repository_snapshot(self._repository)
         )
