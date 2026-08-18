@@ -1,54 +1,57 @@
 # AI-Engineering — Current Status
 
-**Snapshot date:** 2026-08-17  
+**Snapshot date:** 2026-08-18  
 **Status:** ACTIVE  
 **Release line:** 0.2.0  
-**Current milestone:** NONE — AUTO-0012 COMPLETE / VERIFIED  
-**Active stage:** NONE
+**Current milestone:** AUTO-0013 — OpenCode Control Bridge  
+**Active stage:** AUTO-0013-06 — Final Evidence / Documentation Reconciliation
 
 ## Authoritative State
 
 AUTO-0001 through AUTO-0012 are COMPLETE / VERIFIED for their approved scopes.
 
+AUTO-0013 stages 01–05 are COMPLETE / VERIFIED. Stage 06 is documentation closure only and does not expand authority.
+
 | Stage | State | Evidence |
 |---|---|---|
-| AUTO-0012-01 Execution Evidence Design / Contract | COMPLETE / VERIFIED | PR #121; Quality #248; post-merge #249. |
-| AUTO-0012-02 Typed Receipt Model / Canonicalization | COMPLETE / VERIFIED | PR #122; corrected Quality #251; post-merge #252. |
-| AUTO-0012-03 Evidence Projection / Safety Invariants | COMPLETE / VERIFIED | PR #123; Quality #253; post-merge #254. |
-| AUTO-0012-04 Public CLI Integration | COMPLETE / VERIFIED | PR #124; corrected Quality #257; post-merge #258. |
-| AUTO-0012-05 Installed Distribution Verification | COMPLETE / VERIFIED | PR #125; corrected Quality #260; post-merge #261. |
-| AUTO-0012-06 Final Evidence / Documentation Reconciliation | DOCUMENTATION CLOSURE | This stage records the already-verified implementation state without expanding authority. |
+| AUTO-0013-01 Control Bridge Design / Contract | COMPLETE / VERIFIED | PR #127; Quality #265; exact post-merge Quality SUCCESS. |
+| AUTO-0013-02 Typed Request / Result Protocol | COMPLETE / VERIFIED | PR #128; Quality #268; exact post-merge Quality SUCCESS. |
+| AUTO-0013-03 Read-Only OpenCode Adapter | COMPLETE / VERIFIED | PR #129; Quality #270; exact post-merge Quality SUCCESS. |
+| AUTO-0013-04 GitHub Control Worker | COMPLETE / VERIFIED | PR #131; Quality #273; exact post-merge Quality SUCCESS. |
+| AUTO-0013-04 Corrective Failed-Result Hardening | COMPLETE / VERIFIED | PR #132; Quality #275; exact post-merge Quality SUCCESS. |
+| AUTO-0013-05 OpenCode Workspace Routing | COMPLETE / VERIFIED prerequisite | PR #133; Quality #278; exact post-merge Quality SUCCESS. |
+| AUTO-0013-05 End-to-End Verification | COMPLETE / VERIFIED | PR #134; Quality #280; exact post-merge Quality SUCCESS on `abcecfdbdf5767db67cda78aaf6359e0f599f005`. |
+| AUTO-0013-06 Final Evidence / Documentation Reconciliation | DOCUMENTATION CLOSURE IN PROGRESS | No authority expansion; final pre/post-merge gates still required. |
 
-## Verified AUTO-0012 Implementation Evidence
+## Verified AUTO-0013 End-to-End Evidence
 
-The verified AUTO-0012 implementation baseline before final documentation reconciliation is:
+The verified successful live request is:
 
 ```text
-2268f4c8278f3c81b5735e26337984aebd300c6b
+sha256:dcdfcd976fff8c7afd16352fdc63e2781c7067c6492c4e43733abd4bd6efeb2c
 ```
 
-PR #125 merged stage 05 and exact post-merge Quality #261 succeeded on that commit. The SHA is historical verification evidence rather than a requirement that later `master` remain equal to it.
+It traversed the approved path:
+
+```text
+GitHub control issue
+  -> local control worker
+  -> localhost OpenCode server
+  -> dedicated read-only AUTO-0013 agent
+  -> AI-Engineering workspace
+  -> typed GitHub result
+```
+
+The terminal result recorded `state=SUCCEEDED`, `branch=master`, exact HEAD `2d03f9e37e373def6b0f705b6f2b5da751279427`, `pre_clean=true`, and `post_clean=true`. The adapter returns success only after full before/after repository snapshot equality, including branch, HEAD, status, index, tracked worktree diff, cached diff, local Git configuration, and remotes.
 
 ## Reconciliation Authority Boundaries
 
-AUTO-0007 remains permanently read-only. AUTO-0008 remains the sole guarded one-step apply authority. AUTO-0009 remains bounded multi-step orchestration with fresh planning between writes. AUTO-0010 remains restriction-only policy. AUTO-0011 adds an optional explicit single-candidate approval gate; it does not create mutation authority. AUTO-0012 adds deterministic execution evidence only; a receipt or receipt digest is never an authority token.
+AUTO-0007 remains permanently read-only. AUTO-0008 remains the sole guarded one-step apply authority. AUTO-0009 remains bounded multi-step orchestration with fresh planning between writes. AUTO-0010 remains restriction-only policy. AUTO-0011 adds an optional explicit single-candidate approval gate and cannot grant mutation authority. AUTO-0012 adds deterministic execution evidence only. AUTO-0013 adds bounded read-only remote inspection/control transport and evidence only.
 
-Public commands include:
-
-```text
-ai-engineering project reconcile plan --project PATH
-ai-engineering project reconcile apply --project PATH --step SEQUENCE
-ai-engineering project reconcile run --project PATH [--max-steps N]
-ai-engineering project reconcile run --project PATH --policy POLICY.toml [--max-steps N]
-ai-engineering project reconcile approve --project PATH [--policy POLICY.toml]
-ai-engineering project reconcile run --project PATH --approval APPROVAL.json [--policy POLICY.toml] [--max-steps N]
-ai-engineering project reconcile run --project PATH [--max-steps N] [--policy POLICY.toml] [--approval APPROVAL.json] --receipt-json
-```
-
-Receipt v1 is canonical compact UTF-8 JSON with a SHA-256 digest over the evidence payload excluding the digest field. It projects already-observed orchestration evidence plus bounded read-only context: portable project identity, requested bound, initial state, Git HEAD/branch, policy evidence, approval evidence, delegated apply attempts, terminal state/issues, final plan, and remaining-work summary.
-
-Receipt construction cannot select or reorder candidates, change policy/bounds, approve, invoke mutation, retry, suppress failure, perform rollback, mutate Git/project state, or substitute for policy/approval. Volatile timestamps, host identity, secrets, raw policy/approval bytes, signatures/PKI, remote logging, replay/resume, direct Git publication, and release/publication authority are outside AUTO-0012.
+AUTO-0013 does not authorize file mutation, Git mutation, reconciliation apply/run mutation, arbitrary remote shell execution, package publication, deployment, public OpenCode ingress, or a second write path.
 
 ## Current Priority
 
-Preserve the verified AUTO-0007 through AUTO-0012 boundaries. No AUTO capability milestone is active. Any next capability must begin with a separate design/contract before production implementation.
+Complete AUTO-0013-06 documentation reconciliation, pass its pre-merge Quality gate, merge it, and require exact post-merge Quality SUCCESS. Only then may AUTO-0013 be marked fully COMPLETE / VERIFIED.
+
+Any later capability such as automatic local worker startup, different event delivery, a private control plane, or write/apply authority requires a separate design/contract.

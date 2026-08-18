@@ -4,6 +4,9 @@
 
 ```text
 AI-Engineering/
+├── .opencode/
+│   └── agents/
+│       └── auto-0013-readonly.md
 ├── docs/
 ├── src/
 │   └── ai_engineering/
@@ -42,6 +45,9 @@ AI-Engineering/
 │       ├── project_reconciliation_receipt.py
 │       ├── project_reconciliation_receipt_projection.py
 │       ├── project_reconciliation_receipt_cli.py
+│       ├── opencode_control_protocol.py
+│       ├── opencode_readonly_adapter.py
+│       ├── opencode_control_worker.py
 │       └── server.py
 ├── tests/
 │   ├── unit/
@@ -55,7 +61,7 @@ AI-Engineering/
 
 ## Reconciliation Architecture
 
-AUTO-0007 is the permanent read-only planner. AUTO-0008 is the sole guarded one-step apply boundary. AUTO-0009 composes repeated fresh planning and one-step application into bounded orchestration. AUTO-0010 adds restriction-only policy evaluation. AUTO-0011 adds an optional explicit single-candidate approval gate. AUTO-0012 adds deterministic execution evidence after/beside those existing decisions without adding mutation authority.
+AUTO-0007 is the permanent read-only planner. AUTO-0008 is the sole guarded one-step apply boundary. AUTO-0009 composes repeated fresh planning and one-step application into bounded orchestration. AUTO-0010 adds restriction-only policy evaluation. AUTO-0011 adds an optional explicit single-candidate approval gate. AUTO-0012 adds deterministic execution evidence without adding mutation authority.
 
 ```text
 fresh AUTO-0007 plan
@@ -68,21 +74,27 @@ fresh AUTO-0007 plan
     → AUTO-0012 projects observed run evidence into canonical receipt JSON
 ```
 
-Approval model/canonicalization lives in `project_reconciliation_approval.py`. Fresh project/Git/policy binding is assembled in `project_reconciliation_approval_context.py`. Pure deterministic approval matching is implemented in `project_reconciliation_approval_verification.py`.
-
-Receipt v1 model/canonicalization and strict parsing live in `project_reconciliation_receipt.py`. Pure projection from observed orchestration evidence plus bounded read-only context lives in `project_reconciliation_receipt_projection.py`. Explicit receipt-mode execution/output lives in `project_reconciliation_receipt_cli.py`; public routing remains in `public_cli.py`.
-
-Verified commands include:
+AUTO-0013 is separate from the reconciliation write path. It adds only a bounded read-only remote inspection/control transport:
 
 ```text
-ai-engineering project reconcile run --project PATH [--max-steps N]
-ai-engineering project reconcile run --project PATH --policy POLICY.toml [--max-steps N]
-ai-engineering project reconcile approve --project PATH [--policy POLICY.toml]
-ai-engineering project reconcile run --project PATH --approval APPROVAL.json [--policy POLICY.toml] [--max-steps N]
-ai-engineering project reconcile run --project PATH [--max-steps N] [--policy POLICY.toml] [--approval APPROVAL.json] --receipt-json
+GitHub control issue
+    → typed AUTO-0013 request
+    → local control worker
+    → localhost OpenCode
+    → dedicated read-only agent
+    → repository inspection
+    → typed AUTO-0013 result
 ```
 
-AUTO-0012 receipts are deterministic evidence only. They can describe policy decisions, approval verification outcomes, delegated apply attempts, terminal state, final plan and remaining work, but cannot authorize execution, override policy/approval, choose candidates, retry/resume, rollback, or mutate Git/project state.
+The AUTO-0013 protocol lives in `opencode_control_protocol.py`. The localhost read-only adapter and repository snapshot invariants live in `opencode_readonly_adapter.py`. The dedicated GitHub polling/claim/result worker lives in `opencode_control_worker.py`. Project-local OpenCode permissions live in `.opencode/agents/auto-0013-readonly.md`.
+
+## AUTO-0013 Safety Boundary
+
+Allowed remote task classes are `status`, `inspect`, `plan`, and `diff`. The worker does not execute request text as shell code. The OpenCode agent denies edit authority, external-directory access, and arbitrary shell commands, with only a narrow read-only Git allowlist.
+
+Adapter success requires before/after repository snapshot equality covering branch, HEAD, status, index state, worktree diff, cached diff, local Git configuration, and remotes.
+
+AUTO-0013 does not authorize reconciliation apply/run mutation, commit/push/reset/checkout/clean/stash mutation, package publication, deployment, public OpenCode ingress, arbitrary remote shell execution, or any second repository write path.
 
 ## Implementation State
 
@@ -91,13 +103,14 @@ AUTO-0012 receipts are deterministic evidence only. They can describe policy dec
 - AUTO-0009 stages 01–06: COMPLETE / VERIFIED.
 - AUTO-0010 stages 01–06: COMPLETE / VERIFIED.
 - AUTO-0011 stages 01–06: COMPLETE / VERIFIED.
-- AUTO-0012-01 design/contract: COMPLETE / VERIFIED; PR #121; Quality #248; post-merge #249.
-- AUTO-0012-02 typed receipt model/canonicalization: COMPLETE / VERIFIED; PR #122; corrected Quality #251; post-merge #252.
-- AUTO-0012-03 evidence projection/safety invariants: COMPLETE / VERIFIED; PR #123; Quality #253; post-merge #254.
-- AUTO-0012-04 public CLI integration: COMPLETE / VERIFIED; PR #124; corrected Quality #257; post-merge #258.
-- AUTO-0012-05 installed distribution verification: COMPLETE / VERIFIED; PR #125; corrected Quality #260; post-merge #261.
-- AUTO-0012-06 final evidence/documentation reconciliation: documentation closure only.
+- AUTO-0012 stages 01–06: COMPLETE / VERIFIED.
+- AUTO-0013-01 design/contract: COMPLETE / VERIFIED; PR #127; Quality #265; exact post-merge Quality SUCCESS.
+- AUTO-0013-02 typed request/result protocol: COMPLETE / VERIFIED; PR #128; Quality #268; exact post-merge Quality SUCCESS.
+- AUTO-0013-03 read-only OpenCode adapter: COMPLETE / VERIFIED; PR #129; Quality #270; exact post-merge Quality SUCCESS.
+- AUTO-0013-04 GitHub control worker: COMPLETE / VERIFIED; PR #131; Quality #273; exact post-merge Quality SUCCESS.
+- AUTO-0013-04 corrective failed-result hardening: COMPLETE / VERIFIED; PR #132; Quality #275; exact post-merge Quality SUCCESS.
+- AUTO-0013-05 workspace routing correction: COMPLETE / VERIFIED prerequisite; PR #133; Quality #278; exact post-merge Quality SUCCESS.
+- AUTO-0013-05 live E2E verification: COMPLETE / VERIFIED; PR #134; Quality #280; exact post-merge Quality SUCCESS on `abcecfdbdf5767db67cda78aaf6359e0f599f005`.
+- AUTO-0013-06 final evidence/documentation reconciliation: active documentation closure; final gates pending.
 
-The verified implementation baseline `2268f4c8278f3c81b5735e26337984aebd300c6b` and exact post-merge Quality #261 are historical evidence. Later repository progress does not invalidate them.
-
-`tests/release/` verifies installed-wheel behavior outside the source checkout, including AUTO-0012 canonical receipt/digest behavior, real delegated execution evidence, deterministic no-change evidence, policy refusal, stale approval refusal, malformed approval terminal evidence, and zero-write Git invariants for refusal/error cases.
+The verified successful live request id is `sha256:dcdfcd976fff8c7afd16352fdc63e2781c7067c6492c4e43733abd4bd6efeb2c`. Its terminal result recorded `SUCCEEDED`, exact expected/observed HEAD `2d03f9e37e373def6b0f705b6f2b5da751279427`, and `pre_clean=true` / `post_clean=true`.

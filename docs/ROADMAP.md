@@ -4,47 +4,57 @@
 
 The documentation foundation, MCP foundation, SDK-0001, TOOL-0001, REL-0001/REL-0002/REL-0003, CI-0001, SAFE-0001/SAFE-0002, and AUTO-0001 through AUTO-0012 are COMPLETE / VERIFIED for their approved scopes.
 
-AUTO-0007 remains the permanent read-only reconciliation planner. AUTO-0008 remains the guarded one-step apply boundary. AUTO-0009 is bounded multi-step orchestration. AUTO-0010 adds only a restrictive policy gate. AUTO-0011 adds only an optional explicit single-candidate approval gate. AUTO-0012 adds deterministic execution receipts/evidence only and does not add authority.
+AUTO-0013 stages 01–05 are COMPLETE / VERIFIED. AUTO-0013-06 is the active final evidence/documentation reconciliation stage.
 
-## AUTO-0012 — Deterministic Reconciliation Execution Evidence / Receipts
+AUTO-0007 remains the permanent read-only reconciliation planner. AUTO-0008 remains the guarded one-step apply boundary. AUTO-0009 is bounded multi-step orchestration. AUTO-0010 adds only a restrictive policy gate. AUTO-0011 adds only an optional explicit single-candidate approval gate. AUTO-0012 adds deterministic execution receipts/evidence only. AUTO-0013 adds bounded read-only remote inspection/control transport and evidence only.
 
-**Status:** COMPLETE / VERIFIED
+## AUTO-0013 — OpenCode Control Bridge
 
-Public receipt-enabled execution:
+**Status:** STAGE 06 DOCUMENTATION CLOSURE IN PROGRESS
+
+Verified read-only control path:
 
 ```text
-ai-engineering project reconcile run --project PATH [--max-steps N] [--policy POLICY.toml] [--approval APPROVAL.json] --receipt-json
+External AI operator
+  -> GitHub control issue
+  -> local control worker
+  -> localhost OpenCode server
+  -> dedicated read-only AUTO-0013 agent
+  -> AI-Engineering workspace
+  -> typed GitHub result
 ```
 
-Receipt v1 is canonical deterministic machine-readable evidence for one reconciliation run. It records bounded execution context and already-observed results, including policy/approval evidence and delegated apply attempts, and carries a SHA-256 digest over the canonical payload excluding the digest field.
-
-Receipt construction is observational only. A receipt cannot grant execution authority, replace policy or approval, select/reorder candidates, trigger mutation, retry/resume, perform rollback, bypass stale-state guards, or publish Git/release artifacts.
+Allowed task classes are `status`, `inspect`, `plan`, and `diff`. The dedicated OpenCode agent denies edits, external-directory access, and arbitrary shell execution; shell access is deny-by-default with a narrow read-only Git allowlist.
 
 ### Delivery Evidence
 
-- AUTO-0012-01 — PR #121; Quality #248; post-merge #249.
-- AUTO-0012-02 — PR #122; corrected Quality #251; post-merge #252.
-- AUTO-0012-03 — PR #123; Quality #253; post-merge #254.
-- AUTO-0012-04 — PR #124; corrected Quality #257; post-merge #258.
-- AUTO-0012-05 — PR #125; corrected Quality #260; post-merge #261.
-- AUTO-0012-06 — final evidence/documentation reconciliation only; no authority expansion.
+- AUTO-0013-01 — PR #127; Quality #265; exact post-merge Quality SUCCESS.
+- AUTO-0013-02 — PR #128; Quality #268; exact post-merge Quality SUCCESS.
+- AUTO-0013-03 — PR #129; Quality #270; exact post-merge Quality SUCCESS.
+- AUTO-0013-04 — PR #131; Quality #273; exact post-merge Quality SUCCESS.
+- AUTO-0013-04 corrective hardening — PR #132; Quality #275; exact post-merge Quality SUCCESS.
+- AUTO-0013-05 workspace routing correction — PR #133; Quality #278; exact post-merge Quality SUCCESS.
+- AUTO-0013-05 E2E evidence — PR #134; Quality #280; exact post-merge Quality SUCCESS on `abcecfdbdf5767db67cda78aaf6359e0f599f005`.
+- AUTO-0013-06 — final evidence/documentation reconciliation only; final gates pending.
 
-Verified implementation baseline before final documentation reconciliation:
+The verified successful live request id is:
 
 ```text
-2268f4c8278f3c81b5735e26337984aebd300c6b
+sha256:dcdfcd976fff8c7afd16352fdc63e2781c7067c6492c4e43733abd4bd6efeb2c
 ```
 
-That commit and its exact post-merge Quality #261 are historical verification evidence only; later repository progress does not invalidate AUTO-0012 closure.
+Its terminal result recorded `SUCCEEDED`, `master`, exact HEAD `2d03f9e37e373def6b0f705b6f2b5da751279427`, `pre_clean=true`, and `post_clean=true`. Adapter success requires complete before/after repository snapshot equality.
 
 ## Delivery Gates
 
-AUTO-0012 stages execute in order:
+AUTO-0013 stages execute in order:
 
 `01 → 02 → 03 → 04 → 05 → 06`
 
-Stages 01–05 completed their required corrected pre-merge and exact post-merge Quality gates where applicable. Stage 06 reconciles documentation against the verified implementation baseline.
+Stages 01–05 have completed their required pre-merge and exact post-merge Quality gates. Stage 06 reconciles authoritative documentation against the verified implementation and live E2E evidence. AUTO-0013 is fully COMPLETE / VERIFIED only after stage 06 itself passes pre-merge Quality, merges, and exact post-merge Quality succeeds.
 
 ## Current Priority
 
-No AUTO capability milestone is active after AUTO-0012 closure. Preserve AUTO-0007 read-only planning, AUTO-0008 sole guarded one-step apply authority, AUTO-0009 bounded replan-between-writes orchestration, AUTO-0010 restriction-only policy, AUTO-0011 approval as an additional fail-closed single-candidate gate, and AUTO-0012 receipts as evidence only. Any next capability milestone must begin with a separate design/contract.
+Complete AUTO-0013-06 without expanding authority. Preserve AUTO-0007 read-only planning, AUTO-0008 sole guarded one-step apply authority, AUTO-0009 bounded replan-between-writes orchestration, AUTO-0010 restriction-only policy, AUTO-0011 approval as an additional fail-closed single-candidate gate, AUTO-0012 receipts as evidence only, and AUTO-0013 as read-only remote inspection/control transport only.
+
+Any future automatic local service startup, changed polling/event delivery, private control plane, or write/apply capability requires a separate design/contract.

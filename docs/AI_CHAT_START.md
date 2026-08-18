@@ -18,9 +18,9 @@ After reading them, continue from `CURRENT_STATUS.md`; it is authoritative for c
 
 ## Current Working State
 
-AI-Engineering has completed and verified AUTO-0001 through AUTO-0012 for their approved scopes.
+AI-Engineering has completed and verified AUTO-0001 through AUTO-0012 for their approved scopes. AUTO-0013 stages 01–05 are COMPLETE / VERIFIED; AUTO-0013-06 final evidence/documentation reconciliation is active.
 
-Permanent reconciliation boundaries:
+Permanent reconciliation boundaries remain unchanged:
 
 ```text
 ai-engineering project reconcile plan --project PATH
@@ -32,35 +32,46 @@ ai-engineering project reconcile run --project PATH --approval APPROVAL.json [--
 ai-engineering project reconcile run --project PATH [--max-steps N] [--policy POLICY.toml] [--approval APPROVAL.json] --receipt-json
 ```
 
-AUTO-0007 is permanently read-only. AUTO-0008 remains the sole guarded one-step apply boundary. AUTO-0009 is bounded orchestration over repeated fresh planning plus exactly one AUTO-0008 apply per iteration. AUTO-0010 policy can only restrict those existing authorities. AUTO-0011 approval is an optional additional single-candidate gate and cannot grant new mutation authority. AUTO-0012 receipts are deterministic execution evidence only and cannot grant or substitute for authority.
-
-AUTO-0012 implementation completed through PR #125, corrected Quality #260, and exact post-merge Quality #261. The verified implementation baseline `2268f4c8278f3c81b5735e26337984aebd300c6b` is historical verification evidence rather than a requirement that future `master` remain unchanged.
+AUTO-0007 is permanently read-only. AUTO-0008 remains the sole guarded one-step apply boundary. AUTO-0009 is bounded orchestration over repeated fresh planning plus exactly one AUTO-0008 apply per iteration. AUTO-0010 policy can only restrict those existing authorities. AUTO-0011 approval is an optional additional single-candidate gate and cannot grant new mutation authority. AUTO-0012 receipts are deterministic execution evidence only. AUTO-0013 adds bounded read-only remote inspection/control transport and evidence only.
 
 ## Active Milestone
 
-No AUTO capability milestone is active after AUTO-0012 documentation closure.
-
-Read `AUTO-0012_RECONCILIATION_EXECUTION_EVIDENCE_DESIGN.md` and `AUTO-0012_FINAL_EVIDENCE.md` for the verified receipt contract and closure evidence.
-
 ```text
-AUTO-0012-01 design/contract             COMPLETE / VERIFIED
-AUTO-0012-02 typed receipt model         COMPLETE / VERIFIED
-AUTO-0012-03 evidence projection         COMPLETE / VERIFIED
-AUTO-0012-04 public CLI integration      COMPLETE / VERIFIED
-AUTO-0012-05 installed distribution      COMPLETE / VERIFIED
-AUTO-0012-06 final reconciliation        DOCUMENTATION CLOSURE
+AUTO-0013-01 design/contract                    COMPLETE / VERIFIED
+AUTO-0013-02 typed request/result protocol      COMPLETE / VERIFIED
+AUTO-0013-03 read-only OpenCode adapter         COMPLETE / VERIFIED
+AUTO-0013-04 GitHub control worker              COMPLETE / VERIFIED
+AUTO-0013-04 corrective failure hardening       COMPLETE / VERIFIED
+AUTO-0013-05 workspace routing correction       COMPLETE / VERIFIED prerequisite
+AUTO-0013-05 end-to-end verification            COMPLETE / VERIFIED
+AUTO-0013-06 final reconciliation               ACTIVE — DOCUMENTATION CLOSURE
 ```
 
-Any next AUTO capability must begin with a separate design/contract before production implementation.
+Read `AUTO-0013_OPENCODE_CONTROL_BRIDGE_DESIGN.md`, `AUTO-0013_05_END_TO_END_VERIFICATION.md`, and `AUTO-0013_FINAL_EVIDENCE.md` for the active bridge contract and evidence.
 
-## AUTO-0012 Guardrails
+The verified successful live request id is:
 
-- Receipt v1 is canonical deterministic machine-readable evidence for one reconciliation run.
-- Receipt construction is a pure observational projection from already-observed orchestration evidence plus bounded read-only context.
-- A receipt or its SHA-256 digest is never an authority token and cannot replace AUTO-0010 policy or AUTO-0011 approval.
-- Receipt generation cannot choose/reorder candidates, change bounds/policy, approve, invoke mutation, retry/resume, suppress failure, rollback, or mutate Git/project state.
-- Without explicit `--receipt-json`, existing reconciliation run behavior remains compatible.
-- No receipt-file application writes, signatures/PKI, key management, remote logging, trusted timestamps, replay/resume, force/stale bypass, new workflows, direct Git publication, or release/publication authority.
+```text
+sha256:dcdfcd976fff8c7afd16352fdc63e2781c7067c6492c4e43733abd4bd6efeb2c
+```
+
+It produced a typed `SUCCEEDED` result on branch `master` at exact HEAD `2d03f9e37e373def6b0f705b6f2b5da751279427` with `pre_clean=true` and `post_clean=true`. Adapter success requires complete before/after repository snapshot equality.
+
+AUTO-0013-05 evidence PR #134 passed Quality #280 and exact post-merge Quality SUCCESS on master `abcecfdbdf5767db67cda78aaf6359e0f599f005`.
+
+AUTO-0013 is not fully COMPLETE / VERIFIED until AUTO-0013-06 itself passes pre-merge Quality, merges, and the exact resulting master passes post-merge Quality.
+
+## AUTO-0013 Guardrails
+
+- Allowed remote task classes are only `status`, `inspect`, `plan`, and `diff`.
+- Request text is analysis input, never shell code.
+- OpenCode edit authority and external-directory access are denied.
+- Shell is deny-by-default with a narrow read-only Git allowlist.
+- OpenCode remains localhost-only.
+- A typed result is evidence only and grants no later mutation authority.
+- AUTO-0013 cannot invoke or replace reconciliation apply/run authority.
+- No commit/push/reset/checkout/clean/stash mutation, package publication, deployment, public OpenCode ingress, arbitrary remote shell execution, or second write path is authorized.
+- Automatic local worker startup, altered event delivery, a private control plane, or any write/apply capability requires a separate future design/contract.
 
 ## General Engineering Guardrails
 
