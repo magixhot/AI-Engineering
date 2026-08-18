@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import json
 import subprocess
+import sys
 import time
 from dataclasses import dataclass
 from pathlib import Path
@@ -14,11 +15,17 @@ from .opencode_control_protocol import (
     ControlProtocolError,
     ControlRequest,
     ControlResult,
+    ControlResultState,
     parse_request,
     serialize_request,
     serialize_result,
 )
-from .opencode_readonly_adapter import ReadOnlyOpenCodeAdapter
+from .opencode_readonly_adapter import (
+    OpenCodeAdapterError,
+    ReadOnlyOpenCodeAdapter,
+    SnapshotProvider,
+    capture_repository_snapshot,
+)
 
 DEFAULT_REPOSITORY = "magixhot/AI-Engineering"
 DEFAULT_CONTROL_ISSUE = 130
@@ -91,6 +98,78 @@ def _request_id_from_envelope(body: str, fence: str) -> str | None:
         return None
     request_id = value.get("request_id")
     return request_id if isinstance(request_id, str) else None
+
+
+def _public_failure_summary(exc: Exception) -> str:
+    """Return a bounded public-safe failure summary without local details."""
+
+    if isinstance(exc, OpenCodeAdapterError):
+        message = str(exc)
+        safe_exact = {
+            "repository identity mismatch",
+            "workspace must be clean before execution",
+            "expected HEAD does not match workspace",
+            "OpenCode server unavailable",
+            "OpenCode returned malformed JSON",
+            "OpenCode returned a non-object response",
+            "OpenCode did not return a session id",
+            "OpenCode response has no parts list",
+            "OpenCode response contains no textual result",
+            "repository invariant changed during OpenCode execution",
+        }
+        if message in safe_exact or message.startswith("OpenCode HTTP error: "):
+            return message
+        return "OpenCode adapter failed closed"
+    return "Read-only execution failed closed"
+
+
+def execute_with_failed_result(
+    repository_path: Path,
+    adapter: ReadOnlyOpenCodeAdapter,
+    request: ControlRequest,
+    *,
+    snapshot_provider: SnapshotProvider | None = None,
+) -> ControlResult:
+    """Convert post-claim execution failures into terminal typed evidence."""
+
+    provider = snapshot_provider or (
+        lambda: capture_repository_snapshot(repository_path)
+    )
+    before = provider()
+    try:
+        return adapter.execute(request)
+    except Exception as exc:
+        print(
+            f"AUTO-0013 local execution failure: {type(exc).__name__}: {exc}",
+            file=sys.stderr,
+        )
+        try:
+            after = provider()
+            post_clean = after.is_clean
+        except Exception as snapshot_exc:
+            print(
+                "AUTO-0013 post-failure snapshot error: "
+                f"{type(snapshot_exc).__name__}: {snapshot_exc}",
+                file=sys.stderr,
+            )
+            after = before
+            post_clean = False
+
+        text = _public_failure_summary(exc)
+        if len(text) > request.max_result_chars:
+            text = text[: request.max_result_chars]
+        return ControlResult(
+            request_id=request.request_id,
+            task_class=request.task_class,
+            repository=request.repository,
+            branch=after.branch,
+            head=after.head,
+            pre_clean=before.is_clean,
+            state=ControlResultState.FAILED,
+            text=text,
+            post_clean=post_clean,
+            version=request.version,
+        )
 
 
 class GhIssueTransport:
@@ -215,9 +294,14 @@ def run_worker(
     if poll_seconds < 1.0:
         raise ControlWorkerError("poll interval must be at least one second")
 
+    repository_path = repository_path.resolve()
     transport = GhIssueTransport()
     adapter = ReadOnlyOpenCodeAdapter(repository_path)
-    worker = GitHubControlWorker(transport=transport, executor=adapter.execute)
+
+    def executor(request: ControlRequest) -> ControlResult:
+        return execute_with_failed_result(repository_path, adapter, request)
+
+    worker = GitHubControlWorker(transport=transport, executor=executor)
 
     while True:
         worker.poll_once()
