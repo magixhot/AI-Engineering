@@ -1,7 +1,10 @@
 ---
 description: AUTO-0013 bounded read-only repository inspection agent
 permission:
-  read: allow
+  read:
+    "*": allow
+    ".env*": deny
+    "**/.env*": deny
   glob: allow
   grep: allow
   list: allow
@@ -16,8 +19,8 @@ permission:
   question: deny
   bash:
     "*": deny
-    "git status": allow
-    "git status *": allow
+    "git --no-optional-locks status": allow
+    "git --no-optional-locks status *": allow
     "git branch": allow
     "git branch *": allow
     "git rev-parse HEAD": allow
