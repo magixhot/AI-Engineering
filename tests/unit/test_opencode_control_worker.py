@@ -167,7 +167,10 @@ def test_worker_suppresses_request_with_existing_result() -> None:
 def test_worker_skips_forged_request_id() -> None:
     request = make_request()
     forged = replace(request, request_id="sha256:" + "0" * 64)
-    body = format_request_comment(request).replace(request.request_id, forged.request_id)
+    body = format_request_comment(request).replace(
+        request.request_id,
+        forged.request_id,
+    )
     transport = FakeTransport([IssueComment(1, "magixhot", body)])
     worker = GitHubControlWorker(transport=transport, executor=never_execute)
 
