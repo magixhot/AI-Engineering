@@ -27,6 +27,10 @@ def _require_absolute(path: Path, label: str) -> Path:
     return path
 
 
+def _expected_user_runtime_root() -> Path:
+    return Path("/run/user") / str(os.getuid())
+
+
 def validate_user_service_paths(paths: UserServicePaths) -> UserServicePaths:
     """Validate explicit local paths without environment or home expansion."""
 
@@ -37,6 +41,10 @@ def validate_user_service_paths(paths: UserServicePaths) -> UserServicePaths:
         raise UserServiceError("unit_path must name a .service file")
     if config_path == unit_path:
         raise UserServiceError("config_path and unit_path must differ")
+    if runtime_dir.parent != _expected_user_runtime_root():
+        raise UserServiceError(
+            "runtime_dir must be a direct child of the current user runtime root"
+        )
     return UserServicePaths(
         unit_path=unit_path,
         config_path=config_path,
@@ -73,6 +81,8 @@ def render_systemd_user_unit(
         "[Service]\n"
         "Type=simple\n"
         f"ExecStart={command}\n"
+        f"RuntimeDirectory={validated.runtime_dir.name}\n"
+        "RuntimeDirectoryMode=0700\n"
         "Restart=on-failure\n"
         "RestartSec=5s\n"
         "NoNewPrivileges=yes\n"

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 from pathlib import Path
 
 import pytest
@@ -17,7 +18,7 @@ def make_paths(tmp_path: Path) -> UserServicePaths:
     return UserServicePaths(
         unit_path=(tmp_path / "systemd" / "ai-engineering-worker.service").resolve(),
         config_path=(tmp_path / "config" / "worker.json").resolve(),
-        runtime_dir=(tmp_path / "runtime").resolve(),
+        runtime_dir=Path(f"/run/user/{os.getuid()}/ai-engineering-{tmp_path.name}"),
     )
 
 
@@ -25,7 +26,7 @@ def test_validate_user_service_paths_requires_absolute_paths(tmp_path: Path) -> 
     paths = UserServicePaths(
         unit_path=Path("worker.service"),
         config_path=(tmp_path / "worker.json").resolve(),
-        runtime_dir=(tmp_path / "runtime").resolve(),
+        runtime_dir=Path(f"/run/user/{os.getuid()}/ai-engineering-test"),
     )
 
     with pytest.raises(UserServiceError, match="unit_path must be an absolute path"):
@@ -44,6 +45,21 @@ def test_validate_user_service_paths_requires_service_suffix(tmp_path: Path) -> 
         validate_user_service_paths(invalid)
 
 
+def test_validate_user_service_paths_requires_user_runtime_root(tmp_path: Path) -> None:
+    paths = make_paths(tmp_path)
+    invalid = UserServicePaths(
+        unit_path=paths.unit_path,
+        config_path=paths.config_path,
+        runtime_dir=(tmp_path / "runtime").resolve(),
+    )
+
+    with pytest.raises(
+        UserServiceError,
+        match="runtime_dir must be a direct child of the current user runtime root",
+    ):
+        validate_user_service_paths(invalid)
+
+
 def test_render_systemd_user_unit_is_user_scoped_and_bounded(tmp_path: Path) -> None:
     paths = make_paths(tmp_path)
     python_executable = Path("/usr/bin/python3")
@@ -56,6 +72,8 @@ def test_render_systemd_user_unit_is_user_scoped_and_bounded(tmp_path: Path) -> 
     assert "python3 -m ai_engineering.opencode_worker_lifecycle" in unit
     assert f"--config {paths.config_path}" in unit
     assert f"--runtime-dir {paths.runtime_dir}" in unit
+    assert f"RuntimeDirectory={paths.runtime_dir.name}" in unit
+    assert "RuntimeDirectoryMode=0700" in unit
     assert "Restart=on-failure" in unit
     assert "RestartSec=5s" in unit
     assert "NoNewPrivileges=yes" in unit
@@ -88,6 +106,7 @@ def test_write_user_service_unit_is_explicit_local_file_write(tmp_path: Path) ->
     assert written.exists()
     text = written.read_text(encoding="utf-8")
     assert "ai_engineering.opencode_worker_lifecycle" in text
+    assert f"RuntimeDirectory={paths.runtime_dir.name}" in text
     assert written.stat().st_mode & 0o777 == 0o600
     assert not paths.config_path.exists()
     assert not paths.runtime_dir.exists()
