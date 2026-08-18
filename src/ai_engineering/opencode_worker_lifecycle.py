@@ -9,7 +9,7 @@ import os
 import time
 from contextlib import AbstractContextManager
 from pathlib import Path
-from typing import Callable
+from typing import Callable, TextIO
 
 from .opencode_control_worker import (
     GhIssueTransport,
@@ -44,7 +44,7 @@ class SingleInstanceLock(AbstractContextManager["SingleInstanceLock"]):
             raise WorkerLifecycleError("invalid lifecycle key")
         self._runtime_dir = runtime_dir
         self._path = runtime_dir / f"worker-{key}.lock"
-        self._handle = None
+        self._handle: TextIO | None = None
 
     @property
     def path(self) -> Path:
@@ -57,11 +57,11 @@ class SingleInstanceLock(AbstractContextManager["SingleInstanceLock"]):
             os.chmod(self._path, 0o600)
             fcntl.flock(handle.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
         except BlockingIOError as exc:
-            if 'handle' in locals():
+            if "handle" in locals():
                 handle.close()
             raise WorkerLifecycleError("worker instance is already active") from exc
         except OSError as exc:
-            if 'handle' in locals():
+            if "handle" in locals():
                 handle.close()
             raise WorkerLifecycleError("worker lifecycle lock unavailable") from exc
         self._handle = handle
