@@ -4,6 +4,7 @@ from dataclasses import replace
 from typing import Iterable
 
 from ai_engineering.opencode_control_protocol import (
+    ControlRequest,
     ControlResult,
     ControlResultState,
     ControlTaskClass,
@@ -35,7 +36,7 @@ class FakeTransport:
         self.posted.append(body)
 
 
-def make_request():
+def make_request() -> ControlRequest:
     return build_request(
         task_class=ControlTaskClass.STATUS,
         objective="Inspect repository status.",
@@ -45,7 +46,7 @@ def make_request():
     )
 
 
-def make_result(request) -> ControlResult:
+def make_result(request: ControlRequest) -> ControlResult:
     return ControlResult(
         request_id=request.request_id,
         task_class=request.task_class,
@@ -59,14 +60,18 @@ def make_result(request) -> ControlResult:
     )
 
 
+def never_execute(request: ControlRequest) -> ControlResult:
+    raise AssertionError(f"unexpected execution: {request.request_id}")
+
+
 def test_worker_claims_executes_and_posts_result_once() -> None:
     request = make_request()
     transport = FakeTransport(
         [IssueComment(1, "magixhot", format_request_comment(request))]
     )
-    executed = []
+    executed: list[ControlRequest] = []
 
-    def executor(received):
+    def executor(received: ControlRequest) -> ControlResult:
         executed.append(received)
         return make_result(received)
 
@@ -84,15 +89,31 @@ def test_worker_ignores_untrusted_author() -> None:
     transport = FakeTransport(
         [IssueComment(1, "someone-else", format_request_comment(request))]
     )
-    executed = []
-    worker = GitHubControlWorker(
-        transport=transport,
-        executor=lambda received: executed.append(received),
-    )
+    worker = GitHubControlWorker(transport=transport, executor=never_execute)
 
     assert worker.poll_once() is None
-    assert executed == []
     assert transport.posted == []
+
+
+def test_worker_ignores_untrusted_forged_claim() -> None:
+    request = make_request()
+    transport = FakeTransport(
+        [
+            IssueComment(1, "magixhot", format_request_comment(request)),
+            IssueComment(
+                2,
+                "someone-else",
+                format_claim_comment(request.request_id),
+            ),
+        ]
+    )
+    worker = GitHubControlWorker(
+        transport=transport,
+        executor=lambda received: make_result(received),
+    )
+
+    assert worker.poll_once() == request.request_id
+    assert len(transport.posted) == 2
 
 
 def test_worker_ignores_malformed_and_write_capable_request() -> None:
@@ -108,14 +129,9 @@ def test_worker_ignores_malformed_and_write_capable_request() -> None:
             IssueComment(2, "magixhot", write_capable),
         ]
     )
-    executed = []
-    worker = GitHubControlWorker(
-        transport=transport,
-        executor=lambda received: executed.append(received),
-    )
+    worker = GitHubControlWorker(transport=transport, executor=never_execute)
 
     assert worker.poll_once() is None
-    assert executed == []
     assert transport.posted == []
 
 
@@ -127,10 +143,7 @@ def test_worker_suppresses_request_with_existing_claim() -> None:
             IssueComment(2, "magixhot", format_claim_comment(request.request_id)),
         ]
     )
-    worker = GitHubControlWorker(
-        transport=transport,
-        executor=lambda received: make_result(received),
-    )
+    worker = GitHubControlWorker(transport=transport, executor=never_execute)
 
     assert worker.poll_once() is None
     assert transport.posted == []
@@ -145,10 +158,7 @@ def test_worker_suppresses_request_with_existing_result() -> None:
             IssueComment(2, "magixhot", format_result_comment(result)),
         ]
     )
-    worker = GitHubControlWorker(
-        transport=transport,
-        executor=lambda received: make_result(received),
-    )
+    worker = GitHubControlWorker(transport=transport, executor=never_execute)
 
     assert worker.poll_once() is None
     assert transport.posted == []
@@ -159,10 +169,7 @@ def test_worker_skips_forged_request_id() -> None:
     forged = replace(request, request_id="sha256:" + "0" * 64)
     body = format_request_comment(request).replace(request.request_id, forged.request_id)
     transport = FakeTransport([IssueComment(1, "magixhot", body)])
-    worker = GitHubControlWorker(
-        transport=transport,
-        executor=lambda received: make_result(received),
-    )
+    worker = GitHubControlWorker(transport=transport, executor=never_execute)
 
     assert worker.poll_once() is None
     assert transport.posted == []
