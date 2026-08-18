@@ -80,6 +80,62 @@ def test_adapter_executes_with_named_readonly_agent_and_unchanged_state() -> Non
     assert transport.calls[1][1]["agent"] == READONLY_AGENT
 
 
+def test_adapter_identifies_session_creation_failure() -> None:
+    def failing_transport(
+        path: str,
+        payload: Mapping[str, Any],
+    ) -> Mapping[str, Any]:
+        del path, payload
+        raise OpenCodeAdapterError("OpenCode HTTP error: 500")
+
+    adapter = ReadOnlyOpenCodeAdapter(
+        Path("."),
+        transport=failing_transport,
+        snapshot_provider=snapshot,
+    )
+    request = build_request(
+        task_class=ControlTaskClass.STATUS,
+        objective="Inspect status.",
+        repository=REPOSITORY,
+        expected_head=HEAD,
+    )
+
+    with pytest.raises(
+        OpenCodeAdapterError,
+        match="OpenCode session creation failed: OpenCode HTTP error: 500",
+    ):
+        adapter.execute(request)
+
+
+def test_adapter_identifies_message_execution_failure() -> None:
+    def failing_transport(
+        path: str,
+        payload: Mapping[str, Any],
+    ) -> Mapping[str, Any]:
+        del payload
+        if path == "/session":
+            return {"id": "session-1"}
+        raise OpenCodeAdapterError("OpenCode HTTP error: 500")
+
+    adapter = ReadOnlyOpenCodeAdapter(
+        Path("."),
+        transport=failing_transport,
+        snapshot_provider=snapshot,
+    )
+    request = build_request(
+        task_class=ControlTaskClass.STATUS,
+        objective="Inspect status.",
+        repository=REPOSITORY,
+        expected_head=HEAD,
+    )
+
+    with pytest.raises(
+        OpenCodeAdapterError,
+        match="OpenCode message execution failed: OpenCode HTTP error: 500",
+    ):
+        adapter.execute(request)
+
+
 def test_adapter_rejects_dirty_baseline_before_contacting_opencode() -> None:
     transport = FakeTransport()
     adapter = ReadOnlyOpenCodeAdapter(
