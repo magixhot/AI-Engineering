@@ -8,13 +8,14 @@ import subprocess
 import time
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Callable, Iterable, Mapping, Protocol
+from typing import Callable, Iterable, Protocol
 
 from .opencode_control_protocol import (
     ControlProtocolError,
     ControlRequest,
     ControlResult,
     parse_request,
+    serialize_request,
     serialize_result,
 )
 from .opencode_readonly_adapter import ReadOnlyOpenCodeAdapter
@@ -54,18 +55,12 @@ def _extract_fenced_payload(body: str, fence: str) -> str | None:
         return None
     start += len(marker)
     end = body.find("\n```", start)
-    if end < 0:
-        return None
-    if body.find(marker, end + 4) >= 0:
+    if end < 0 or body.find(marker, end + 4) >= 0:
         return None
     return body[start:end]
 
 
 def format_request_comment(request: ControlRequest) -> str:
-    """Return the canonical public comment envelope for a request."""
-
-    from .opencode_control_protocol import serialize_request
-
     payload = serialize_request(request).decode("utf-8")
     return f"```{REQUEST_FENCE}\n{payload}\n```"
 
@@ -99,7 +94,7 @@ def _request_id_from_envelope(body: str, fence: str) -> str | None:
 
 
 class GhIssueTransport:
-    """GitHub issue transport implemented through the authenticated `gh` CLI."""
+    """GitHub issue transport implemented through authenticated `gh`."""
 
     def __init__(
         self,
@@ -180,17 +175,20 @@ class GitHubControlWorker:
 
     def poll_once(self) -> str | None:
         comments = self._transport.list_comments()
+        trusted_comments = [
+            comment
+            for comment in comments
+            if comment.author in self._trusted_authors
+        ]
         completed_or_claimed = {
             request_id
-            for comment in comments
+            for comment in trusted_comments
             for fence in (CLAIM_FENCE, RESULT_FENCE)
             if (request_id := _request_id_from_envelope(comment.body, fence))
             is not None
         }
 
-        for comment in comments:
-            if comment.author not in self._trusted_authors:
-                continue
+        for comment in trusted_comments:
             payload = _extract_fenced_payload(comment.body, REQUEST_FENCE)
             if payload is None:
                 continue
@@ -214,8 +212,6 @@ def run_worker(
     poll_seconds: float = DEFAULT_POLL_SECONDS,
     once: bool = False,
 ) -> None:
-    """Run the bounded local worker."""
-
     if poll_seconds < 1.0:
         raise ControlWorkerError("poll interval must be at least one second")
 
