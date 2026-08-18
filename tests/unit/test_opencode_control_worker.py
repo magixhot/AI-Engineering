@@ -227,7 +227,9 @@ def test_execution_failure_becomes_typed_failed_result(capsys) -> None:
     assert result.head == HEAD
     assert result.pre_clean is True
     assert result.post_clean is True
-    assert result.text == "OpenCode server unavailable"
+    assert result.text == (
+        "OpenCode session creation failed: OpenCode server unavailable"
+    )
     assert "OpenCode server unavailable" in capsys.readouterr().err
 
 

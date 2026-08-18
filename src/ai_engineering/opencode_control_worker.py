@@ -100,25 +100,42 @@ def _request_id_from_envelope(body: str, fence: str) -> str | None:
     return request_id if isinstance(request_id, str) else None
 
 
+def _safe_adapter_detail(message: str) -> str | None:
+    safe_exact = {
+        "repository identity mismatch",
+        "workspace must be clean before execution",
+        "expected HEAD does not match workspace",
+        "OpenCode server unavailable",
+        "OpenCode returned malformed JSON",
+        "OpenCode returned a non-object response",
+        "OpenCode did not return a session id",
+        "OpenCode response has no parts list",
+        "OpenCode response contains no textual result",
+        "repository invariant changed during OpenCode execution",
+    }
+    if message in safe_exact or message.startswith("OpenCode HTTP error: "):
+        return message
+    return None
+
+
 def _public_failure_summary(exc: Exception) -> str:
     """Return a bounded public-safe failure summary without local details."""
 
     if isinstance(exc, OpenCodeAdapterError):
         message = str(exc)
-        safe_exact = {
-            "repository identity mismatch",
-            "workspace must be clean before execution",
-            "expected HEAD does not match workspace",
-            "OpenCode server unavailable",
-            "OpenCode returned malformed JSON",
-            "OpenCode returned a non-object response",
-            "OpenCode did not return a session id",
-            "OpenCode response has no parts list",
-            "OpenCode response contains no textual result",
-            "repository invariant changed during OpenCode execution",
-        }
-        if message in safe_exact or message.startswith("OpenCode HTTP error: "):
-            return message
+        safe = _safe_adapter_detail(message)
+        if safe is not None:
+            return safe
+
+        for prefix in (
+            "OpenCode session creation failed: ",
+            "OpenCode message execution failed: ",
+        ):
+            if message.startswith(prefix):
+                detail = _safe_adapter_detail(message[len(prefix) :])
+                if detail is not None:
+                    return prefix + detail
+
         return "OpenCode adapter failed closed"
     return "Read-only execution failed closed"
 

@@ -242,6 +242,18 @@ class ReadOnlyOpenCodeAdapter:
             lambda: capture_repository_snapshot(self._repository)
         )
 
+    def _call_transport(
+        self,
+        path: str,
+        payload: Mapping[str, Any],
+        *,
+        stage: str,
+    ) -> Mapping[str, Any]:
+        try:
+            return self._transport(path, payload)
+        except OpenCodeAdapterError as exc:
+            raise OpenCodeAdapterError(f"{stage} failed: {exc}") from exc
+
     def execute(self, request: ControlRequest) -> ControlResult:
         """Run an allowed read-only request through the dedicated OpenCode agent."""
 
@@ -254,9 +266,10 @@ class ReadOnlyOpenCodeAdapter:
         if request.expected_head is not None and before.head != request.expected_head:
             raise OpenCodeAdapterError("expected HEAD does not match workspace")
 
-        session = self._transport(
+        session = self._call_transport(
             "/session",
             {"title": f"AUTO-0013 {request.request_id[:20]}"},
+            stage="OpenCode session creation",
         )
         session_id = session.get("id")
         if not isinstance(session_id, str) or not session_id:
@@ -271,12 +284,13 @@ class ReadOnlyOpenCodeAdapter:
             f"Expected HEAD: {request.expected_head or 'unspecified'}\n"
             f"Objective:\n{request.objective}"
         )
-        response = self._transport(
+        response = self._call_transport(
             f"/session/{session_id}/message",
             {
                 "agent": READONLY_AGENT,
                 "parts": [{"type": "text", "text": prompt}],
             },
+            stage="OpenCode message execution",
         )
         text = _extract_text(response)
 
