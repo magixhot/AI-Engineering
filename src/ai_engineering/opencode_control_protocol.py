@@ -118,9 +118,11 @@ def _validate_request_fields(
     if isinstance(max_result_chars, bool) or not isinstance(max_result_chars, int):
         raise ControlProtocolError("max_result_chars must be an integer")
     if not MIN_RESULT_CHARS <= max_result_chars <= MAX_RESULT_CHARS:
-        raise ControlProtocolError(
-            f"max_result_chars must be between {MIN_RESULT_CHARS} and {MAX_RESULT_CHARS}"
+        message = (
+            "max_result_chars must be between "
+            f"{MIN_RESULT_CHARS} and {MAX_RESULT_CHARS}"
         )
+        raise ControlProtocolError(message)
     if not isinstance(task_class, ControlTaskClass):
         raise ControlProtocolError("invalid task class")
 
@@ -190,7 +192,9 @@ def serialize_request(request: ControlRequest) -> bytes:
         version=request.version,
     )
     if request.request_id != expected:
-        raise ControlProtocolError("request_id does not match canonical request payload")
+        raise ControlProtocolError(
+            "request_id does not match canonical request payload"
+        )
     return _canonical_json(
         {
             "expected_head": request.expected_head,
@@ -255,7 +259,9 @@ def parse_request(data: bytes | str) -> ControlRequest:
         version=request.version,
     )
     if request.request_id != expected_id:
-        raise ControlProtocolError("request_id does not match canonical request payload")
+        raise ControlProtocolError(
+            "request_id does not match canonical request payload"
+        )
     return request
 
 
@@ -288,7 +294,9 @@ def _validate_result(result: ControlResult) -> None:
         raise ControlProtocolError("branch must not be empty")
     if not _SHA_RE.fullmatch(result.head):
         raise ControlProtocolError("head must be a lowercase 40-character SHA")
-    if not isinstance(result.pre_clean, bool) or not isinstance(result.post_clean, bool):
+    if not isinstance(result.pre_clean, bool) or not isinstance(
+        result.post_clean, bool
+    ):
         raise ControlProtocolError("cleanliness evidence must be boolean")
     if not isinstance(result.text, str):
         raise ControlProtocolError("result text must be a string")
