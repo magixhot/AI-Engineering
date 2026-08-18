@@ -22,6 +22,9 @@
 | AUTO-0011_FINAL_EVIDENCE.md | AUTO-0011 staged delivery and closure evidence | Complete / Verified |
 | AUTO-0012_RECONCILIATION_EXECUTION_EVIDENCE_DESIGN.md | Deterministic reconciliation execution receipt contract | Complete / Verified |
 | AUTO-0012_FINAL_EVIDENCE.md | AUTO-0012 staged delivery and closure evidence | Complete / Verified |
+| AUTO-0013_OPENCODE_CONTROL_BRIDGE_DESIGN.md | Bounded read-only OpenCode control bridge contract | Complete / Verified through stage 05 |
+| AUTO-0013_05_END_TO_END_VERIFICATION.md | Installed/local-worker E2E verification evidence | Complete / Verified |
+| AUTO-0013_FINAL_EVIDENCE.md | AUTO-0013 staged delivery and final closure evidence | Closure in progress |
 
 ## Active Engineering Work
 
@@ -32,47 +35,45 @@
 | Workspace/Git/Python safety | COMPLETE / VERIFIED |
 | Release line 0.2.0 | VERIFIED HISTORICAL LINE |
 | AUTO-0001 through AUTO-0012 | COMPLETE / VERIFIED |
+| AUTO-0013 stages 01–05 | COMPLETE / VERIFIED |
+| AUTO-0013-06 final documentation reconciliation | ACTIVE |
 | Diagnostics maintenance | ACTIVE |
 
-## AUTO-0012 Delivery State
+## AUTO-0013 Delivery State
 
 | Stage | Status |
 |---|---|
-| AUTO-0012-01 Execution Evidence Design / Contract | COMPLETE / VERIFIED — PR #121; Quality #248; post-merge #249 |
-| AUTO-0012-02 Typed Receipt Model / Canonicalization | COMPLETE / VERIFIED — PR #122; corrected Quality #251; post-merge #252 |
-| AUTO-0012-03 Evidence Projection / Safety Invariants | COMPLETE / VERIFIED — PR #123; Quality #253; post-merge #254 |
-| AUTO-0012-04 Public CLI Integration | COMPLETE / VERIFIED — PR #124; corrected Quality #257; post-merge #258 |
-| AUTO-0012-05 Installed Distribution Verification | COMPLETE / VERIFIED — PR #125; corrected Quality #260; post-merge #261 |
-| AUTO-0012-06 Final Evidence / Documentation Reconciliation | DOCUMENTATION CLOSURE — no authority expansion |
+| AUTO-0013-01 Control Bridge Design / Contract | COMPLETE / VERIFIED — PR #127; Quality #265; exact post-merge Quality SUCCESS |
+| AUTO-0013-02 Typed Request / Result Protocol | COMPLETE / VERIFIED — PR #128; Quality #268; exact post-merge Quality SUCCESS |
+| AUTO-0013-03 Read-Only OpenCode Adapter | COMPLETE / VERIFIED — PR #129; Quality #270; exact post-merge Quality SUCCESS |
+| AUTO-0013-04 GitHub Control Worker | COMPLETE / VERIFIED — PR #131; Quality #273; exact post-merge Quality SUCCESS |
+| AUTO-0013-04 Corrective Failed-Result Hardening | COMPLETE / VERIFIED — PR #132; Quality #275; exact post-merge Quality SUCCESS |
+| AUTO-0013-05 OpenCode Workspace Routing | COMPLETE / VERIFIED prerequisite — PR #133; Quality #278; exact post-merge Quality SUCCESS |
+| AUTO-0013-05 End-to-End Verification | COMPLETE / VERIFIED — PR #134; Quality #280; exact post-merge Quality SUCCESS on `abcecfdbdf5767db67cda78aaf6359e0f599f005` |
+| AUTO-0013-06 Final Evidence / Documentation Reconciliation | DOCUMENTATION CLOSURE IN PROGRESS — final pre/post-merge gates required |
 
-## Verified Closure Evidence
+## Verified AUTO-0013 Evidence
 
-AUTO-0012 verified implementation baseline before final documentation reconciliation:
+The verified successful live request is:
 
 ```text
-2268f4c8278f3c81b5735e26337984aebd300c6b
+sha256:dcdfcd976fff8c7afd16352fdc63e2781c7067c6492c4e43733abd4bd6efeb2c
 ```
 
-Exact post-merge Quality #261 succeeded on that commit. This baseline is historical evidence only and is not a claim that later `master` must equal that SHA.
+Its terminal result recorded `SUCCEEDED`, repository `magixhot/AI-Engineering`, branch `master`, exact HEAD `2d03f9e37e373def6b0f705b6f2b5da751279427`, `pre_clean=true`, and `post_clean=true`. The adapter only returns success after complete before/after repository snapshot equality.
 
-## Reconciliation Source Tree
+## AUTO-0013 Source Tree
 
 ```text
+.opencode/agents/
+└── auto-0013-readonly.md
+
 src/ai_engineering/
-├── project_reconciliation.py
-├── project_reconciliation_cli.py
-├── project_reconciliation_apply.py
-├── project_reconciliation_apply_cli.py
-├── project_reconciliation_orchestration.py
-├── project_reconciliation_orchestration_cli.py
-├── project_reconciliation_policy.py
-├── project_reconciliation_approval.py
-├── project_reconciliation_approval_context.py
-├── project_reconciliation_approval_verification.py
-├── project_reconciliation_receipt.py
-├── project_reconciliation_receipt_projection.py
-├── project_reconciliation_receipt_cli.py
-└── public_cli.py
+├── opencode_control_protocol.py
+├── opencode_readonly_adapter.py
+└── opencode_control_worker.py
 ```
 
-AUTO-0007 stays read-only, AUTO-0008 stays the sole one-step apply authority, AUTO-0009 remains bounded orchestration, AUTO-0010 policy can only restrict those existing authorities, AUTO-0011 approval remains an additional single-candidate fail-closed gate, and AUTO-0012 receipts remain deterministic evidence only. No later capability milestone is active until a separate design/contract is approved and started.
+AUTO-0007 stays read-only, AUTO-0008 stays the sole one-step apply authority, AUTO-0009 remains bounded orchestration, AUTO-0010 policy can only restrict those existing authorities, AUTO-0011 approval remains an additional single-candidate fail-closed gate, AUTO-0012 receipts remain deterministic evidence only, and AUTO-0013 remains bounded read-only remote inspection/control transport only.
+
+Automatic local worker startup, altered event delivery, a private control surface, or any write/apply capability requires a separate future design/contract.
