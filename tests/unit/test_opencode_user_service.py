@@ -66,7 +66,10 @@ def test_render_systemd_user_unit_is_user_scoped_and_bounded(tmp_path: Path) -> 
 
 
 def test_render_rejects_relative_python_executable(tmp_path: Path) -> None:
-    with pytest.raises(UserServiceError, match="python_executable must be an absolute path"):
+    with pytest.raises(
+        UserServiceError,
+        match="python_executable must be an absolute path",
+    ):
         render_systemd_user_unit(
             python_executable=Path("python3"),
             paths=make_paths(tmp_path),
