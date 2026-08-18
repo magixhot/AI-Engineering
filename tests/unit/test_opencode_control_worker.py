@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import replace
+from pathlib import Path
 from typing import Iterable
 
 from ai_engineering.opencode_control_protocol import (
@@ -15,9 +16,15 @@ from ai_engineering.opencode_control_worker import (
     RESULT_FENCE,
     GitHubControlWorker,
     IssueComment,
+    execute_with_failed_result,
     format_claim_comment,
     format_request_comment,
     format_result_comment,
+)
+from ai_engineering.opencode_readonly_adapter import (
+    OpenCodeAdapterError,
+    ReadOnlyOpenCodeAdapter,
+    RepositorySnapshot,
 )
 
 REPOSITORY = "magixhot/AI-Engineering"
@@ -57,6 +64,19 @@ def make_result(request: ControlRequest) -> ControlResult:
         state=ControlResultState.SUCCEEDED,
         text="Repository is clean.",
         post_clean=True,
+    )
+
+
+def make_snapshot(*, status: str = "") -> RepositorySnapshot:
+    return RepositorySnapshot(
+        branch="master",
+        head=HEAD,
+        status=status,
+        index_state_hash="index",
+        worktree_diff_hash="worktree",
+        cached_diff_hash="cached",
+        local_config_hash="config",
+        remotes_hash="remotes",
     )
 
 
@@ -176,3 +196,99 @@ def test_worker_skips_forged_request_id() -> None:
 
     assert worker.poll_once() is None
     assert transport.posted == []
+
+
+def test_execution_failure_becomes_typed_failed_result(capsys) -> None:
+    request = make_request()
+    snapshot = make_snapshot()
+
+    def snapshot_provider() -> RepositorySnapshot:
+        return snapshot
+
+    def failing_transport(path, payload):
+        raise OpenCodeAdapterError("OpenCode server unavailable")
+
+    adapter = ReadOnlyOpenCodeAdapter(
+        Path("/unused"),
+        transport=failing_transport,
+        snapshot_provider=snapshot_provider,
+    )
+
+    result = execute_with_failed_result(
+        Path("/unused"),
+        adapter,
+        request,
+        snapshot_provider=snapshot_provider,
+    )
+
+    assert result.state is ControlResultState.FAILED
+    assert result.request_id == request.request_id
+    assert result.branch == "master"
+    assert result.head == HEAD
+    assert result.pre_clean is True
+    assert result.post_clean is True
+    assert result.text == "OpenCode server unavailable"
+    assert "OpenCode server unavailable" in capsys.readouterr().err
+
+
+def test_failure_summary_redacts_unapproved_adapter_detail(capsys) -> None:
+    request = make_request()
+    snapshot = make_snapshot()
+
+    def snapshot_provider() -> RepositorySnapshot:
+        return snapshot
+
+    def failing_transport(path, payload):
+        raise OpenCodeAdapterError("private local path /home/example leaked")
+
+    adapter = ReadOnlyOpenCodeAdapter(
+        Path("/unused"),
+        transport=failing_transport,
+        snapshot_provider=snapshot_provider,
+    )
+
+    result = execute_with_failed_result(
+        Path("/unused"),
+        adapter,
+        request,
+        snapshot_provider=snapshot_provider,
+    )
+
+    assert result.state is ControlResultState.FAILED
+    assert result.text == "OpenCode adapter failed closed"
+    assert "/home/example" not in result.text
+    assert "/home/example" in capsys.readouterr().err
+
+
+def test_post_failure_snapshot_error_sets_post_clean_false(capsys) -> None:
+    request = make_request()
+    snapshot = make_snapshot()
+    calls = 0
+
+    def snapshot_provider() -> RepositorySnapshot:
+        nonlocal calls
+        calls += 1
+        if calls >= 3:
+            raise OpenCodeAdapterError("post snapshot failed")
+        return snapshot
+
+    def failing_transport(path, payload):
+        raise OpenCodeAdapterError("OpenCode server unavailable")
+
+    adapter = ReadOnlyOpenCodeAdapter(
+        Path("/unused"),
+        transport=failing_transport,
+        snapshot_provider=snapshot_provider,
+    )
+
+    result = execute_with_failed_result(
+        Path("/unused"),
+        adapter,
+        request,
+        snapshot_provider=snapshot_provider,
+    )
+
+    assert result.state is ControlResultState.FAILED
+    assert result.pre_clean is True
+    assert result.post_clean is False
+    assert "post-failure snapshot error" in capsys.readouterr().err
