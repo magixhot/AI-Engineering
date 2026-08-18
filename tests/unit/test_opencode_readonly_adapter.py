@@ -176,7 +176,7 @@ def test_adapter_rejects_repository_identity_mismatch() -> None:
 )
 def test_http_transport_rejects_non_loopback_or_ambiguous_urls(url: str) -> None:
     with pytest.raises(OpenCodeAdapterError):
-        OpenCodeHttpTransport(url)
+        OpenCodeHttpTransport(url, directory=Path("."))
 
 
 def test_adapter_bounds_result_to_request_limit() -> None:
