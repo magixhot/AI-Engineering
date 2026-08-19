@@ -1,8 +1,8 @@
 from __future__ import annotations
 
 import json
+from collections.abc import Callable, Sequence
 from pathlib import Path
-from typing import Sequence
 
 from ai_engineering.workstation_doctor_model import (
     CheckState,
@@ -16,7 +16,10 @@ from ai_engineering.workstation_doctor_runtime import (
 )
 
 
-def _ready_runner(root: Path, config_path: Path):
+def _ready_runner(
+    root: Path,
+    config_path: Path,
+) -> Callable[[Sequence[str]], CommandObservation]:
     unit = (
         "[Service]\n"
         "ExecStart=/usr/bin/python3 -m ai_engineering.opencode_worker_lifecycle "
