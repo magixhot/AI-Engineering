@@ -1,4 +1,4 @@
-"""Public console entry point with reconciliation orchestration routing."""
+"""Public console entry point with reconciliation and doctor routing."""
 
 from __future__ import annotations
 
@@ -19,6 +19,7 @@ from .project_reconciliation_orchestration_cli import run_reconciliation_orchest
 from .project_reconciliation_receipt_cli import (
     run_reconciliation_orchestration_receipt,
 )
+from .workstation_doctor_runtime import probe_workstation, render_doctor_report
 
 
 def _run_parser() -> argparse.ArgumentParser:
@@ -38,8 +39,22 @@ def _approval_parser() -> argparse.ArgumentParser:
     return parser
 
 
+def _doctor_parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(prog="ai-engineering workstation doctor")
+    parser.add_argument(
+        "--repository-root",
+        default=".",
+        help="candidate repository root to validate; defaults to current directory",
+    )
+    return parser
+
+
 def _is_reconciliation_action(argv: Sequence[str], action: str) -> bool:
     return len(argv) >= 3 and list(argv[:3]) == ["project", "reconcile", action]
+
+
+def _is_doctor_action(argv: Sequence[str]) -> bool:
+    return len(argv) >= 2 and list(argv[:2]) == ["workstation", "doctor"]
 
 
 def _approval_command(arguments: Sequence[str]) -> int:
@@ -56,10 +71,19 @@ def _approval_command(arguments: Sequence[str]) -> int:
     return 0
 
 
+def _doctor_command(arguments: Sequence[str]) -> int:
+    args = _doctor_parser().parse_args(arguments)
+    report = probe_workstation(Path(args.repository_root).resolve())
+    print(render_doctor_report(report))
+    return 0 if report.ready else 1
+
+
 def main(argv: Sequence[str] | None = None) -> int:
-    """Route approval/run while preserving all existing CLI commands."""
+    """Route doctor/approval/run while preserving all existing CLI commands."""
 
     arguments = list(sys.argv[1:] if argv is None else argv)
+    if _is_doctor_action(arguments):
+        return _doctor_command(arguments[2:])
     if _is_reconciliation_action(arguments, "approve"):
         return _approval_command(arguments[3:])
     if not _is_reconciliation_action(arguments, "run"):
