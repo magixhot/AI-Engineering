@@ -19,8 +19,11 @@
 | AUTO-0011_RECONCILIATION_APPROVAL_DESIGN.md | Single-candidate reconciliation approval contract | Complete / Verified |
 | AUTO-0012_RECONCILIATION_EXECUTION_EVIDENCE_DESIGN.md | Deterministic execution receipt contract | Complete / Verified |
 | AUTO-0013_OPENCODE_CONTROL_BRIDGE_DESIGN.md | Bounded read-only OpenCode control bridge contract | Complete / Verified |
-| AUTO-0013_05_END_TO_END_VERIFICATION.md | Installed/local-worker E2E verification evidence | Complete / Verified |
+| AUTO-0013_05_END_TO_END_VERIFICATION.md | OpenCode bridge E2E verification evidence | Complete / Verified |
 | AUTO-0013_FINAL_EVIDENCE.md | AUTO-0013 staged delivery and final closure evidence | Complete / Verified |
+| AUTO-0014_LOCAL_CONTROL_WORKER_SERVICE_DESIGN.md | Local read-only worker service/lifecycle contract | Complete / Verified through stage 05; final gate active |
+| AUTO-0014_05_INSTALLED_LOCAL_SERVICE_VERIFICATION.md | Installed user-service verification evidence | Complete / Verified |
+| AUTO-0014_FINAL_EVIDENCE.md | AUTO-0014 staged delivery and final closure evidence | Final gate active |
 
 ## Active Engineering Work
 
@@ -31,43 +34,47 @@
 | Workspace/Git/Python safety | COMPLETE / VERIFIED |
 | Release line 0.2.0 | VERIFIED HISTORICAL LINE |
 | AUTO-0001 through AUTO-0013 | COMPLETE / VERIFIED |
+| AUTO-0014 stages 01 through 05 | COMPLETE / VERIFIED |
+| AUTO-0014-06 Final Evidence / Documentation Reconciliation | ACTIVE |
 | Diagnostics maintenance | ACTIVE |
 
-## AUTO-0013 Delivery State
+## AUTO-0014 Delivery State
 
 | Stage | Status |
 |---|---|
-| AUTO-0013-01 Control Bridge Design / Contract | COMPLETE / VERIFIED — PR #127; Quality #265; exact post-merge Quality SUCCESS |
-| AUTO-0013-02 Typed Request / Result Protocol | COMPLETE / VERIFIED — PR #128; Quality #268; exact post-merge Quality SUCCESS |
-| AUTO-0013-03 Read-Only OpenCode Adapter | COMPLETE / VERIFIED — PR #129; Quality #270; exact post-merge Quality SUCCESS |
-| AUTO-0013-04 GitHub Control Worker | COMPLETE / VERIFIED — PR #131; Quality #273; exact post-merge Quality SUCCESS |
-| AUTO-0013-04 Corrective Failed-Result Hardening | COMPLETE / VERIFIED — PR #132; Quality #275; exact post-merge Quality SUCCESS |
-| AUTO-0013-05 OpenCode Workspace Routing | COMPLETE / VERIFIED prerequisite — PR #133; Quality #278; exact post-merge Quality SUCCESS |
-| AUTO-0013-05 End-to-End Verification | COMPLETE / VERIFIED — PR #134; Quality #280; exact post-merge Quality SUCCESS |
-| AUTO-0013-06 Final Evidence / Documentation Reconciliation | COMPLETE / VERIFIED — PR #135; Quality #282; exact post-merge Quality #283 SUCCESS on `0aaa95e8119e79fca3a2a100f6d629887c3fb5a6` |
+| AUTO-0014-01 Local Worker Service Design / Contract | COMPLETE / VERIFIED — PR #137; pre-merge and exact post-merge Quality SUCCESS |
+| AUTO-0014-02 Typed Runtime / Service Configuration | COMPLETE / VERIFIED — PR #138; pre-merge and exact post-merge Quality SUCCESS |
+| AUTO-0014-03 Single-Instance Worker Lifecycle | COMPLETE / VERIFIED — PR #139; pre-merge and exact post-merge Quality SUCCESS |
+| AUTO-0014-04 User Service Integration | COMPLETE / VERIFIED — PR #140; pre-merge and exact post-merge Quality SUCCESS |
+| AUTO-0014-05 Installed Local-Service Verification | COMPLETE / VERIFIED — PR #143; Quality #302 SUCCESS; merged `58e0b3c6cd5393386ad97871aa34f6fd9e4fef47`; exact post-merge Quality SUCCESS |
+| AUTO-0014-06 Final Evidence / Documentation Reconciliation | ACTIVE — final stage gate required |
 
-## Verified AUTO-0013 Evidence
+Corrective prerequisites for stage 05: PR #141 added hardened `RuntimeDirectory=` handling; PR #142 added safe OpenCode execution-stage diagnostics and merged as exact master `5b5b3b0ec1922685a594679ddebc199f28b6b8d5` before the final installed-service E2E.
 
-Successful live request:
+## Verified AUTO-0014 Evidence
+
+Successful installed-service request:
 
 ```text
-sha256:dcdfcd976fff8c7afd16352fdc63e2781c7067c6492c4e43733abd4bd6efeb2c
+sha256:593eff3b7e76a65ec2399ea3988ae0895ea01c2bc608bb690bc62be46fe9baf7
 ```
 
-Its terminal result recorded `SUCCEEDED`, repository `magixhot/AI-Engineering`, branch `master`, exact HEAD `2d03f9e37e373def6b0f705b6f2b5da751279427`, `pre_clean=true`, and `post_clean=true`.
+Its terminal result recorded `SUCCEEDED`, repository `magixhot/AI-Engineering`, branch `master`, exact HEAD `5b5b3b0ec1922685a594679ddebc199f28b6b8d5`, `pre_clean=true`, and `post_clean=true`.
 
-## AUTO-0013 Source Tree
+Lifecycle verification also recorded `restart=PASS`, `single-instance=PASS`, and `repository-invariants=PASS`.
+
+## AUTO-0014 Source Tree
 
 ```text
-.opencode/agents/
-└── auto-0013-readonly.md
-
 src/ai_engineering/
+├── opencode_service_config.py
+├── opencode_worker_lifecycle.py
+├── opencode_user_service.py
 ├── opencode_control_protocol.py
 ├── opencode_readonly_adapter.py
 └── opencode_control_worker.py
 ```
 
-AUTO-0007 stays read-only, AUTO-0008 stays the sole one-step apply authority, AUTO-0009 remains bounded orchestration, AUTO-0010 policy can only restrict those existing authorities, AUTO-0011 approval remains an additional fail-closed gate, AUTO-0012 receipts remain deterministic evidence only, and AUTO-0013 remains bounded read-only remote inspection/control transport only.
+AUTO-0007 stays read-only, AUTO-0008 stays the sole one-step apply authority, AUTO-0009 remains bounded orchestration, AUTO-0010 policy can only restrict those existing authorities, AUTO-0011 approval remains an additional fail-closed gate, AUTO-0012 receipts remain deterministic evidence only, AUTO-0013 remains bounded read-only remote inspection/control transport, and AUTO-0014 adds only local lifecycle supervision for that worker.
 
-No later AUTO capability is active. Automatic local worker startup, altered event delivery, a private control surface, or any write/apply capability requires a separate future design/contract.
+After AUTO-0014 closes, the approved next design direction is a read-only exact post-merge Quality verifier. It must remove manual verification without gaining workflow mutation, merge, or repository mutation authority.
