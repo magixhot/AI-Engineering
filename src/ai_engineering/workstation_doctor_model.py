@@ -97,7 +97,9 @@ def build_doctor_report(
     missing = set(REQUIRED_CHECKS) - seen
     extra = seen - set(REQUIRED_CHECKS)
     if missing or extra:
-        raise WorkstationDoctorError("doctor report must contain every required check once")
+        raise WorkstationDoctorError(
+            "doctor report must contain every required check once"
+        )
 
     readiness = (
         WorkstationReadiness.READY
