@@ -89,7 +89,9 @@ def validate_verification_input(value: QualityVerificationInput) -> None:
         raise QualityVerificationError("unsupported verification event")
 
 
-def build_verification_input(*, repository: str, head_sha: str) -> QualityVerificationInput:
+def build_verification_input(
+    *, repository: str, head_sha: str
+) -> QualityVerificationInput:
     value = QualityVerificationInput(repository=repository, head_sha=head_sha)
     validate_verification_input(value)
     return value
