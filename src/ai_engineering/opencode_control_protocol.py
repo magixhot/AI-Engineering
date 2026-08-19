@@ -1,4 +1,4 @@
-"""Typed, deterministic protocol for AUTO-0013 OpenCode control requests/results."""
+"""Typed, deterministic protocol for AUTO-0013/AUTO-0016 control requests/results."""
 
 from __future__ import annotations
 
@@ -27,6 +27,7 @@ class ControlTaskClass(str, Enum):
     INSPECT = "inspect"
     PLAN = "plan"
     DIFF = "diff"
+    QUALITY_VERIFY = "quality_verify"
 
 
 class ControlResultState(str, Enum):
@@ -125,6 +126,8 @@ def _validate_request_fields(
         raise ControlProtocolError(message)
     if not isinstance(task_class, ControlTaskClass):
         raise ControlProtocolError("invalid task class")
+    if task_class is ControlTaskClass.QUALITY_VERIFY and expected_head is None:
+        raise ControlProtocolError("quality_verify requires expected_head")
 
 
 def derive_request_id(
