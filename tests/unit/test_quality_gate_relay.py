@@ -67,9 +67,16 @@ def test_quality_verify_relay_succeeds_without_opencode(monkeypatch) -> None:
     request = _request()
 
     def fake_verify(value):
-        return select_authoritative_run(value, [_run(status="completed", conclusion="success")])
+        return select_authoritative_run(
+            value,
+            [_run(status="completed", conclusion="success")],
+        )
 
-    monkeypatch.setattr(quality_gate_relay, "verify_exact_post_merge_quality", fake_verify)
+    monkeypatch.setattr(
+        quality_gate_relay,
+        "verify_exact_post_merge_quality",
+        fake_verify,
+    )
     result = quality_gate_relay.execute_quality_verify(
         Path("/unused"),
         request,
@@ -99,7 +106,11 @@ def test_quality_verify_relay_waits_for_pending_run(monkeypatch) -> None:
     def fake_verify(value):
         return select_authoritative_run(value, [next(runs)])
 
-    monkeypatch.setattr(quality_gate_relay, "verify_exact_post_merge_quality", fake_verify)
+    monkeypatch.setattr(
+        quality_gate_relay,
+        "verify_exact_post_merge_quality",
+        fake_verify,
+    )
     monkeypatch.setattr(quality_gate_relay.time, "sleep", sleeps.append)
 
     result = quality_gate_relay.execute_quality_verify(
@@ -121,9 +132,16 @@ def test_quality_verify_relay_bounds_pending_timeout(monkeypatch) -> None:
     monkeypatch.setattr(quality_gate_relay.time, "sleep", lambda _: None)
 
     def fake_verify(value):
-        return select_authoritative_run(value, [_run(status="queued", conclusion=None)])
+        return select_authoritative_run(
+            value,
+            [_run(status="queued", conclusion=None)],
+        )
 
-    monkeypatch.setattr(quality_gate_relay, "verify_exact_post_merge_quality", fake_verify)
+    monkeypatch.setattr(
+        quality_gate_relay,
+        "verify_exact_post_merge_quality",
+        fake_verify,
+    )
     result = quality_gate_relay.execute_quality_verify(
         Path("/unused"),
         request,
@@ -133,4 +151,6 @@ def test_quality_verify_relay_bounds_pending_timeout(monkeypatch) -> None:
     assert result.state is ControlResultState.FAILED
     document = json.loads(result.text)
     assert document["state"] == "UNAVAILABLE"
-    assert document["reason"] == "terminal Quality state not observed before relay timeout"
+    assert document["reason"] == (
+        "terminal Quality state not observed before relay timeout"
+    )
