@@ -1,8 +1,9 @@
-"""Read-only exact Quality gate relay for AUTO-0016-01B."""
+"""Read-only exact Quality gate relay for AUTO-0016-01B/01C."""
 
 from __future__ import annotations
 
 import json
+import time
 from dataclasses import asdict
 from pathlib import Path
 
@@ -13,8 +14,38 @@ from .opencode_control_protocol import (
     ControlTaskClass,
 )
 from .opencode_readonly_adapter import SnapshotProvider, capture_repository_snapshot
-from .quality_verification import build_verification_input
+from .quality_verification import (
+    QualityVerificationResult,
+    QualityVerificationState,
+    build_verification_input,
+)
 from .quality_verifier import verify_exact_post_merge_quality
+
+QUALITY_RELAY_POLL_SECONDS = 5.0
+QUALITY_RELAY_MAX_ATTEMPTS = 180
+_RETRYABLE_STATES = frozenset(
+    {QualityVerificationState.PENDING, QualityVerificationState.UNAVAILABLE}
+)
+
+
+def _wait_for_terminal_quality(verification_input) -> QualityVerificationResult:
+    """Poll read-only Actions evidence until terminal or bounded timeout."""
+
+    verified = verify_exact_post_merge_quality(verification_input)
+    attempts = 1
+    while verified.state in _RETRYABLE_STATES and attempts < QUALITY_RELAY_MAX_ATTEMPTS:
+        time.sleep(QUALITY_RELAY_POLL_SECONDS)
+        verified = verify_exact_post_merge_quality(verification_input)
+        attempts += 1
+
+    if verified.state in _RETRYABLE_STATES:
+        return QualityVerificationResult(
+            state=QualityVerificationState.UNAVAILABLE,
+            verification_input=verification_input,
+            evidence=verified.evidence,
+            reason="terminal Quality state not observed before relay timeout",
+        )
+    return verified
 
 
 def execute_quality_verify(
@@ -38,7 +69,7 @@ def execute_quality_verify(
         repository=request.repository,
         head_sha=request.expected_head,
     )
-    verified = verify_exact_post_merge_quality(verification_input)
+    verified = _wait_for_terminal_quality(verification_input)
     after = provider()
 
     document: dict[str, object] = {
