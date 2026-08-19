@@ -8,6 +8,7 @@ on:
 
 permissions:
   contents: read
+  actions: read
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -31,3 +32,11 @@ jobs:
       - run: uv run python -m ruff check .
       - run: uv run python -m mypy src tests
       - run: uv run python -m pytest
+      - name: Verify exact post-merge Quality gate
+        if: github.event_name == 'pull_request'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: >-
+          uv run python -m ai_engineering.quality_verifier
+          "${{ github.repository }}"
+          "${{ github.event.pull_request.base.sha }}"
