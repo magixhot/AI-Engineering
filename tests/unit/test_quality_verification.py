@@ -63,9 +63,19 @@ def test_parse_workflow_run_evidence_projects_only_typed_fields() -> None:
 
 @pytest.mark.parametrize(
     "field",
-    ["id", "workflow_id", "head_branch", "head_sha", "event", "status", "conclusion"],
+    [
+        "id",
+        "workflow_id",
+        "head_branch",
+        "head_sha",
+        "event",
+        "status",
+        "conclusion",
+    ],
 )
-def test_parse_workflow_run_evidence_rejects_missing_required_fields(field: str) -> None:
+def test_parse_workflow_run_evidence_rejects_missing_required_fields(
+    field: str,
+) -> None:
     raw = _run()
     del raw[field]
     with pytest.raises(QualityVerificationError):
@@ -81,7 +91,10 @@ def test_exact_completed_success_satisfies_gate() -> None:
     assert result.satisfies_gate is True
 
 
-@pytest.mark.parametrize("status", ["queued", "in_progress", "waiting", "requested", "pending"])
+@pytest.mark.parametrize(
+    "status",
+    ["queued", "in_progress", "waiting", "requested", "pending"],
+)
 def test_nonterminal_exact_run_is_pending(status: str) -> None:
     verification_input = build_verification_input(
         repository="magixhot/AI-Engineering", head_sha=SHA
@@ -126,7 +139,9 @@ def test_terminal_non_success_fails_closed(conclusion: str) -> None:
         {"status": "completed", "conclusion": None},
     ],
 )
-def test_identity_or_schema_mismatch_is_invalid(overrides: dict[str, object]) -> None:
+def test_identity_or_schema_mismatch_is_invalid(
+    overrides: dict[str, object],
+) -> None:
     verification_input = build_verification_input(
         repository="magixhot/AI-Engineering", head_sha=SHA
     )
@@ -141,6 +156,8 @@ def test_nonterminal_run_with_conclusion_is_invalid() -> None:
     verification_input = build_verification_input(
         repository="magixhot/AI-Engineering", head_sha=SHA
     )
-    evidence = parse_workflow_run_evidence(_run(status="in_progress", conclusion="success"))
+    evidence = parse_workflow_run_evidence(
+        _run(status="in_progress", conclusion="success")
+    )
     result = classify_exact_run(verification_input, evidence)
     assert result.state is QualityVerificationState.INVALID
