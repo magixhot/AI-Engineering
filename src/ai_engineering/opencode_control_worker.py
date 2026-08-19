@@ -1,4 +1,4 @@
-"""Bounded GitHub control worker for AUTO-0013."""
+"""Bounded GitHub control worker for AUTO-0013/AUTO-0016."""
 
 from __future__ import annotations
 
@@ -214,8 +214,7 @@ class GhIssueTransport:
         except subprocess.TimeoutExpired as exc:
             raise ControlWorkerError("GitHub request timed out") from exc
         except subprocess.CalledProcessError as exc:
-            detail = exc.stderr.strip() or "GitHub request failed"
-            raise ControlWorkerError(detail) from exc
+            raise ControlWorkerError("GitHub request failed") from exc
         except FileNotFoundError as exc:
             raise ControlWorkerError("gh executable not found") from exc
         return completed.stdout
@@ -225,29 +224,32 @@ class GhIssueTransport:
             f"repos/{self._repository}/issues/{self._issue_number}/comments"
             "?per_page=100"
         )
-        raw = self._run("api", endpoint)
+        raw = self._run("api", "--paginate", "--slurp", endpoint)
         try:
-            value = json.loads(raw)
+            pages = json.loads(raw)
         except json.JSONDecodeError as exc:
             raise ControlWorkerError("GitHub returned malformed JSON") from exc
-        if not isinstance(value, list):
-            raise ControlWorkerError("GitHub comments response is not a list")
+        if not isinstance(pages, list):
+            raise ControlWorkerError("GitHub comments response is not paginated")
 
         comments: list[IssueComment] = []
-        for item in value:
-            if not isinstance(item, dict):
-                continue
-            user = item.get("user")
-            if not isinstance(user, dict):
-                continue
-            comment_id = item.get("id")
-            author = user.get("login")
-            body = item.get("body")
-            if not isinstance(comment_id, int):
-                continue
-            if not isinstance(author, str) or not isinstance(body, str):
-                continue
-            comments.append(IssueComment(comment_id, author, body))
+        for page in pages:
+            if not isinstance(page, list):
+                raise ControlWorkerError("GitHub comments page is not a list")
+            for item in page:
+                if not isinstance(item, dict):
+                    continue
+                user = item.get("user")
+                if not isinstance(user, dict):
+                    continue
+                comment_id = item.get("id")
+                author = user.get("login")
+                body = item.get("body")
+                if not isinstance(comment_id, int):
+                    continue
+                if not isinstance(author, str) or not isinstance(body, str):
+                    continue
+                comments.append(IssueComment(comment_id, author, body))
         return comments
 
     def post_comment(self, body: str) -> None:

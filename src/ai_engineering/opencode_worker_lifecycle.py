@@ -1,4 +1,4 @@
-"""Single-instance local worker lifecycle for AUTO-0014."""
+"""Single-instance local worker lifecycle for AUTO-0014/AUTO-0016."""
 
 from __future__ import annotations
 
@@ -11,6 +11,7 @@ from contextlib import AbstractContextManager
 from pathlib import Path
 from typing import Callable, TextIO
 
+from .opencode_control_protocol import ControlTaskClass
 from .opencode_control_worker import (
     GhIssueTransport,
     GitHubControlWorker,
@@ -18,6 +19,7 @@ from .opencode_control_worker import (
 )
 from .opencode_readonly_adapter import OpenCodeHttpTransport, ReadOnlyOpenCodeAdapter
 from .opencode_service_config import ServiceRuntimeConfig, load_service_config
+from .quality_gate_relay import execute_quality_verify
 
 
 class WorkerLifecycleError(RuntimeError):
@@ -79,7 +81,7 @@ class SingleInstanceLock(AbstractContextManager["SingleInstanceLock"]):
 
 
 def run_configured_worker(config: ServiceRuntimeConfig) -> None:
-    """Run the existing AUTO-0013 worker with validated local bindings."""
+    """Run the bounded worker with OpenCode and exact-Quality read-only paths."""
 
     transport = GhIssueTransport(
         repository=config.repository,
@@ -95,6 +97,8 @@ def run_configured_worker(config: ServiceRuntimeConfig) -> None:
     )
 
     def executor(request):
+        if request.task_class is ControlTaskClass.QUALITY_VERIFY:
+            return execute_quality_verify(config.repository_root, request)
         return execute_with_failed_result(config.repository_root, adapter, request)
 
     worker = GitHubControlWorker(transport=transport, executor=executor)
