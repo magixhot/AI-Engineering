@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from ai_engineering.opencode_control_protocol import ControlProtocolError
+from ai_engineering.opencode_control_protocol import ControlRequest, ControlResult
 from ai_engineering.opencode_control_worker import (
     ControlWorkerError,
     GhIssueTransport,
@@ -62,8 +62,8 @@ class MalformedRequestTransport:
         raise AssertionError("unexpected write")
 
 
-def never_execute(request):
-    raise AssertionError("unexpected execution")
+def never_execute(request: ControlRequest) -> ControlResult:
+    raise AssertionError(f"unexpected execution: {request.request_id}")
 
 
 def test_read_transport_retries_with_bounded_deterministic_backoff(capsys) -> None:
