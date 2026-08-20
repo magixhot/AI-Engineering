@@ -58,7 +58,7 @@ testable tools, standards, workflows, and project structure.
 - Keep package installation, workstation repair, service-control mutation, credential mutation,
   workflow rerun/cancel/dispatch, deployment/publication, and new remote write/apply authority behind
   separately approved contracts.
-- Complete AUTO-0017 project-state reconciliation before selecting a new execution capability.
+- Finish AUTO-0017 final evidence before beginning any AUTO-0018 implementation.
 
 ## Engineering Principles
 
@@ -79,15 +79,19 @@ Historical `v0.1.0` remains preserved. PyPI remains not approved and not publish
 
 ## Current Engineering Baseline
 
-The canonical engineering baseline is the current `master` state after AUTO-0016 completion and the
-AUTO-0017 reconciliation work. AUTO-0014, AUTO-0015, and AUTO-0016 are COMPLETE / VERIFIED for their
-approved scopes. AUTO-0017 is ACTIVE and is documentation-only in authority.
+The canonical engineering baseline is the current `master` state after AUTO-0016 plus the reconciled
+AUTO-0017 project-state documentation. AUTO-0017-01 through AUTO-0017-04 are COMPLETE / VERIFIED.
+AUTO-0017-05 Final Evidence / Next-Milestone Selection is the active final stage.
 
-AUTO-0017-01 Design / Contract, AUTO-0017-02 Canonical Roadmap Reconciliation, and AUTO-0017-03
-Project Context / Start-State Reconciliation are COMPLETE / VERIFIED. AUTO-0017-04 Cross-Document
-Consistency Audit is ACTIVE. AUTO-0017-05 Final Evidence / Next-Milestone Selection remains pending.
-No new execution feature is selected until AUTO-0017 reaches its final cross-document audit and
-next-milestone selection stage.
+The fresh post-reconciliation audit selects **AUTO-0018 — Read-Only Control Plane Reliability /
+Observability Hardening** as the next design candidate. The reason is operational evidence from the
+existing read-only relay: malformed/non-canonical requests fail closed but can be silently skipped,
+expected-head mismatch is correct but difficult to diagnose remotely, and normal polling is too quiet
+to distinguish healthy idle operation from repeated protocol rejection.
+
+AUTO-0018 selection does not preapprove implementation. It must begin with a separate design/approval
+gate and must preserve the current read-only authority boundary unless a later explicit approval says
+otherwise.
 
 ## Reference Project
 
