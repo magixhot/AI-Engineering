@@ -45,7 +45,7 @@ Current scope includes:
 * AUTO-0015 exact post-merge Quality verification
 * AUTO-0016 workstation bootstrap/doctor and narrow read-only Quality relay
 * AUTO-0017 project-state / roadmap reconciliation
-* AUTO-0018 read-only control-plane reliability / observability hardening design
+* AUTO-0018 read-only control-plane reliability / observability hardening
 * Local distribution verification
 * Automated quality gates
 * MCP Workspace path safety boundary
@@ -98,13 +98,15 @@ This document contains everything required to restore the current project contex
 
 Current phase:
 
-**AUTO-0018-01 design / contract active**
+**AUTO-0018-06 final reconciliation / hardening evidence**
 
-AUTO-0001 through AUTO-0017 are COMPLETE / VERIFIED for their approved scopes. The current automation stack includes permanent read-only reconciliation planning, guarded one-step apply, bounded multi-step orchestration, restrictive policy and optional explicit approval gates, deterministic execution evidence, bounded read-only remote control, local worker lifecycle supervision, exact post-merge Quality verification, portable workstation bootstrap/doctor behavior with a narrow read-only Quality relay, and reconciled canonical project-state documentation.
+AUTO-0001 through AUTO-0017 are COMPLETE / VERIFIED for their approved scopes. AUTO-0018-01 through AUTO-0018-05 are also COMPLETE / VERIFIED for their approved scopes; AUTO-0018-06 is the final documentation/evidence stage and remains pending its normal exact Quality gates.
 
-AUTO-0018 is the next selected milestone after AUTO-0017. AUTO-0018-01 is documentation-only and defines reliability/observability hardening for the existing read-only control plane: deterministic failure taxonomy, safe protocol-rejection diagnostics, low-noise liveness observability, bounded transport resilience, and stale-workspace diagnosis without automatic repository mutation.
+AUTO-0018 hardened the existing read-only control plane with deterministic failure taxonomy, bounded public-safe protocol-rejection diagnostics, bounded control-channel read retry/backoff, low-noise transport-state observability, and non-mutating stale-workspace diagnosis with deterministic operator guidance.
 
-AUTO-0018 does not authorize new remote write/apply task classes, automatic repository repair, workflow rerun/cancel/dispatch, service-control mutation, credential mutation, deployment/publication/release changes, or expanded OpenCode authority. Runtime implementation stages require explicit approval after the design gate.
+Installed/E2E verification demonstrated both typed fail-closed `expected_head_mismatch` behavior without hidden repository synchronization and successful exact-head Quality verification after explicit operator synchronization. The last verified merged baseline before this final stage is exact `master` `b59f651b4719f8463b3cde1132980a1cf340ad10`.
+
+AUTO-0018 does not authorize new remote write/apply task classes, automatic repository repair, workflow rerun/cancel/dispatch, service-control mutation, credential mutation, deployment/publication/release changes, or expanded OpenCode authority.
 
 The current exact post-merge Quality gate requires workflow `.github/workflows/quality.yml`, branch `master`, event `push`, the exact target `head_sha`, terminal `completed` status, and successful conclusion. Verification fails closed when the required evidence is missing or inconsistent.
 
