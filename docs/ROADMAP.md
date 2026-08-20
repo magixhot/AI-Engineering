@@ -26,24 +26,32 @@ AUTO-0016 delivered a portable workstation bootstrap contract, discovery-before-
 
 ## AUTO-0017 — Project State / Roadmap Reconciliation
 
-**Status:** ACTIVE
+**Status:** ACTIVE — FINAL EVIDENCE
 
-A fresh audit after AUTO-0016 found that canonical current-state documents lagged the verified implementation state. AUTO-0017 reconciles those canonical documents before any new execution capability is selected.
+AUTO-0017 reconciles canonical project-state documentation with the verified implementation state before any new execution authority is considered.
 
 ### Delivery status
 
 - AUTO-0017-01 — Design / Contract: COMPLETE / VERIFIED.
 - AUTO-0017-02 — Canonical Roadmap Reconciliation: COMPLETE / VERIFIED.
 - AUTO-0017-03 — Project Context / Start-State Reconciliation: COMPLETE / VERIFIED.
-- AUTO-0017-04 — Cross-Document Consistency Audit: ACTIVE.
-- AUTO-0017-05 — Final Evidence / Next-Milestone Selection: pending.
+- AUTO-0017-04 — Cross-Document Consistency Audit: COMPLETE / VERIFIED.
+- AUTO-0017-05 — Final Evidence / Next-Milestone Selection: ACTIVE.
 
 AUTO-0017 is documentation-only in authority and does not expand runtime or execution behavior.
 
+## Fresh post-reconciliation selection
+
+The corrected project state shows that the safest next design target is reliability and observability hardening of the existing read-only control plane, not new execution authority.
+
+Selected next milestone candidate:
+
+**AUTO-0018 — Read-Only Control Plane Reliability / Observability Hardening**
+
+The candidate is selected for design only. AUTO-0017 does not preapprove AUTO-0018 implementation, automatic repository repair, new remote write/apply authority, workflow mutation, service-control mutation, credentials, publication, deployment, or release changes.
+
 ## Current Priority
 
-Complete AUTO-0017-04 by reconciling directly conflicting canonical current-state statements across the roadmap, project context, README, and related canonical start-state documentation while preserving historical evidence, immutable release history, and established authority boundaries.
+Complete AUTO-0017-05 by merging final reconciliation evidence and verifying exact post-merge Quality on the resulting `master` SHA.
 
-After AUTO-0017-04 passes its exact pre-merge and post-merge Quality gates, proceed to AUTO-0017-05 for final evidence and a fresh next-milestone selection audit.
-
-No new execution feature is selected until AUTO-0017 reaches its final post-reconciliation roadmap audit.
+After AUTO-0017 completes, AUTO-0018 may begin with a separate design/approval gate focused on read-only control-plane reliability and operator-visible diagnostics while preserving all existing authority boundaries.
