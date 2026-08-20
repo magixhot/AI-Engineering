@@ -5,14 +5,21 @@ import json
 import pytest
 
 from ai_engineering.control_diagnostics import (
+    ClaimRecoveryEvidence,
+    ClaimRecoveryReason,
     ControlFailureKind,
     ProtocolRejectionEvidence,
     ProtocolRejectionReason,
+    claim_recovery_evidence,
     classify_protocol_rejection,
     protocol_rejection_evidence,
+    serialize_claim_recovery,
     serialize_protocol_rejection,
 )
-from ai_engineering.opencode_control_protocol import ControlProtocolError
+from ai_engineering.opencode_control_protocol import (
+    ControlProtocolError,
+    ControlTaskClass,
+)
 
 
 @pytest.mark.parametrize(
@@ -75,6 +82,57 @@ def test_protocol_rejection_evidence_rejects_invalid_comment_id() -> None:
         )
 
 
+def test_claim_recovery_evidence_is_bounded_public_safe_and_no_replay() -> None:
+    request_id = "sha256:" + "a" * 64
+    evidence = claim_recovery_evidence(
+        request_id=request_id,
+        task_class=ControlTaskClass.INSPECT,
+        repository="magixhot/AI-Engineering",
+    )
+
+    encoded = serialize_claim_recovery(evidence)
+    payload = json.loads(encoded)
+
+    assert payload == {
+        "kind": ControlFailureKind.CLAIM_RECOVERY_REQUIRED.value,
+        "reason": ClaimRecoveryReason.CLAIMED_WITHOUT_TERMINAL_RESULT.value,
+        "replay_attempted": False,
+        "repository": "magixhot/AI-Engineering",
+        "request_id": request_id,
+        "task_class": "inspect",
+    }
+    assert len(encoded) < 512
+    assert "/home/" not in encoded
+    assert "C:\\" not in encoded
+    assert "objective" not in encoded
+
+
+def test_claim_recovery_evidence_rejects_noncanonical_identity() -> None:
+    with pytest.raises(ValueError, match="canonical sha256"):
+        ClaimRecoveryEvidence(
+            request_id="not-canonical",
+            task_class=ControlTaskClass.STATUS,
+            repository="magixhot/AI-Engineering",
+        )
+
+    with pytest.raises(ValueError, match="owner/name"):
+        ClaimRecoveryEvidence(
+            request_id="sha256:" + "b" * 64,
+            task_class=ControlTaskClass.STATUS,
+            repository="private local path",
+        )
+
+
+def test_claim_recovery_evidence_cannot_report_replay() -> None:
+    with pytest.raises(ValueError, match="must never report replay"):
+        ClaimRecoveryEvidence(
+            request_id="sha256:" + "c" * 64,
+            task_class=ControlTaskClass.DIFF,
+            repository="magixhot/AI-Engineering",
+            replay_attempted=True,
+        )
+
+
 def test_failure_taxonomy_includes_all_design_required_categories() -> None:
     assert {item.value for item in ControlFailureKind} == {
         "transport_read_failure",
@@ -84,5 +142,6 @@ def test_failure_taxonomy_includes_all_design_required_categories() -> None:
         "repository_snapshot_failure",
         "executor_failure",
         "quality_verification_failure",
+        "claim_recovery_required",
         "success",
     }
