@@ -1,6 +1,6 @@
 # AUTO-0018 — Read-Only Control Plane Reliability / Observability Hardening Design
 
-Status: DESIGN / PENDING GATE
+Status: IMPLEMENTED / FINAL GATE PENDING
 
 ## Purpose
 
@@ -96,20 +96,20 @@ No public GitHub evidence may include workstation-local usernames, absolute priv
 
 Diagnostics must be designed from safe fields outward rather than by publishing raw exception strings or request bodies.
 
-## Proposed delivery stages
+## Delivery stages
 
-1. AUTO-0018-01 — Design / Contract only.
-2. AUTO-0018-02 — Typed protocol-rejection and failure-taxonomy primitives.
-3. AUTO-0018-03 — Polling/transport resilience and observability hardening.
-4. AUTO-0018-04 — Stale-workspace diagnostics and operator guidance.
-5. AUTO-0018-05 — Installed/E2E failure-mode evidence and cross-boundary audit.
-6. AUTO-0018-06 — Final reconciliation and hardening evidence.
+1. AUTO-0018-01 — Design / Contract only — COMPLETE / VERIFIED.
+2. AUTO-0018-02 — Typed protocol-rejection and failure-taxonomy primitives — COMPLETE / VERIFIED.
+3. AUTO-0018-03 — Polling/transport resilience and observability hardening — COMPLETE / VERIFIED.
+4. AUTO-0018-04 — Stale-workspace diagnostics and operator guidance — COMPLETE / VERIFIED.
+5. AUTO-0018-05 — Installed/E2E failure-mode evidence and cross-boundary audit — COMPLETE / VERIFIED.
+6. AUTO-0018-06 — Final reconciliation and hardening evidence — PENDING FINAL GATE.
 
-AUTO-0018-01 is documentation-only. Stages -02 through -06 may change runtime behavior and therefore require explicit approval after the design gate before implementation begins.
+AUTO-0018-01 was documentation-only. Runtime stages -02 through -05 were implemented only after explicit approval and stayed inside the authority boundary above. AUTO-0018-06 is documentation/evidence reconciliation only.
 
 ## Verification requirements
 
-Each approved implementation stage must preserve repository cleanliness and existing authority boundaries and must include focused tests for the relevant failure modes.
+Each approved implementation stage preserves repository cleanliness and existing authority boundaries and includes focused verification for the relevant failure modes.
 
 The normal repository gate remains mandatory:
 
@@ -119,6 +119,22 @@ The normal repository gate remains mandatory:
 
 No workflow rerun/cancel/dispatch authority is introduced.
 
+## Implementation reconciliation
+
+The implementation now provides typed control failure/rejection taxonomy, bounded public-safe protocol rejection metadata, bounded deterministic retry/backoff for control-channel reads, low-noise transport state diagnostics, and non-mutating expected-head mismatch evidence with deterministic operator guidance.
+
+The installed worker E2E demonstrated both fail-closed stale-workspace handling and successful exact-head Quality verification. The last verified merged baseline before AUTO-0018-06 is exact `master`:
+
+```text
+b59f651b4719f8463b3cde1132980a1cf340ad10
+```
+
+Its exact post-merge Quality relay succeeded on run `32379177746`, workflow id `334955954`, `.github/workflows/quality.yml`, `master` / `push`, exact head, terminal `completed`, conclusion `success`, `satisfies_gate=true`, and clean pre/post evidence.
+
+The installed stale-workspace behavior intentionally requires explicit operator synchronization after a remote merge; no hidden repository auto-repair has been added.
+
 ## Completion rule
 
 AUTO-0018 is complete only when the approved reliability/observability hardening is implemented and verified without authority expansion, all newly introduced public diagnostics satisfy the privacy boundary, stale-workspace handling remains non-mutating, and final exact post-merge Quality evidence succeeds.
+
+The implementation and installed/E2E evidence requirements are satisfied. The milestone remains open only for AUTO-0018-06 exact PR-head Quality, expected-head-protected merge, and exact post-merge `master` push Quality verification.
