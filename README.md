@@ -45,6 +45,7 @@ Current scope includes:
 * AUTO-0015 exact post-merge Quality verification
 * AUTO-0016 workstation bootstrap/doctor and narrow read-only Quality relay
 * AUTO-0017 project-state / roadmap reconciliation
+* AUTO-0018 read-only control-plane reliability / observability hardening design
 * Local distribution verification
 * Automated quality gates
 * MCP Workspace path safety boundary
@@ -97,13 +98,13 @@ This document contains everything required to restore the current project contex
 
 Current phase:
 
-**AUTO-0017 final evidence / next-milestone selection active**
+**AUTO-0018-01 design / contract active**
 
-AUTO-0001 through AUTO-0016 are COMPLETE / VERIFIED for their approved scopes. The current automation stack includes permanent read-only reconciliation planning, guarded one-step apply, bounded multi-step orchestration, restrictive policy and optional explicit approval gates, deterministic execution evidence, bounded read-only remote control, local worker lifecycle supervision, exact post-merge Quality verification, and portable workstation bootstrap/doctor behavior with a narrow read-only Quality relay.
+AUTO-0001 through AUTO-0017 are COMPLETE / VERIFIED for their approved scopes. The current automation stack includes permanent read-only reconciliation planning, guarded one-step apply, bounded multi-step orchestration, restrictive policy and optional explicit approval gates, deterministic execution evidence, bounded read-only remote control, local worker lifecycle supervision, exact post-merge Quality verification, portable workstation bootstrap/doctor behavior with a narrow read-only Quality relay, and reconciled canonical project-state documentation.
 
-AUTO-0017 is documentation-only in authority. AUTO-0017-01 through AUTO-0017-04 are COMPLETE / VERIFIED. AUTO-0017-05 is the active final evidence and next-milestone selection stage.
+AUTO-0018 is the next selected milestone after AUTO-0017. AUTO-0018-01 is documentation-only and defines reliability/observability hardening for the existing read-only control plane: deterministic failure taxonomy, safe protocol-rejection diagnostics, low-noise liveness observability, bounded transport resilience, and stale-workspace diagnosis without automatic repository mutation.
 
-The fresh post-reconciliation audit selects **AUTO-0018 — Read-Only Control Plane Reliability / Observability Hardening** as the next design candidate. Selection does not preapprove implementation or any new mutation authority.
+AUTO-0018 does not authorize new remote write/apply task classes, automatic repository repair, workflow rerun/cancel/dispatch, service-control mutation, credential mutation, deployment/publication/release changes, or expanded OpenCode authority. Runtime implementation stages require explicit approval after the design gate.
 
 The current exact post-merge Quality gate requires workflow `.github/workflows/quality.yml`, branch `master`, event `push`, the exact target `head_sha`, terminal `completed` status, and successful conclusion. Verification fails closed when the required evidence is missing or inconsistent.
 
