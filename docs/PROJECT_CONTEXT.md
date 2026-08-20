@@ -80,14 +80,14 @@ Historical `v0.1.0` remains preserved. PyPI remains not approved and not publish
 ## Current Engineering Baseline
 
 The canonical engineering baseline is the current `master` state after AUTO-0016 completion and the
-AUTO-0017 roadmap reconciliation work. AUTO-0014, AUTO-0015, and AUTO-0016 are COMPLETE / VERIFIED
-for their approved scopes. AUTO-0017 is ACTIVE and is documentation-only in authority.
+AUTO-0017 reconciliation work. AUTO-0014, AUTO-0015, and AUTO-0016 are COMPLETE / VERIFIED for their
+approved scopes. AUTO-0017 is ACTIVE and is documentation-only in authority.
 
-AUTO-0017-01 Design / Contract is COMPLETE / VERIFIED. AUTO-0017-02 Canonical Roadmap
-Reconciliation is merged on exact `master` commit
-`340b7e71748c16a360fa5faaa128e90df0a11dea`. AUTO-0017-03 reconciles this project context and any
-directly conflicting canonical start-state statements. No new execution feature is selected until
-AUTO-0017 reaches its final cross-document audit and next-milestone selection stage.
+AUTO-0017-01 Design / Contract, AUTO-0017-02 Canonical Roadmap Reconciliation, and AUTO-0017-03
+Project Context / Start-State Reconciliation are COMPLETE / VERIFIED. AUTO-0017-04 Cross-Document
+Consistency Audit is ACTIVE. AUTO-0017-05 Final Evidence / Next-Milestone Selection remains pending.
+No new execution feature is selected until AUTO-0017 reaches its final cross-document audit and
+next-milestone selection stage.
 
 ## Reference Project
 
