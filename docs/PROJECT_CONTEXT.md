@@ -27,7 +27,8 @@ also includes a layered engineering-automation control plane:
 - AUTO-0013 bounded remote read-only inspection/control transport through the GitHub control channel;
 - AUTO-0014 user-scoped local worker lifecycle supervision without expanding remote task authority;
 - AUTO-0015 deterministic exact post-merge Quality verification for the exact merged `master` SHA;
-- AUTO-0016 portable workstation bootstrap/doctor behavior plus the narrow read-only Quality relay.
+- AUTO-0016 portable workstation bootstrap/doctor behavior plus the narrow read-only Quality relay;
+- AUTO-0017 canonical project-state/roadmap reconciliation with a fresh hardening audit.
 
 The control path is intentionally layered. GitHub is the external control/audit plane, the local
 user-scoped worker is the execution bridge, and OpenCode remains a loopback-only local executor for
@@ -42,7 +43,7 @@ testable tools, standards, workflows, and project structure.
 ## Current Objectives
 
 - Maintain the completed MCP Foundation, SDK-0001, TOOL/SAFE/REL/CI foundations, and AUTO-0001
-  through AUTO-0016 within their approved boundaries.
+  through AUTO-0017 within their approved boundaries.
 - Preserve AUTO-0007 as the permanent read-only reconciliation planner and keep AUTO-0008 through
   AUTO-0012 execution authority layered, explicit, guarded, and evidence-producing.
 - Preserve AUTO-0013 as bounded remote read-only control transport and AUTO-0014 as local worker
@@ -58,7 +59,7 @@ testable tools, standards, workflows, and project structure.
 - Keep package installation, workstation repair, service-control mutation, credential mutation,
   workflow rerun/cancel/dispatch, deployment/publication, and new remote write/apply authority behind
   separately approved contracts.
-- Finish AUTO-0017 final evidence before beginning any AUTO-0018 implementation.
+- Complete AUTO-0018-01 design/contract before any reliability/observability runtime change is considered.
 
 ## Engineering Principles
 
@@ -79,19 +80,19 @@ Historical `v0.1.0` remains preserved. PyPI remains not approved and not publish
 
 ## Current Engineering Baseline
 
-The canonical engineering baseline is the current `master` state after AUTO-0016 plus the reconciled
-AUTO-0017 project-state documentation. AUTO-0017-01 through AUTO-0017-04 are COMPLETE / VERIFIED.
-AUTO-0017-05 Final Evidence / Next-Milestone Selection is the active final stage.
+The canonical engineering baseline is exact `master` after AUTO-0017 completion at
+`8a4375257882fd846bbb605c8791c04a6d602478`. AUTO-0017-01 through AUTO-0017-05 are COMPLETE /
+VERIFIED for their approved documentation-only scope.
 
-The fresh post-reconciliation audit selects **AUTO-0018 — Read-Only Control Plane Reliability /
-Observability Hardening** as the next design candidate. The reason is operational evidence from the
-existing read-only relay: malformed/non-canonical requests fail closed but can be silently skipped,
-expected-head mismatch is correct but difficult to diagnose remotely, and normal polling is too quiet
-to distinguish healthy idle operation from repeated protocol rejection.
+The fresh post-reconciliation audit selected **AUTO-0018 — Read-Only Control Plane Reliability /
+Observability Hardening** as the next milestone. AUTO-0018-01 is now the active design/contract stage.
+The selected design addresses silent protocol rejection, weak differentiation of worker failure modes,
+quiet polling/liveness ambiguity, and stale-workspace diagnosis while preserving fail-closed behavior.
 
-AUTO-0018 selection does not preapprove implementation. It must begin with a separate design/approval
-gate and must preserve the current read-only authority boundary unless a later explicit approval says
-otherwise.
+AUTO-0018 design explicitly forbids new remote write/apply authority, automatic repository repair,
+workflow mutation, service-control mutation, credential mutation, publication/deployment/release
+changes, and expanded OpenCode authority. Runtime implementation stages require explicit approval
+after AUTO-0018-01 passes its design gate.
 
 ## Reference Project
 
