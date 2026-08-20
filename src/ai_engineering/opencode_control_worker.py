@@ -419,8 +419,14 @@ class GitHubControlWorker:
         recovery_grace_seconds: float = DEFAULT_RECOVERY_GRACE_SECONDS,
         clock: Clock = _utc_now,
     ) -> None:
-        if not MIN_RECOVERY_GRACE_SECONDS <= recovery_grace_seconds <= MAX_RECOVERY_GRACE_SECONDS:
-            raise ControlWorkerError("recovery grace interval is outside allowed bounds")
+        if not (
+            MIN_RECOVERY_GRACE_SECONDS
+            <= recovery_grace_seconds
+            <= MAX_RECOVERY_GRACE_SECONDS
+        ):
+            raise ControlWorkerError(
+                "recovery grace interval is outside allowed bounds"
+            )
         self._transport = transport
         self._executor = executor
         self._trusted_authors = frozenset(trusted_authors)
@@ -528,7 +534,10 @@ class GitHubControlWorker:
                 return None
             current_requests = self._valid_requests(trusted_reinspection)
             current_origin = current_requests.get(request_id)
-            if current_origin is None or current_origin[0].comment_id >= claim.comment_id:
+            if (
+                current_origin is None
+                or current_origin[0].comment_id >= claim.comment_id
+            ):
                 return None
 
             evidence = claim_recovery_evidence(

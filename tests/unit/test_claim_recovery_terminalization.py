@@ -67,7 +67,9 @@ def never_execute(request: ControlRequest) -> ControlResult:
     raise AssertionError(f"recovery must not execute {request.request_id}")
 
 
-def claim_fixture(*, claim_age_seconds: int) -> tuple[ControlRequest, list[IssueComment]]:
+def claim_fixture(
+    *, claim_age_seconds: int
+) -> tuple[ControlRequest, list[IssueComment]]:
     request = make_request()
     claim_time = BASE_TIME - timedelta(seconds=claim_age_seconds)
     comments = [
