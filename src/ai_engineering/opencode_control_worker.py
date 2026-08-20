@@ -63,7 +63,11 @@ Executor = Callable[[ControlRequest], ControlResult]
 Sleeper = Callable[[float], None]
 
 
-def _structured_local_event(kind: ControlFailureKind, state: str, **safe_fields: object) -> str:
+def _structured_local_event(
+    kind: ControlFailureKind,
+    state: str,
+    **safe_fields: object,
+) -> str:
     payload = {"kind": kind.value, "state": state, **safe_fields}
     return json.dumps(payload, sort_keys=True, separators=(",", ":"))
 
@@ -162,7 +166,9 @@ def execute_with_failed_result(
 ) -> ControlResult:
     """Convert post-claim execution failures into terminal typed evidence."""
 
-    provider = snapshot_provider or (lambda: capture_repository_snapshot(repository_path))
+    provider = snapshot_provider or (
+        lambda: capture_repository_snapshot(repository_path)
+    )
     before = provider()
     try:
         return adapter.execute(request)
@@ -248,9 +254,13 @@ class GhIssueTransport:
                 try:
                     pages = json.loads(raw)
                 except json.JSONDecodeError as exc:
-                    raise ControlWorkerError("GitHub returned malformed JSON") from exc
+                    raise ControlWorkerError(
+                        "GitHub returned malformed JSON"
+                    ) from exc
                 if not isinstance(pages, list):
-                    raise ControlWorkerError("GitHub comments response is not paginated")
+                    raise ControlWorkerError(
+                        "GitHub comments response is not paginated"
+                    )
                 return pages
             except ControlWorkerError as exc:
                 last_error = exc
@@ -334,7 +344,10 @@ class GitHubControlWorker:
             return None
         if self._transport_read_failed:
             print(
-                _structured_local_event(ControlFailureKind.SUCCESS, "transport_recovered"),
+                _structured_local_event(
+                    ControlFailureKind.SUCCESS,
+                    "transport_recovered",
+                ),
                 file=sys.stderr,
             )
             self._transport_read_failed = False
@@ -345,13 +358,18 @@ class GitHubControlWorker:
         if comments is None:
             return None
         trusted_comments = [
-            comment for comment in comments if comment.author in self._trusted_authors
+            comment
+            for comment in comments
+            if comment.author in self._trusted_authors
         ]
         completed_or_claimed = {
             request_id
             for comment in trusted_comments
             for fence in (CLAIM_FENCE, RESULT_FENCE)
-            if (request_id := _request_id_from_envelope(comment.body, fence)) is not None
+            if (
+                request_id := _request_id_from_envelope(comment.body, fence)
+            )
+            is not None
         }
 
         for comment in trusted_comments:
@@ -361,7 +379,10 @@ class GitHubControlWorker:
             try:
                 request = parse_request(payload)
             except ControlProtocolError as exc:
-                evidence = protocol_rejection_evidence(comment_id=comment.comment_id, exc=exc)
+                evidence = protocol_rejection_evidence(
+                    comment_id=comment.comment_id,
+                    exc=exc,
+                )
                 print(serialize_protocol_rejection(evidence), file=sys.stderr)
                 continue
             if request.request_id in completed_or_claimed:
