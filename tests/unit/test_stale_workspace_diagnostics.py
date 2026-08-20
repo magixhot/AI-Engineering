@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+from ai_engineering import opencode_worker_lifecycle as lifecycle
 from ai_engineering.opencode_control_protocol import (
     ControlResultState,
     ControlTaskClass,
@@ -12,7 +13,6 @@ from ai_engineering.opencode_readonly_adapter import (
     ReadOnlyOpenCodeAdapter,
     RepositorySnapshot,
 )
-from ai_engineering import opencode_worker_lifecycle as lifecycle
 
 
 def make_snapshot(*, head: str, status: str = "") -> RepositorySnapshot:
