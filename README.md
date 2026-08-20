@@ -97,11 +97,13 @@ This document contains everything required to restore the current project contex
 
 Current phase:
 
-**AUTO-0017 active — project-state / roadmap reconciliation**
+**AUTO-0017 final evidence / next-milestone selection active**
 
 AUTO-0001 through AUTO-0016 are COMPLETE / VERIFIED for their approved scopes. The current automation stack includes permanent read-only reconciliation planning, guarded one-step apply, bounded multi-step orchestration, restrictive policy and optional explicit approval gates, deterministic execution evidence, bounded read-only remote control, local worker lifecycle supervision, exact post-merge Quality verification, and portable workstation bootstrap/doctor behavior with a narrow read-only Quality relay.
 
-AUTO-0017 is documentation-only in authority. AUTO-0017-01 Design / Contract, AUTO-0017-02 Canonical Roadmap Reconciliation, and AUTO-0017-03 Project Context / Start-State Reconciliation are COMPLETE / VERIFIED. AUTO-0017-04 is the active cross-document consistency audit. No new execution capability is selected until AUTO-0017 reaches its final evidence and next-milestone selection stage.
+AUTO-0017 is documentation-only in authority. AUTO-0017-01 through AUTO-0017-04 are COMPLETE / VERIFIED. AUTO-0017-05 is the active final evidence and next-milestone selection stage.
+
+The fresh post-reconciliation audit selects **AUTO-0018 — Read-Only Control Plane Reliability / Observability Hardening** as the next design candidate. Selection does not preapprove implementation or any new mutation authority.
 
 The current exact post-merge Quality gate requires workflow `.github/workflows/quality.yml`, branch `master`, event `push`, the exact target `head_sha`, terminal `completed` status, and successful conclusion. Verification fails closed when the required evidence is missing or inconsistent.
 
