@@ -28,24 +28,22 @@ AUTO-0016 delivered a portable workstation bootstrap contract, discovery-before-
 
 **Status:** ACTIVE
 
-A fresh audit after AUTO-0016 found that canonical current-state documents lagged the verified implementation state: this roadmap still presented AUTO-0014 as active and AUTO-0015 as future work, while `docs/PROJECT_CONTEXT.md` remained anchored to a post-AUTO-0003 baseline.
-
-AUTO-0017 reconciles canonical project-state documentation before any new execution capability is selected.
+A fresh audit after AUTO-0016 found that canonical current-state documents lagged the verified implementation state. AUTO-0017 reconciles those canonical documents before any new execution capability is selected.
 
 ### Delivery status
 
 - AUTO-0017-01 — Design / Contract: COMPLETE / VERIFIED.
-- AUTO-0017-02 — Canonical Roadmap Reconciliation: ACTIVE.
-- AUTO-0017-03 — Project Context / Start-State Reconciliation: pending.
-- AUTO-0017-04 — Cross-Document Consistency Audit: pending.
+- AUTO-0017-02 — Canonical Roadmap Reconciliation: COMPLETE / VERIFIED.
+- AUTO-0017-03 — Project Context / Start-State Reconciliation: COMPLETE / VERIFIED.
+- AUTO-0017-04 — Cross-Document Consistency Audit: ACTIVE.
 - AUTO-0017-05 — Final Evidence / Next-Milestone Selection: pending.
 
 AUTO-0017 is documentation-only in authority and does not expand runtime or execution behavior.
 
 ## Current Priority
 
-Complete AUTO-0017-02 by reconciling this canonical roadmap with verified milestones through AUTO-0016 while preserving historical evidence, immutable release history, and the established authority boundaries.
+Complete AUTO-0017-04 by reconciling directly conflicting canonical current-state statements across the roadmap, project context, README, and related canonical start-state documentation while preserving historical evidence, immutable release history, and established authority boundaries.
 
-After AUTO-0017-02 passes its exact pre-merge and post-merge Quality gates, proceed to AUTO-0017-03 to reconcile `docs/PROJECT_CONTEXT.md` and any directly conflicting canonical start-state statements.
+After AUTO-0017-04 passes its exact pre-merge and post-merge Quality gates, proceed to AUTO-0017-05 for final evidence and a fresh next-milestone selection audit.
 
 No new execution feature is selected until AUTO-0017 reaches its final post-reconciliation roadmap audit.
