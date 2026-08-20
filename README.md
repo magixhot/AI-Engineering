@@ -39,6 +39,12 @@ Current scope includes:
 * AUTO-0001 Engineering Project Bootstrap (`ai-engineering project bootstrap`)
 * AUTO-0002 Project Documentation Synchronization (`ai-engineering project docs check/plan/apply`)
 * AUTO-0003 Documentation Ownership Initialization (`ai-engineering project docs ownership check/plan/apply`)
+* AUTO-0004 through AUTO-0012 bounded migration/reconciliation planning, guarded execution, policy, approval, and execution evidence
+* AUTO-0013 bounded read-only remote inspection/control transport
+* AUTO-0014 local worker lifecycle supervision
+* AUTO-0015 exact post-merge Quality verification
+* AUTO-0016 workstation bootstrap/doctor and narrow read-only Quality relay
+* AUTO-0017 project-state / roadmap reconciliation
 * Local distribution verification
 * Automated quality gates
 * MCP Workspace path safety boundary
@@ -91,19 +97,17 @@ This document contains everything required to restore the current project contex
 
 Current phase:
 
-**AUTO-0003 complete / verified — post-AUTO-0003 roadmap audit active**
+**AUTO-0017 active — project-state / roadmap reconciliation**
 
-The official Python MCP SDK migration is complete. VS Code 1.132.1 and Antigravity interoperability are verified only for their recorded contracts. SDK-0001 Project Templates V1, the optional Python scaffold, and the installed `ai-engineering project create` CLI are implemented and verified. AUTO-0001 adds the bounded `python-engineering` bootstrap API and installed `ai-engineering project bootstrap` CLI with fail-closed post-generation verification.
+AUTO-0001 through AUTO-0016 are COMPLETE / VERIFIED for their approved scopes. The current automation stack includes permanent read-only reconciliation planning, guarded one-step apply, bounded multi-step orchestration, restrictive policy and optional explicit approval gates, deterministic execution evidence, bounded read-only remote control, local worker lifecycle supervision, exact post-merge Quality verification, and portable workstation bootstrap/doctor behavior with a narrow read-only Quality relay.
 
-AUTO-0002 provides deterministic local project inspection and documentation synchronization for exactly `CURRENT_STATUS.md`, `MASTER_INDEX.md`, and `PROJECT_MAP.md`. Its installed `project docs check` and `plan` commands are read-only; `project docs apply` performs SHA-256 guarded, ownership-marker-bounded writes and post-apply verification.
+AUTO-0017 is documentation-only in authority. AUTO-0017-01 Design / Contract, AUTO-0017-02 Canonical Roadmap Reconciliation, and AUTO-0017-03 Project Context / Start-State Reconciliation are COMPLETE / VERIFIED. AUTO-0017-04 is the active cross-document consistency audit. No new execution capability is selected until AUTO-0017 reaches its final evidence and next-milestone selection stage.
 
-AUTO-0003 provides the explicit ownership-initialization bridge for those same three documents. When the approved marker pair is completely absent and initialization is deterministic, `project docs ownership plan/apply` can initialize the managed section while preserving human-authored content and Git HEAD/index state. Partial, duplicate, malformed, unsupported, missing-document, mixed-newline, and stale-plan states fail closed. AUTO-0002 remains unchanged and never initializes ownership implicitly.
-
-TOOL-0001 verifies all 15 existing Workspace, Git, and Python operations. REL-0001 verifies wheel/sdist artifacts and isolated installed CLI behavior. CI-0001 runs Ruff, mypy, and full pytest on GitHub Actions/Linux/Python 3.11. Current post-AUTO-0003 Quality #94 baseline is 174 passed, Ruff clean, and mypy clean in 83 source files.
+The current exact post-merge Quality gate requires workflow `.github/workflows/quality.yml`, branch `master`, event `push`, the exact target `head_sha`, terminal `completed` status, and successful conclusion. Verification fails closed when the required evidence is missing or inconsistent.
 
 SAFE-0001 enforces `MCPConfig.workspace_root` for the active MCP Workspace handlers. SAFE-0002 extends the active MCP authority-root policy to Git and path-taking Python operations. SAFE-0001 and SAFE-0002 are bounded authorization/execution contracts, not an operating-system sandbox.
 
-The current published release is **AI-Engineering 0.2.0**, tag `v0.2.0`, targeting exact candidate commit `1faf14c121b7b5da7c8781e3de4e836f85838a76`. The approved release assets are `ai_engineering-0.2.0-py3-none-any.whl` and `ai_engineering-0.2.0.tar.gz`. Post-release engineering work on `master`, including AUTO-0003, does not retroactively change that immutable release. PyPI remains not approved and not published.
+The current published release is **AI-Engineering 0.2.0**, tag `v0.2.0`, targeting exact candidate commit `1faf14c121b7b5da7c8781e3de4e836f85838a76`. The approved release assets are `ai_engineering-0.2.0-py3-none-any.whl` and `ai_engineering-0.2.0.tar.gz`. Later engineering work on `master` does not retroactively change that immutable release. PyPI remains not approved and not published.
 
 The immutable historical `v0.1.0` release remains preserved as prior release evidence. This project does not claim general production readiness or compatibility with ChatGPT/OpenAI, Claude Desktop, or other MCP clients without separate evidence.
 
