@@ -11,6 +11,11 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Callable, Iterable, Protocol
 
+from .control_diagnostics import (
+    ControlFailureKind,
+    protocol_rejection_evidence,
+    serialize_protocol_rejection,
+)
 from .opencode_control_protocol import (
     ControlProtocolError,
     ControlRequest,
@@ -30,6 +35,8 @@ from .opencode_readonly_adapter import (
 DEFAULT_REPOSITORY = "magixhot/AI-Engineering"
 DEFAULT_CONTROL_ISSUE = 130
 DEFAULT_POLL_SECONDS = 10.0
+DEFAULT_READ_ATTEMPTS = 3
+DEFAULT_READ_RETRY_BASE_SECONDS = 1.0
 REQUEST_FENCE = "auto-0013-request"
 CLAIM_FENCE = "auto-0013-claim"
 RESULT_FENCE = "auto-0013-result"
@@ -53,6 +60,16 @@ class GitHubTransport(Protocol):
 
 
 Executor = Callable[[ControlRequest], ControlResult]
+Sleeper = Callable[[float], None]
+
+
+def _structured_local_event(
+    kind: ControlFailureKind,
+    state: str,
+    **safe_fields: object,
+) -> str:
+    payload = {"kind": kind.value, "state": state, **safe_fields}
+    return json.dumps(payload, sort_keys=True, separators=(",", ":"))
 
 
 def _extract_fenced_payload(body: str, fence: str) -> str | None:
@@ -197,9 +214,19 @@ class GhIssueTransport:
         *,
         repository: str = DEFAULT_REPOSITORY,
         issue_number: int = DEFAULT_CONTROL_ISSUE,
+        read_attempts: int = DEFAULT_READ_ATTEMPTS,
+        read_retry_base_seconds: float = DEFAULT_READ_RETRY_BASE_SECONDS,
+        sleeper: Sleeper = time.sleep,
     ) -> None:
+        if read_attempts < 1:
+            raise ControlWorkerError("read attempts must be at least one")
+        if read_retry_base_seconds < 0:
+            raise ControlWorkerError("read retry base must not be negative")
         self._repository = repository
         self._issue_number = issue_number
+        self._read_attempts = read_attempts
+        self._read_retry_base_seconds = read_retry_base_seconds
+        self._sleeper = sleeper
 
     def _run(self, *args: str) -> str:
         try:
@@ -219,18 +246,45 @@ class GhIssueTransport:
             raise ControlWorkerError("gh executable not found") from exc
         return completed.stdout
 
+    def _read_pages(self, endpoint: str) -> list[object]:
+        last_error: ControlWorkerError | None = None
+        for attempt in range(1, self._read_attempts + 1):
+            try:
+                raw = self._run("api", "--paginate", "--slurp", endpoint)
+                try:
+                    pages = json.loads(raw)
+                except json.JSONDecodeError as exc:
+                    raise ControlWorkerError(
+                        "GitHub returned malformed JSON"
+                    ) from exc
+                if not isinstance(pages, list):
+                    raise ControlWorkerError(
+                        "GitHub comments response is not paginated"
+                    )
+                return pages
+            except ControlWorkerError as exc:
+                last_error = exc
+                if attempt >= self._read_attempts:
+                    break
+                print(
+                    _structured_local_event(
+                        ControlFailureKind.TRANSPORT_READ_FAILURE,
+                        "retrying",
+                        attempt=attempt,
+                        next_delay_seconds=self._read_retry_base_seconds * attempt,
+                    ),
+                    file=sys.stderr,
+                )
+                self._sleeper(self._read_retry_base_seconds * attempt)
+        assert last_error is not None
+        raise last_error
+
     def list_comments(self) -> list[IssueComment]:
         endpoint = (
             f"repos/{self._repository}/issues/{self._issue_number}/comments"
             "?per_page=100"
         )
-        raw = self._run("api", "--paginate", "--slurp", endpoint)
-        try:
-            pages = json.loads(raw)
-        except json.JSONDecodeError as exc:
-            raise ControlWorkerError("GitHub returned malformed JSON") from exc
-        if not isinstance(pages, list):
-            raise ControlWorkerError("GitHub comments response is not paginated")
+        pages = self._read_pages(endpoint)
 
         comments: list[IssueComment] = []
         for page in pages:
@@ -253,6 +307,8 @@ class GhIssueTransport:
         return comments
 
     def post_comment(self, body: str) -> None:
+        """Publish once; writes are intentionally not retried to avoid duplicates."""
+
         endpoint = f"repos/{self._repository}/issues/{self._issue_number}/comments"
         self._run("api", "--method", "POST", endpoint, "-f", f"body={body}")
 
@@ -270,9 +326,37 @@ class GitHubControlWorker:
         self._transport = transport
         self._executor = executor
         self._trusted_authors = frozenset(trusted_authors)
+        self._transport_read_failed = False
+
+    def _list_comments_fail_closed(self) -> list[IssueComment] | None:
+        try:
+            comments = self._transport.list_comments()
+        except ControlWorkerError:
+            if not self._transport_read_failed:
+                print(
+                    _structured_local_event(
+                        ControlFailureKind.TRANSPORT_READ_FAILURE,
+                        "failed_closed",
+                    ),
+                    file=sys.stderr,
+                )
+            self._transport_read_failed = True
+            return None
+        if self._transport_read_failed:
+            print(
+                _structured_local_event(
+                    ControlFailureKind.SUCCESS,
+                    "transport_recovered",
+                ),
+                file=sys.stderr,
+            )
+            self._transport_read_failed = False
+        return comments
 
     def poll_once(self) -> str | None:
-        comments = self._transport.list_comments()
+        comments = self._list_comments_fail_closed()
+        if comments is None:
+            return None
         trusted_comments = [
             comment
             for comment in comments
@@ -282,7 +366,9 @@ class GitHubControlWorker:
             request_id
             for comment in trusted_comments
             for fence in (CLAIM_FENCE, RESULT_FENCE)
-            if (request_id := _request_id_from_envelope(comment.body, fence))
+            if (
+                request_id := _request_id_from_envelope(comment.body, fence)
+            )
             is not None
         }
 
@@ -292,7 +378,12 @@ class GitHubControlWorker:
                 continue
             try:
                 request = parse_request(payload)
-            except ControlProtocolError:
+            except ControlProtocolError as exc:
+                evidence = protocol_rejection_evidence(
+                    comment_id=comment.comment_id,
+                    exc=exc,
+                )
+                print(serialize_protocol_rejection(evidence), file=sys.stderr)
                 continue
             if request.request_id in completed_or_claimed:
                 continue
@@ -321,6 +412,10 @@ def run_worker(
         return execute_with_failed_result(repository_path, adapter, request)
 
     worker = GitHubControlWorker(transport=transport, executor=executor)
+    print(
+        _structured_local_event(ControlFailureKind.SUCCESS, "polling_started"),
+        file=sys.stderr,
+    )
 
     while True:
         worker.poll_once()
