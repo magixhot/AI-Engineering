@@ -1,23 +1,35 @@
-"""Single-instance local worker lifecycle for AUTO-0014/AUTO-0016."""
+"""Single-instance local worker lifecycle for AUTO-0014/AUTO-0018."""
 
 from __future__ import annotations
 
 import argparse
 import fcntl
 import hashlib
+import json
 import os
 import time
 from contextlib import AbstractContextManager
 from pathlib import Path
 from typing import Callable, TextIO
 
-from .opencode_control_protocol import ControlTaskClass
+from .control_diagnostics import ControlFailureKind
+from .opencode_control_protocol import (
+    ControlRequest,
+    ControlResult,
+    ControlResultState,
+    ControlTaskClass,
+)
 from .opencode_control_worker import (
     GhIssueTransport,
     GitHubControlWorker,
     execute_with_failed_result,
 )
-from .opencode_readonly_adapter import OpenCodeHttpTransport, ReadOnlyOpenCodeAdapter
+from .opencode_readonly_adapter import (
+    OpenCodeHttpTransport,
+    ReadOnlyOpenCodeAdapter,
+    RepositorySnapshot,
+    capture_repository_snapshot,
+)
 from .opencode_service_config import ServiceRuntimeConfig, load_service_config
 from .quality_gate_relay import execute_quality_verify
 
@@ -80,6 +92,60 @@ class SingleInstanceLock(AbstractContextManager["SingleInstanceLock"]):
         return None
 
 
+def stale_workspace_result(
+    request: ControlRequest,
+    snapshot: RepositorySnapshot,
+) -> ControlResult:
+    """Return bounded public-safe evidence for an expected-head mismatch."""
+
+    if request.expected_head is None:
+        raise ValueError("stale-workspace evidence requires expected_head")
+    if snapshot.head == request.expected_head:
+        raise ValueError("stale-workspace evidence requires a head mismatch")
+
+    evidence = {
+        "expected_head": request.expected_head,
+        "guidance": (
+            "synchronize the local checkout to the expected commit with an "
+            "operator-reviewed fast-forward; no automatic repository change "
+            "was performed"
+        ),
+        "kind": ControlFailureKind.EXPECTED_HEAD_MISMATCH.value,
+        "observed_head": snapshot.head,
+    }
+    text = json.dumps(evidence, sort_keys=True, separators=(",", ":"))
+    if len(text) > request.max_result_chars:
+        raise ValueError("stale-workspace evidence exceeds request bound")
+
+    return ControlResult(
+        request_id=request.request_id,
+        task_class=request.task_class,
+        repository=request.repository,
+        branch=snapshot.branch,
+        head=snapshot.head,
+        pre_clean=snapshot.is_clean,
+        state=ControlResultState.FAILED,
+        text=text,
+        post_clean=snapshot.is_clean,
+        version=request.version,
+    )
+
+
+def execute_configured_request(
+    repository_root: Path,
+    adapter: ReadOnlyOpenCodeAdapter,
+    request: ControlRequest,
+) -> ControlResult:
+    """Execute one configured request after a non-mutating head preflight."""
+
+    snapshot = capture_repository_snapshot(repository_root)
+    if request.expected_head is not None and snapshot.head != request.expected_head:
+        return stale_workspace_result(request, snapshot)
+    if request.task_class is ControlTaskClass.QUALITY_VERIFY:
+        return execute_quality_verify(repository_root, request)
+    return execute_with_failed_result(repository_root, adapter, request)
+
+
 def run_configured_worker(config: ServiceRuntimeConfig) -> None:
     """Run the bounded worker with OpenCode and exact-Quality read-only paths."""
 
@@ -96,10 +162,8 @@ def run_configured_worker(config: ServiceRuntimeConfig) -> None:
         transport=opencode_transport,
     )
 
-    def executor(request):
-        if request.task_class is ControlTaskClass.QUALITY_VERIFY:
-            return execute_quality_verify(config.repository_root, request)
-        return execute_with_failed_result(config.repository_root, adapter, request)
+    def executor(request: ControlRequest) -> ControlResult:
+        return execute_configured_request(config.repository_root, adapter, request)
 
     worker = GitHubControlWorker(transport=transport, executor=executor)
     while True:
