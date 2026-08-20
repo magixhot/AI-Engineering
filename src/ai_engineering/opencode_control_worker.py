@@ -1,4 +1,4 @@
-"""Bounded GitHub control worker for AUTO-0013/AUTO-0016."""
+"""Bounded GitHub control worker for AUTO-0013/AUTO-0016/AUTO-0019."""
 
 from __future__ import annotations
 
@@ -8,15 +8,21 @@ import subprocess
 import sys
 import time
 from dataclasses import dataclass
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Callable, Iterable, Protocol
 
 from .control_diagnostics import (
+    ClaimRecoveryEvidence,
+    ClaimRecoveryReason,
     ControlFailureKind,
+    claim_recovery_evidence,
     protocol_rejection_evidence,
+    serialize_claim_recovery,
     serialize_protocol_rejection,
 )
 from .opencode_control_protocol import (
+    PROTOCOL_VERSION,
     ControlProtocolError,
     ControlRequest,
     ControlResult,
@@ -37,9 +43,13 @@ DEFAULT_CONTROL_ISSUE = 130
 DEFAULT_POLL_SECONDS = 10.0
 DEFAULT_READ_ATTEMPTS = 3
 DEFAULT_READ_RETRY_BASE_SECONDS = 1.0
+DEFAULT_RECOVERY_GRACE_SECONDS = 300.0
+MIN_RECOVERY_GRACE_SECONDS = 60.0
+MAX_RECOVERY_GRACE_SECONDS = 86_400.0
 REQUEST_FENCE = "auto-0013-request"
 CLAIM_FENCE = "auto-0013-claim"
 RESULT_FENCE = "auto-0013-result"
+RECOVERY_FENCE = "auto-0019-recovery"
 
 
 class ControlWorkerError(RuntimeError):
@@ -51,6 +61,7 @@ class IssueComment:
     comment_id: int
     author: str
     body: str
+    created_at: datetime | None = None
 
 
 class GitHubTransport(Protocol):
@@ -61,6 +72,11 @@ class GitHubTransport(Protocol):
 
 Executor = Callable[[ControlRequest], ControlResult]
 Sleeper = Callable[[float], None]
+Clock = Callable[[], datetime]
+
+
+def _utc_now() -> datetime:
+    return datetime.now(timezone.utc)
 
 
 def _structured_local_event(
@@ -103,6 +119,15 @@ def format_result_comment(result: ControlResult) -> str:
     return f"```{RESULT_FENCE}\n{payload}\n```"
 
 
+def format_recovery_comment(evidence: ClaimRecoveryEvidence) -> str:
+    """Format bounded fail-closed terminalization evidence without repo snapshots."""
+
+    payload = json.loads(serialize_claim_recovery(evidence))
+    payload.update({"state": "FAILED", "version": PROTOCOL_VERSION})
+    encoded = json.dumps(payload, sort_keys=True, separators=(",", ":"))
+    return f"```{RECOVERY_FENCE}\n{encoded}\n```"
+
+
 def _request_id_from_envelope(body: str, fence: str) -> str | None:
     payload = _extract_fenced_payload(body, fence)
     if payload is None:
@@ -115,6 +140,66 @@ def _request_id_from_envelope(body: str, fence: str) -> str | None:
         return None
     request_id = value.get("request_id")
     return request_id if isinstance(request_id, str) else None
+
+
+def _strict_claim_request_id(body: str) -> str | None:
+    payload = _extract_fenced_payload(body, CLAIM_FENCE)
+    if payload is None:
+        return None
+    try:
+        value = json.loads(payload)
+    except json.JSONDecodeError:
+        return None
+    if not isinstance(value, dict) or set(value) != {"request_id", "state"}:
+        return None
+    if value.get("state") != "CLAIMED":
+        return None
+    request_id = value.get("request_id")
+    return request_id if isinstance(request_id, str) else None
+
+
+def _strict_recovery_request_id(body: str) -> str | None:
+    payload = _extract_fenced_payload(body, RECOVERY_FENCE)
+    if payload is None:
+        return None
+    try:
+        value = json.loads(payload)
+    except json.JSONDecodeError:
+        return None
+    expected_keys = {
+        "kind",
+        "reason",
+        "replay_attempted",
+        "repository",
+        "request_id",
+        "state",
+        "task_class",
+        "version",
+    }
+    if not isinstance(value, dict) or set(value) != expected_keys:
+        return None
+    if value.get("kind") != ControlFailureKind.CLAIM_RECOVERY_REQUIRED.value:
+        return None
+    if value.get("reason") != ClaimRecoveryReason.CLAIMED_WITHOUT_TERMINAL_RESULT.value:
+        return None
+    if value.get("replay_attempted") is not False or value.get("state") != "FAILED":
+        return None
+    if value.get("version") != PROTOCOL_VERSION:
+        return None
+    request_id = value.get("request_id")
+    return request_id if isinstance(request_id, str) else None
+
+
+def _terminal_request_ids(comments: Iterable[IssueComment]) -> set[str]:
+    terminal: set[str] = set()
+    for comment in comments:
+        request_id = _request_id_from_envelope(comment.body, RESULT_FENCE)
+        if request_id is not None:
+            terminal.add(request_id)
+        recovery_id = _strict_recovery_request_id(comment.body)
+        if recovery_id is not None:
+            terminal.add(recovery_id)
+    return terminal
 
 
 def _safe_adapter_detail(message: str) -> str | None:
@@ -299,11 +384,20 @@ class GhIssueTransport:
                 comment_id = item.get("id")
                 author = user.get("login")
                 body = item.get("body")
+                created_at_raw = item.get("created_at")
                 if not isinstance(comment_id, int):
                     continue
                 if not isinstance(author, str) or not isinstance(body, str):
                     continue
-                comments.append(IssueComment(comment_id, author, body))
+                created_at: datetime | None = None
+                if isinstance(created_at_raw, str):
+                    try:
+                        created_at = datetime.fromisoformat(
+                            created_at_raw.replace("Z", "+00:00")
+                        )
+                    except ValueError:
+                        created_at = None
+                comments.append(IssueComment(comment_id, author, body, created_at))
         return comments
 
     def post_comment(self, body: str) -> None:
@@ -314,7 +408,7 @@ class GhIssueTransport:
 
 
 class GitHubControlWorker:
-    """Claim and execute at most one new valid read-only request per poll."""
+    """Claim/execute new work and terminalize aged unresolved claims without replay."""
 
     def __init__(
         self,
@@ -322,10 +416,22 @@ class GitHubControlWorker:
         transport: GitHubTransport,
         executor: Executor,
         trusted_authors: Iterable[str] = ("magixhot",),
+        recovery_grace_seconds: float = DEFAULT_RECOVERY_GRACE_SECONDS,
+        clock: Clock = _utc_now,
     ) -> None:
+        if not (
+            MIN_RECOVERY_GRACE_SECONDS
+            <= recovery_grace_seconds
+            <= MAX_RECOVERY_GRACE_SECONDS
+        ):
+            raise ControlWorkerError(
+                "recovery grace interval is outside allowed bounds"
+            )
         self._transport = transport
         self._executor = executor
         self._trusted_authors = frozenset(trusted_authors)
+        self._recovery_grace_seconds = recovery_grace_seconds
+        self._clock = clock
         self._transport_read_failed = False
 
     def _list_comments_fail_closed(self) -> list[IssueComment] | None:
@@ -353,24 +459,112 @@ class GitHubControlWorker:
             self._transport_read_failed = False
         return comments
 
-    def poll_once(self) -> str | None:
-        comments = self._list_comments_fail_closed()
-        if comments is None:
-            return None
-        trusted_comments = [
+    def _trusted(self, comments: Iterable[IssueComment]) -> list[IssueComment]:
+        return [
             comment
             for comment in comments
             if comment.author in self._trusted_authors
         ]
-        completed_or_claimed = {
+
+    def _valid_requests(
+        self, comments: Iterable[IssueComment]
+    ) -> dict[str, tuple[IssueComment, ControlRequest]]:
+        valid: dict[str, tuple[IssueComment, ControlRequest]] = {}
+        for comment in comments:
+            payload = _extract_fenced_payload(comment.body, REQUEST_FENCE)
+            if payload is None:
+                continue
+            try:
+                request = parse_request(payload)
+            except ControlProtocolError as exc:
+                evidence = protocol_rejection_evidence(
+                    comment_id=comment.comment_id,
+                    exc=exc,
+                )
+                print(serialize_protocol_rejection(evidence), file=sys.stderr)
+                continue
+            valid.setdefault(request.request_id, (comment, request))
+        return valid
+
+    def _latest_claims(
+        self, comments: Iterable[IssueComment]
+    ) -> dict[str, IssueComment]:
+        claims: dict[str, IssueComment] = {}
+        for comment in comments:
+            request_id = _strict_claim_request_id(comment.body)
+            if request_id is not None:
+                claims[request_id] = comment
+        return claims
+
+    def _claim_is_aged(self, claim: IssueComment) -> bool:
+        if claim.created_at is None or claim.created_at.tzinfo is None:
+            return False
+        now = self._clock()
+        if now.tzinfo is None:
+            raise ControlWorkerError("recovery clock must be timezone-aware")
+        age_seconds = (now - claim.created_at).total_seconds()
+        return age_seconds >= self._recovery_grace_seconds
+
+    def _recover_one_aged_claim(
+        self,
+        trusted_comments: list[IssueComment],
+    ) -> str | None:
+        valid_requests = self._valid_requests(trusted_comments)
+        terminal = _terminal_request_ids(trusted_comments)
+        latest_claims = self._latest_claims(trusted_comments)
+
+        for request_id, claim in latest_claims.items():
+            if request_id in terminal or not self._claim_is_aged(claim):
+                continue
+            origin = valid_requests.get(request_id)
+            if origin is None:
+                continue
+            request_comment, request = origin
+            if request_comment.comment_id >= claim.comment_id:
+                continue
+
+            reinspected = self._list_comments_fail_closed()
+            if reinspected is None:
+                return None
+            trusted_reinspection = self._trusted(reinspected)
+            if request_id in _terminal_request_ids(trusted_reinspection):
+                return None
+            current_claim = self._latest_claims(trusted_reinspection).get(request_id)
+            if current_claim is None or current_claim.comment_id != claim.comment_id:
+                return None
+            current_requests = self._valid_requests(trusted_reinspection)
+            current_origin = current_requests.get(request_id)
+            if (
+                current_origin is None
+                or current_origin[0].comment_id >= claim.comment_id
+            ):
+                return None
+
+            evidence = claim_recovery_evidence(
+                request_id=request.request_id,
+                task_class=request.task_class,
+                repository=request.repository,
+            )
+            self._transport.post_comment(format_recovery_comment(evidence))
+            return request_id
+        return None
+
+    def poll_once(self) -> str | None:
+        comments = self._list_comments_fail_closed()
+        if comments is None:
+            return None
+        trusted_comments = self._trusted(comments)
+
+        recovered = self._recover_one_aged_claim(trusted_comments)
+        if recovered is not None:
+            return recovered
+
+        completed_or_claimed = _terminal_request_ids(trusted_comments)
+        completed_or_claimed.update(
             request_id
             for comment in trusted_comments
-            for fence in (CLAIM_FENCE, RESULT_FENCE)
-            if (
-                request_id := _request_id_from_envelope(comment.body, fence)
-            )
-            is not None
-        }
+            if (request_id := _strict_claim_request_id(comment.body)) is not None
+        )
 
         for comment in trusted_comments:
             payload = _extract_fenced_payload(comment.body, REQUEST_FENCE)
