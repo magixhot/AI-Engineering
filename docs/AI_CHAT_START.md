@@ -1,7 +1,7 @@
 # AI-Engineering
 
 <!-- canonical-project-state
-{"schema_version":1,"completed_through":"AUTO-0019","active_milestone":"AUTO-0020","active_stage":"AUTO-0020-04","active_state":"IMPLEMENTATION_ACTIVE"}
+{"schema_version":1,"completed_through":"AUTO-0019","active_milestone":"AUTO-0020","active_stage":"AUTO-0020-05","active_state":"IMPLEMENTATION_ACTIVE"}
 -->
 
 ## Chat Bootstrap
@@ -16,70 +16,72 @@ For a new or continued session, restore context in this order:
 6. `DECISIONS.md`
 7. `CODING_STANDARDS.md`
 8. `MASTER_INDEX.md`
-9. The design/evidence document for the active milestone listed in `MASTER_INDEX.md`, if one exists
+9. The design/evidence document for the active milestone listed in `MASTER_INDEX.md`
 
-After reading them, continue from `CURRENT_STATUS.md`; it is authoritative for current state.
+Continue from `CURRENT_STATUS.md`; its marker and current-state section are authoritative.
 
 ## Current Working State
 
-AI-Engineering has completed and verified AUTO-0001 through AUTO-0013. AUTO-0014 stages 01 through 05 are COMPLETE / VERIFIED. AUTO-0014-06 final evidence/documentation reconciliation is the only active stage.
+The foundations and AUTO-0001 through AUTO-0019 are COMPLETE / VERIFIED for
+their approved scopes. AUTO-0020 stages 01 through 04 are COMPLETE / VERIFIED.
+AUTO-0020-05 canonical document reconciliation and repository-wide evidence is
+the only active stage.
 
-Permanent reconciliation boundaries remain unchanged:
+The verified AUTO-0019 closure baseline is exact `master`
+`c287e5cceef4e72148de7674f4095fedb78bd302`, confirmed by push-triggered
+Quality #394 (run id `32484748127`).
 
-```text
-ai-engineering project reconcile plan --project PATH
-ai-engineering project reconcile apply --project PATH --step SEQUENCE
-ai-engineering project reconcile run --project PATH [--max-steps N]
-ai-engineering project reconcile run --project PATH --policy POLICY.toml [--max-steps N]
-ai-engineering project reconcile approve --project PATH [--policy POLICY.toml]
-ai-engineering project reconcile run --project PATH --approval APPROVAL.json [--policy POLICY.toml] [--max-steps N]
-ai-engineering project reconcile run --project PATH [--max-steps N] [--policy POLICY.toml] [--approval APPROVAL.json] --receipt-json
-```
+AUTO-0020-04 merged through PR #194 as exact `master`
+`e62f69d4db2f288bb072cfa38108d5872d5ebdb4` after pre-merge Quality #401.
+Push-triggered Quality #402 is the exact post-merge gate for that SHA.
 
-AUTO-0007 is permanently read-only. AUTO-0008 remains the sole guarded one-step apply boundary. AUTO-0009 is bounded orchestration. AUTO-0010 policy can only restrict existing authority. AUTO-0011 approval cannot grant new mutation authority. AUTO-0012 receipts are deterministic evidence only. AUTO-0013 adds bounded read-only remote inspection/control transport. AUTO-0014 adds only local lifecycle supervision for that same worker.
-
-## AUTO-0014 Current Gate
+## Active Gate
 
 ```text
-AUTO-0014-01 design/contract                    COMPLETE / VERIFIED
-AUTO-0014-02 typed runtime/service config       COMPLETE / VERIFIED
-AUTO-0014-03 single-instance lifecycle          COMPLETE / VERIFIED
-AUTO-0014-04 user service integration           COMPLETE / VERIFIED
-AUTO-0014-05 installed service verification     COMPLETE / VERIFIED
-AUTO-0014-06 final reconciliation               ACTIVE
+AUTO-0020-01 design/contract                         COMPLETE / VERIFIED
+AUTO-0020-02 typed manifest and strict parser        COMPLETE / VERIFIED
+AUTO-0020-03 deterministic read-only validator       COMPLETE / VERIFIED
+AUTO-0020-04 Quality integration/failure coverage    COMPLETE / VERIFIED
+AUTO-0020-05 canonical document reconciliation       ACTIVE
+AUTO-0020-06 final reconciliation/next audit          PENDING
 ```
 
-PR #143 passed Quality #302, merged as `58e0b3c6cd5393386ad97871aa34f6fd9e4fef47`, and exact post-merge Quality succeeded.
+Read `AUTO-0020_CANONICAL_PROJECT_STATE_DOCUMENTATION_COHERENCE_GATE_DESIGN.md`,
+`CANONICAL_PROJECT_STATE.json`, and the six governed canonical documents.
+Quality runs the coherence validator offline before Ruff, mypy, and pytest.
 
-Read `AUTO-0014_LOCAL_CONTROL_WORKER_SERVICE_DESIGN.md`, `AUTO-0014_05_INSTALLED_LOCAL_SERVICE_VERIFICATION.md`, and `AUTO-0014_FINAL_EVIDENCE.md` for the service contract and closure evidence.
+## Permanent Authority Boundaries
 
-Successful installed-service request:
+- AUTO-0007 is permanently read-only.
+- AUTO-0008 remains the sole guarded one-step apply boundary.
+- AUTO-0009 is bounded orchestration over that existing boundary.
+- AUTO-0010 policy can only restrict existing authority.
+- AUTO-0011 approval cannot grant new mutation authority.
+- AUTO-0012 receipts are deterministic evidence only.
+- AUTO-0013 remains bounded remote read-only control transport.
+- AUTO-0014 adds only local lifecycle supervision for that worker.
+- AUTO-0015 exact post-merge verification is read-only and fail-closed.
+- AUTO-0016 bootstrap/doctor and the narrow Quality relay do not repair state.
+- AUTO-0018 adds reliability and diagnostics without hidden repository repair.
+- AUTO-0019 may terminalize aged unresolved claims but never replay them.
+- AUTO-0020 validates canonical documentation but never edits or repairs it.
 
-```text
-sha256:593eff3b7e76a65ec2399ea3988ae0895ea01c2bc608bb690bc62be46fe9baf7
-```
+Remote task classes remain `status`, `inspect`, `plan`, `diff`, and
+`quality_verify`. Recovery does not invoke executor/OpenCode/`quality_verify`
+and does not execute or re-execute a claimed request.
 
-It produced a typed `SUCCEEDED` result on branch `master` at exact HEAD `5b5b3b0ec1922685a594679ddebc199f28b6b8d5` with `pre_clean=true` and `post_clean=true`.
+## Current Priority
 
-## AUTO-0014 Guardrails
+Reconcile the six governed documents with verified AUTO-0019 closure and active
+AUTO-0020-05, prove the tracked document set coherent, then pass exact PR-head
+Quality, expected-head-protected merge, and exact post-merge `master` Quality.
 
-- Worker remote task classes remain only `status`, `inspect`, `plan`, and `diff`.
-- OpenCode remains localhost-only.
-- Service installation/enabling remains an explicit local operator action.
-- The user service adds no repository or Git mutation authority.
-- Remote service start/stop commands are not authorized.
-- Claimed-request replay/resume is not authorized.
-- A typed result is evidence only and grants no later mutation authority.
-
-## Next Approved Direction
-
-After AUTO-0014 closes, begin design-first work for a read-only exact post-merge Quality verifier. It should verify the `Quality` workflow for the exact merged `master` SHA and fail closed unless the expected push run is completed successfully. It must not gain rerun/cancel, merge, or repository mutation authority.
+Do not start AUTO-0020-06 before that gate succeeds.
 
 ## General Engineering Guardrails
 
-- Preserve originals.
-- Extend, never replace.
+- Preserve originals; extend rather than replace public contracts.
 - Documentation before implementation.
-- Keep changes small, testable, deterministic, and reviewable.
+- Keep changes small, deterministic, testable, and reviewable.
 - Make compatibility and security claims only from recorded evidence.
 - Treat published tags/releases as immutable historical evidence.

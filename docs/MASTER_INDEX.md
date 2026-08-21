@@ -1,84 +1,86 @@
 # AI-Engineering — Master Documentation Index
 
 <!-- canonical-project-state
-{"schema_version":1,"completed_through":"AUTO-0019","active_milestone":"AUTO-0020","active_stage":"AUTO-0020-04","active_state":"IMPLEMENTATION_ACTIVE"}
+{"schema_version":1,"completed_through":"AUTO-0019","active_milestone":"AUTO-0020","active_stage":"AUTO-0020-05","active_state":"IMPLEMENTATION_ACTIVE"}
 -->
 
-## Project Documents
+## Canonical Project Documents
 
 | Document | Purpose | Status |
 |---|---|---|
 | README.md | Project overview and release-line context | Active |
-| AI_CHAT_START.md | Session bootstrap | Active |
-| PROJECT_CONTEXT.md | Purpose, objectives, and architecture context | Active |
-| PROJECT_MAP.md | Actual repository structure and boundaries | Active |
-| CURRENT_STATUS.md | Authoritative implementation snapshot | Active |
-| ROADMAP.md | Delivery state and future direction | Active |
+| AI_CHAT_START.md | Session bootstrap and active gate | Active / governed |
+| PROJECT_CONTEXT.md | Purpose, architecture, objectives, and baselines | Active / governed |
+| PROJECT_MAP.md | Repository structure and system boundaries | Active / governed |
+| CURRENT_STATUS.md | Authoritative implementation snapshot | Active / governed |
+| ROADMAP.md | Delivery state and current priority | Active / governed |
+| MASTER_INDEX.md | Documentation inventory and active evidence | Active / governed |
+| CANONICAL_PROJECT_STATE.json | Typed source for governed current-state projections | Active / authoritative |
 | DECISIONS.md | Accepted engineering decisions | Active |
 | CODING_STANDARDS.md | Engineering standards | Active |
-| AUTO-0007_ENGINEERING_PROJECT_RECONCILIATION_PLAN_DESIGN.md | Read-only reconciliation planning contract | Complete / Verified |
-| AUTO-0008_GUARDED_PROJECT_RECONCILIATION_APPLY_DESIGN.md | Guarded one-step apply authority contract | Complete / Verified |
-| AUTO-0009_MULTI_STEP_RECONCILIATION_ORCHESTRATION_DESIGN.md | Bounded multi-step orchestration contract | Complete / Verified |
-| AUTO-0010_RECONCILIATION_POLICY_DESIGN.md | Restriction-only reconciliation policy contract | Complete / Verified |
-| AUTO-0011_RECONCILIATION_APPROVAL_DESIGN.md | Single-candidate reconciliation approval contract | Complete / Verified |
-| AUTO-0012_RECONCILIATION_EXECUTION_EVIDENCE_DESIGN.md | Deterministic execution receipt contract | Complete / Verified |
-| AUTO-0013_OPENCODE_CONTROL_BRIDGE_DESIGN.md | Bounded read-only OpenCode control bridge contract | Complete / Verified |
-| AUTO-0013_05_END_TO_END_VERIFICATION.md | OpenCode bridge E2E verification evidence | Complete / Verified |
-| AUTO-0013_FINAL_EVIDENCE.md | AUTO-0013 staged delivery and final closure evidence | Complete / Verified |
-| AUTO-0014_LOCAL_CONTROL_WORKER_SERVICE_DESIGN.md | Local read-only worker service/lifecycle contract | Complete / Verified through stage 05; final gate active |
-| AUTO-0014_05_INSTALLED_LOCAL_SERVICE_VERIFICATION.md | Installed user-service verification evidence | Complete / Verified |
-| AUTO-0014_FINAL_EVIDENCE.md | AUTO-0014 staged delivery and final closure evidence | Final gate active |
+
+## Automation Design and Evidence
+
+| Milestone documents | Scope | Status |
+|---|---|---|
+| AUTO-0007 through AUTO-0012 design/evidence | Reconciliation planning, guarded execution, policy, approval, receipts | Complete / Verified |
+| AUTO-0013 design/E2E/final evidence | Bounded read-only GitHub/OpenCode control bridge | Complete / Verified |
+| AUTO-0014 design/installed/final evidence | User-scoped worker lifecycle supervision | Complete / Verified |
+| AUTO-0015 design/live/final evidence | Exact post-merge Quality verifier | Complete / Verified |
+| AUTO-0016 bootstrap/doctor/relay/final evidence | Portable workstation readiness and read-only relay | Complete / Verified |
+| AUTO-0017 design/final evidence | Canonical state/roadmap reconciliation | Complete / Verified |
+| AUTO-0018 design/installed/final evidence | Control-plane reliability and observability | Complete / Verified |
+| AUTO-0019 design/recovery/installed/final evidence | Aged unresolved-claim terminalization without replay | Complete / Verified |
+| AUTO-0020_CANONICAL_PROJECT_STATE_DOCUMENTATION_COHERENCE_GATE_DESIGN.md | Manifest, validator, Quality gate, and reconciliation contract | Active |
+| AUTO-0020_05_CANONICAL_DOCUMENT_RECONCILIATION_EVIDENCE.md | Six-document reconciliation and repository-wide coherence evidence | Active |
 
 ## Active Engineering Work
 
 | Area | Status |
 |---|---|
-| MCP / SDK foundation | COMPLETE / VERIFIED |
-| CI quality gates | COMPLETE / VERIFIED |
-| Workspace/Git/Python safety | COMPLETE / VERIFIED |
-| Release line 0.2.0 | VERIFIED HISTORICAL LINE |
-| AUTO-0001 through AUTO-0013 | COMPLETE / VERIFIED |
-| AUTO-0014 stages 01 through 05 | COMPLETE / VERIFIED |
-| AUTO-0014-06 Final Evidence / Documentation Reconciliation | ACTIVE |
-| Diagnostics maintenance | ACTIVE |
+| MCP / SDK / tooling foundations | COMPLETE / VERIFIED |
+| Release line v0.2.0 | VERIFIED HISTORICAL LINE |
+| AUTO-0001 through AUTO-0019 | COMPLETE / VERIFIED |
+| AUTO-0020-01 through AUTO-0020-04 | COMPLETE / VERIFIED |
+| AUTO-0020-05 Canonical Document Reconciliation / Repository-Wide Evidence | ACTIVE |
+| AUTO-0020-06 Final Reconciliation / Next-Milestone Audit | PENDING |
 
-## AUTO-0014 Delivery State
+## AUTO-0020 Delivery Evidence
 
-| Stage | Status |
+| Stage | Evidence |
 |---|---|
-| AUTO-0014-01 Local Worker Service Design / Contract | COMPLETE / VERIFIED — PR #137; pre-merge and exact post-merge Quality SUCCESS |
-| AUTO-0014-02 Typed Runtime / Service Configuration | COMPLETE / VERIFIED — PR #138; pre-merge and exact post-merge Quality SUCCESS |
-| AUTO-0014-03 Single-Instance Worker Lifecycle | COMPLETE / VERIFIED — PR #139; pre-merge and exact post-merge Quality SUCCESS |
-| AUTO-0014-04 User Service Integration | COMPLETE / VERIFIED — PR #140; pre-merge and exact post-merge Quality SUCCESS |
-| AUTO-0014-05 Installed Local-Service Verification | COMPLETE / VERIFIED — PR #143; Quality #302 SUCCESS; merged `58e0b3c6cd5393386ad97871aa34f6fd9e4fef47`; exact post-merge Quality SUCCESS |
-| AUTO-0014-06 Final Evidence / Documentation Reconciliation | ACTIVE — final stage gate required |
+| AUTO-0020-01 Design / Contract | PR #191; Quality #395/#396; exact merge `84a8019457720554831e71d05e0b8ade7ca2d0db` |
+| AUTO-0020-02 Typed Manifest / Strict Parser | PR #192; Quality #397/#398; exact merge `85597fcc8e9acc0240330f31f6d9a904175d0e44` |
+| AUTO-0020-03 Read-Only Validator | PR #193; Quality #399/#400; exact merge `a9abe654ee3f2b42bab3fd2684ac27be463dbb73` |
+| AUTO-0020-04 Quality Integration / Failure Coverage | PR #194; Quality #401/#402; exact merge `e62f69d4db2f288bb072cfa38108d5872d5ebdb4` |
+| AUTO-0020-05 Canonical Reconciliation / Repository-Wide Evidence | ACTIVE |
+| AUTO-0020-06 Final Reconciliation / Next Audit | PENDING |
 
-Corrective prerequisites for stage 05: PR #141 added hardened `RuntimeDirectory=` handling; PR #142 added safe OpenCode execution-stage diagnostics and merged as exact master `5b5b3b0ec1922685a594679ddebc199f28b6b8d5` before the final installed-service E2E.
-
-## Verified AUTO-0014 Evidence
-
-Successful installed-service request:
+## Active Source and Tests
 
 ```text
-sha256:593eff3b7e76a65ec2399ea3988ae0895ea01c2bc608bb690bc62be46fe9baf7
+docs/CANONICAL_PROJECT_STATE.json
+src/ai_engineering/project_state_manifest.py
+src/ai_engineering/project_state_coherence.py
+tests/unit/test_project_state_manifest.py
+tests/unit/test_project_state_coherence.py
+.github/workflows/quality.yml
 ```
 
-Its terminal result recorded `SUCCEEDED`, repository `magixhot/AI-Engineering`, branch `master`, exact HEAD `5b5b3b0ec1922685a594679ddebc199f28b6b8d5`, `pre_clean=true`, and `post_clean=true`.
+The validator governs exactly the six canonical Markdown documents listed in
+the manifest. Quality executes it offline before Ruff, mypy, and pytest.
 
-Lifecycle verification also recorded `restart=PASS`, `single-instance=PASS`, and `repository-invariants=PASS`.
+## Preserved Boundaries
 
-## AUTO-0014 Source Tree
+AUTO-0007 remains read-only; AUTO-0008 remains the sole one-step apply
+authority; AUTO-0009 through AUTO-0012 only orchestrate, restrict, approve, or
+record that existing authority. AUTO-0013 through AUTO-0019 retain their
+bounded read-only control-plane contracts. AUTO-0019 recovery never replays a
+claimed request. AUTO-0020 validates documentation but does not edit or repair
+it and grants no workflow, service, credential, deployment, publication, or
+repository mutation authority.
 
-```text
-src/ai_engineering/
-├── opencode_service_config.py
-├── opencode_worker_lifecycle.py
-├── opencode_user_service.py
-├── opencode_control_protocol.py
-├── opencode_readonly_adapter.py
-└── opencode_control_worker.py
-```
+## Current Continuation Point
 
-AUTO-0007 stays read-only, AUTO-0008 stays the sole one-step apply authority, AUTO-0009 remains bounded orchestration, AUTO-0010 policy can only restrict those existing authorities, AUTO-0011 approval remains an additional fail-closed gate, AUTO-0012 receipts remain deterministic evidence only, AUTO-0013 remains bounded read-only remote inspection/control transport, and AUTO-0014 adds only local lifecycle supervision for that worker.
-
-After AUTO-0014 closes, the approved next design direction is a read-only exact post-merge Quality verifier. It must remove manual verification without gaining workflow mutation, merge, or repository mutation authority.
+Complete AUTO-0020-05 repository-wide coherence evidence and its exact
+pre-merge/post-merge Quality gates. Start AUTO-0020-06 only afterward.

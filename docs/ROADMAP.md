@@ -1,7 +1,7 @@
 # AI-Engineering Roadmap
 
 <!-- canonical-project-state
-{"schema_version":1,"completed_through":"AUTO-0019","active_milestone":"AUTO-0020","active_stage":"AUTO-0020-04","active_state":"IMPLEMENTATION_ACTIVE"}
+{"schema_version":1,"completed_through":"AUTO-0019","active_milestone":"AUTO-0020","active_stage":"AUTO-0020-05","active_state":"IMPLEMENTATION_ACTIVE"}
 -->
 
 ## Completed / Verified
@@ -76,16 +76,35 @@ AUTO-0019 preserves the existing task-class and authority boundaries. It does no
 
 ## AUTO-0020 — Canonical Project-State Documentation Coherence Gate
 
-**Status:** DESIGN ACTIVE
+**Status:** IMPLEMENTATION ACTIVE
 
-The fresh post-AUTO-0019 audit found that the six canonical bootstrap/state documents disagree about the completed and active milestone state. Several still identify AUTO-0014-06 as active, `PROJECT_CONTEXT.md` remains at AUTO-0018-06, and this roadmap still identified AUTO-0019-01 as current before this design update.
+The fresh post-AUTO-0019 audit found that the six canonical bootstrap/state
+documents disagreed about the completed and active milestone state. At the
+milestone start, several identified AUTO-0014-06 as active,
+`PROJECT_CONTEXT.md` identified AUTO-0018-06, and this roadmap identified
+AUTO-0019-01 as current.
 
 AUTO-0020 defines a narrow machine-readable canonical-state contract, deterministic offline/read-only cross-document validation, and Quality integration that rejects stale or ambiguous current-state claims. It will then reconcile the governed documents through exact verified AUTO-0019 evidence.
 
 AUTO-0020 does not authorize automatic documentation edits, reconciliation apply/run, repository repair, workflow mutation, service control, credentials, deployment/publication/release changes, or broader OpenCode authority.
 
+Delivery state:
+
+1. AUTO-0020-01 — design/contract: COMPLETE / VERIFIED.
+2. AUTO-0020-02 — typed canonical-state manifest and strict parser: COMPLETE / VERIFIED.
+3. AUTO-0020-03 — deterministic read-only cross-document validator: COMPLETE / VERIFIED.
+4. AUTO-0020-04 — Quality integration and failure-mode coverage: COMPLETE / VERIFIED.
+5. AUTO-0020-05 — canonical document reconciliation and repository-wide evidence: ACTIVE.
+6. AUTO-0020-06 — final reconciliation / next-milestone audit: PENDING.
+
+AUTO-0020-04 merged through PR #194 as exact `master`
+`e62f69d4db2f288bb072cfa38108d5872d5ebdb4` after Quality #401/#402.
+
 ## Current Priority
 
-Complete AUTO-0020-04 Quality integration and failure-mode coverage through the normal exact PR-head Quality gate, expected-head-protected merge, and exact post-merge `master` push Quality gate.
+Complete AUTO-0020-05 canonical document reconciliation and repository-wide
+coherence evidence through the normal exact PR-head Quality gate,
+expected-head-protected merge, and exact post-merge `master` push Quality
+gate.
 
-Later AUTO-0020 implementation stages remain subject to the approved read-only validation boundary and the normal per-stage Quality gates.
+Do not start AUTO-0020-06 before that gate succeeds.

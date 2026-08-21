@@ -8,54 +8,42 @@
 
 ```text
 AI-Engineering/
-├── .opencode/
-│   └── agents/
-│       └── auto-0013-readonly.md
+├── .github/workflows/quality.yml
+├── .opencode/agents/auto-0013-readonly.md
 ├── docs/
-├── src/
-│   └── ai_engineering/
-│       ├── discovery/
-│       ├── git/
-│       ├── ide/
-│       ├── mcp/
-│       ├── python/
-│       ├── registry/
-│       ├── runtime/
-│       ├── shared/
-│       ├── stdio/
-│       ├── tools/
-│       ├── workspace/
-│       ├── cli.py
-│       ├── public_cli.py
-│       ├── engineering_bootstrap.py
-│       ├── project_inspection.py
-│       ├── documentation_sync.py
-│       ├── documentation_apply.py
-│       ├── documentation_ownership.py
-│       ├── project_migration.py
-│       ├── project_migration_apply.py
-│       ├── project_git_readiness.py
-│       ├── project_health.py
-│       ├── project_reconciliation.py
-│       ├── project_reconciliation_cli.py
-│       ├── project_reconciliation_apply.py
-│       ├── project_reconciliation_apply_cli.py
-│       ├── project_reconciliation_orchestration.py
-│       ├── project_reconciliation_orchestration_cli.py
-│       ├── project_reconciliation_policy.py
-│       ├── project_reconciliation_approval.py
-│       ├── project_reconciliation_approval_context.py
-│       ├── project_reconciliation_approval_verification.py
-│       ├── project_reconciliation_receipt.py
-│       ├── project_reconciliation_receipt_projection.py
-│       ├── project_reconciliation_receipt_cli.py
-│       ├── opencode_control_protocol.py
-│       ├── opencode_readonly_adapter.py
-│       ├── opencode_control_worker.py
-│       ├── opencode_service_config.py
-│       ├── opencode_worker_lifecycle.py
-│       ├── opencode_user_service.py
-│       └── server.py
+│   ├── CANONICAL_PROJECT_STATE.json
+│   ├── AI_CHAT_START.md
+│   ├── PROJECT_CONTEXT.md
+│   ├── PROJECT_MAP.md
+│   ├── CURRENT_STATUS.md
+│   ├── ROADMAP.md
+│   └── MASTER_INDEX.md
+├── src/ai_engineering/
+│   ├── discovery/
+│   ├── git/
+│   ├── ide/
+│   ├── mcp/
+│   ├── python/
+│   ├── registry/
+│   ├── runtime/
+│   ├── shared/
+│   ├── stdio/
+│   ├── tools/
+│   ├── workspace/
+│   ├── project_reconciliation*.py
+│   ├── opencode_control_protocol.py
+│   ├── opencode_control_worker.py
+│   ├── opencode_service_config.py
+│   ├── opencode_worker_lifecycle.py
+│   ├── opencode_user_service.py
+│   ├── quality_verification.py
+│   ├── quality_verifier.py
+│   ├── quality_actions_transport.py
+│   ├── quality_gate_relay.py
+│   ├── workstation_doctor_model.py
+│   ├── workstation_doctor_runtime.py
+│   ├── project_state_manifest.py
+│   └── project_state_coherence.py
 ├── tests/
 │   ├── unit/
 │   ├── integration/
@@ -66,48 +54,63 @@ AI-Engineering/
 └── uv.lock
 ```
 
-## Reconciliation Architecture
+## Layered Automation Boundaries
 
-AUTO-0007 is the permanent read-only planner. AUTO-0008 is the sole guarded one-step apply boundary. AUTO-0009 composes repeated fresh planning and one-step application into bounded orchestration. AUTO-0010 adds restriction-only policy evaluation. AUTO-0011 adds an optional explicit single-candidate approval gate. AUTO-0012 adds deterministic execution evidence without adding mutation authority.
+AUTO-0007 is the permanent read-only reconciliation planner. AUTO-0008 is the
+sole guarded one-step apply boundary. AUTO-0009 composes fresh planning and
+one-step application into bounded orchestration. AUTO-0010 can only restrict
+that authority. AUTO-0011 adds an optional explicit approval fence. AUTO-0012
+adds receipts without new mutation authority.
 
-AUTO-0013 is separate from the reconciliation write path and adds only bounded read-only remote inspection/control transport.
-
-AUTO-0014 adds local lifecycle supervision around the existing AUTO-0013 worker:
+AUTO-0013 through AUTO-0019 form a separate bounded control plane:
 
 ```text
 GitHub control issue
-    -> installed user-scoped worker service
-    -> AUTO-0013 control worker
-    -> localhost OpenCode
-    -> dedicated read-only agent
-    -> repository inspection
-    -> typed AUTO-0013 result
+  -> user-scoped worker service
+  -> read-only control worker
+  -> localhost OpenCode when required
+  -> typed result/evidence
 ```
 
-The strict runtime configuration lives in `opencode_service_config.py`. Single-instance worker lifecycle and polling entrypoint live in `opencode_worker_lifecycle.py`. User-scoped service rendering lives in `opencode_user_service.py`. AUTO-0013 protocol, adapter, worker, and project-local OpenCode permissions remain unchanged authority boundaries.
+Remote task classes are `status`, `inspect`, `plan`, `diff`, and
+`quality_verify`. AUTO-0018 adds typed failure handling, bounded read retry,
+observability, and stale-workspace diagnosis without repair. AUTO-0019 recovery
+may publish a separate terminal envelope for an aged unresolved claim only
+after immediate reinspection; it never invokes executor/OpenCode/
+`quality_verify` and never replays the request.
 
-## AUTO-0014 Safety Boundary
+## Canonical Project-State Gate
 
-The installed service may supervise only the existing read-only worker. It does not add task classes, repository write authority, remote service-control commands, request replay, public OpenCode ingress, or inbound workstation listeners.
+`project_state_manifest.py` loads the strict typed manifest from
+`docs/CANONICAL_PROJECT_STATE.json`. `project_state_coherence.py` validates
+exactly the six declared document projections and emits bounded deterministic
+diagnostics. It does not parse historical/free-form prose.
 
-The user-service integration remains explicit and per-user, with hardened service settings including `ProtectSystem=strict`, `ProtectHome=read-only`, `NoNewPrivileges=yes`, and a validated per-user runtime directory.
+Quality runs the validator offline with Python bytecode disabled before Ruff,
+mypy, and pytest:
 
-The worker remains restricted to `status`, `inspect`, `plan`, and `diff`. Adapter success still requires before/after repository snapshot equality.
+```text
+manifest + six document markers
+  -> strict parser
+  -> deterministic read-only validator
+  -> coherent=true or non-zero failure
+```
+
+The gate does not edit documentation, repair Git state, call GitHub, control
+services, or expand reconciliation/OpenCode authority.
 
 ## Implementation State
 
-- AUTO-0007 stages 01–06: COMPLETE / VERIFIED.
-- AUTO-0008 stages 01–06: COMPLETE / VERIFIED.
-- AUTO-0009 stages 01–06: COMPLETE / VERIFIED.
-- AUTO-0010 stages 01–06: COMPLETE / VERIFIED.
-- AUTO-0011 stages 01–06: COMPLETE / VERIFIED.
-- AUTO-0012 stages 01–06: COMPLETE / VERIFIED.
-- AUTO-0013 stages 01–06: COMPLETE / VERIFIED.
-- AUTO-0014 stages 01–05: COMPLETE / VERIFIED.
-- AUTO-0014-06 final evidence/documentation reconciliation: ACTIVE.
+- AUTO-0001 through AUTO-0019: COMPLETE / VERIFIED.
+- AUTO-0020-01 design/contract: COMPLETE / VERIFIED.
+- AUTO-0020-02 typed manifest/parser: COMPLETE / VERIFIED.
+- AUTO-0020-03 deterministic validator: COMPLETE / VERIFIED.
+- AUTO-0020-04 Quality integration/failure coverage: COMPLETE / VERIFIED.
+- AUTO-0020-05 canonical document reconciliation/repository-wide evidence:
+  ACTIVE.
+- AUTO-0020-06 final reconciliation/next-milestone audit: PENDING.
 
-AUTO-0014-05 evidence merged via PR #143 as exact master `58e0b3c6cd5393386ad97871aa34f6fd9e4fef47` after Quality #302 SUCCESS and then passed exact post-merge Quality.
-
-The verified successful installed-service request id is `sha256:593eff3b7e76a65ec2399ea3988ae0895ea01c2bc608bb690bc62be46fe9baf7`. Its terminal result recorded `SUCCEEDED`, exact expected/observed HEAD `5b5b3b0ec1922685a594679ddebc199f28b6b8d5`, and `pre_clean=true` / `post_clean=true`.
-
-After AUTO-0014 closure, the approved next design direction is a read-only exact post-merge Quality verifier.
+AUTO-0019 closed at exact `master`
+`c287e5cceef4e72148de7674f4095fedb78bd302` through Quality #394.
+AUTO-0020-04 merged at exact `master`
+`e62f69d4db2f288bb072cfa38108d5872d5ebdb4` through Quality #401/#402.
