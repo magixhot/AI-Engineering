@@ -37,7 +37,8 @@ platform includes:
   low-noise observability, and non-mutating stale-workspace diagnosis;
 - AUTO-0019 bounded no-replay terminal recovery for aged unresolved claims;
 - AUTO-0020 a strict project-state manifest, offline/read-only coherence
-  validator, and Quality enforcement for six canonical documents.
+  validator, document-set v2 Quality enforcement for seven canonical
+  documents, and exact document-set v1 compatibility.
 
 GitHub is the external control/audit plane. The installed user-scoped worker is
 the local bridge. OpenCode remains loopback-only for task classes that require
@@ -83,7 +84,9 @@ The AUTO-0020 terminal state is verified on exact `master`
 `c72c79a477de630f50532a454e11d513e9727a79` through Quality #407/#408.
 AUTO-0021-01 merged through PR #198 as exact `master`
 `8121e3d1b2b38c4088e32a7128c58686e459542a` after Quality #409/#410.
-AUTO-0021-02 is the active implementation stage.
+AUTO-0021-02 merged through PR #199 as exact `master`
+`8363f50e86470092cdccf116e8dc00dcc8f9d43c` after Quality #411/#412.
+AUTO-0021-03 is the active evidence stage.
 
 Document-set v2 adds only repository-root `README.md` to the exact governed
 set while document-set v1 retains its historical six-document compatibility.

@@ -1,7 +1,7 @@
 # AI-Engineering — Master Documentation Index
 
 <!-- canonical-project-state
-{"schema_version":2,"completed_through":"AUTO-0020","active_milestone":"AUTO-0021","active_stage":"AUTO-0021-02","active_state":"IMPLEMENTATION_ACTIVE"}
+{"schema_version":2,"completed_through":"AUTO-0020","active_milestone":"AUTO-0021","active_stage":"AUTO-0021-03","active_state":"EVIDENCE_ACTIVE"}
 -->
 
 ## Canonical Project Documents
@@ -35,7 +35,8 @@
 | AUTO-0020_05_CANONICAL_DOCUMENT_RECONCILIATION_EVIDENCE.md | Six-document reconciliation and repository-wide coherence evidence | Complete / Verified |
 | AUTO-0020_06_FINAL_RECONCILIATION_NEXT_MILESTONE_AUDIT.md | Final coherence closure and terminal-state modeling audit | Complete / Verified |
 | AUTO-0020_TERMINAL_QUIESCENT_STATE_EXTENSION.md | Schema v2 terminal state without an active successor | Current contract |
-| AUTO-0021_REPOSITORY_LANDING_STATE_COHERENCE_DESIGN.md | Exact README extension of the canonical document set | Active |
+| AUTO-0021_REPOSITORY_LANDING_STATE_COHERENCE_DESIGN.md | Exact README extension of the canonical document set | Current contract |
+| AUTO-0021_03_README_NARRATIVE_RECONCILIATION_EVIDENCE.md | README landing claims and preserved boundaries | Active evidence |
 
 ## Engineering State
 
@@ -45,7 +46,8 @@
 | Release line v0.2.0 | VERIFIED HISTORICAL LINE |
 | AUTO-0001 through AUTO-0020 | COMPLETE / VERIFIED |
 | AUTO-0021-01 Repository Landing State Coherence Design | COMPLETE / VERIFIED |
-| AUTO-0021-02 Document-Set v2 / README Marker | ACTIVE |
+| AUTO-0021-02 Document-Set v2 / README Marker | COMPLETE / VERIFIED |
+| AUTO-0021-03 README Narrative Reconciliation | ACTIVE |
 
 ## AUTO-0020 Delivery Evidence
 
@@ -69,8 +71,9 @@ tests/unit/test_project_state_coherence.py
 .github/workflows/quality.yml
 ```
 
-The validator governs exactly the six canonical Markdown documents listed in
-the manifest. Quality executes it offline before Ruff, mypy, and pytest.
+Document-set v2 governs README plus the historical six canonical Markdown
+documents; document-set v1 retains its exact six-document compatibility.
+Quality executes the validator offline before Ruff, mypy, and pytest.
 
 ## Preserved Boundaries
 
@@ -85,5 +88,6 @@ repository mutation authority.
 ## Current Continuation Point
 
 AUTO-0021-01 is COMPLETE / VERIFIED through PR #198 and Quality #409/#410.
-Complete AUTO-0021-02 exact gates, then continue only with the approved README
-narrative reconciliation scope.
+AUTO-0021-02 is COMPLETE / VERIFIED through PR #199 and Quality #411/#412.
+Complete AUTO-0021-03 exact gates, then continue only with the approved final
+audit scope.

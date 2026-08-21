@@ -1,7 +1,7 @@
 # AI-Engineering — Current Status
 
 <!-- canonical-project-state
-{"schema_version":2,"completed_through":"AUTO-0020","active_milestone":"AUTO-0021","active_stage":"AUTO-0021-02","active_state":"IMPLEMENTATION_ACTIVE","release_line":"v0.2.0"}
+{"schema_version":2,"completed_through":"AUTO-0020","active_milestone":"AUTO-0021","active_stage":"AUTO-0021-03","active_state":"EVIDENCE_ACTIVE","release_line":"v0.2.0"}
 -->
 
 **Snapshot date:** 2026-08-21
@@ -14,13 +14,14 @@
 
 **Current milestone:** AUTO-0021 — Repository Landing State Coherence
 
-**Active stage:** AUTO-0021-02 — Document-Set v2 / README Marker
+**Active stage:** AUTO-0021-03 — README Narrative Reconciliation
 
 ## Authoritative State
 
 The MCP/SDK/tooling/release/safety foundations and AUTO-0001 through AUTO-0020
 are COMPLETE / VERIFIED for their approved scopes. AUTO-0021-01 is also
-COMPLETE / VERIFIED. AUTO-0021-02 is the only active stage.
+COMPLETE / VERIFIED. AUTO-0021-02 is COMPLETE / VERIFIED. AUTO-0021-03 is the
+only active stage.
 
 AUTO-0019 closed on exact `master`
 `c287e5cceef4e72148de7674f4095fedb78bd302`. Push-triggered Quality #394
@@ -45,14 +46,15 @@ The terminal quiescent-state correction merged through PR #197 as exact
 The fresh audit found that root `README.md` is the first bootstrap document
 and public GitHub landing page but was outside the six-document coherence
 manifest. AUTO-0021-02 advances the exact document set to v2, adds README
-first, and enforces its strict state marker. Its intentionally stale narrative
-remains scheduled for AUTO-0021-03 and is not parsed as current state.
+first, and enforces its strict state marker. AUTO-0021-03 reconciles the
+landing narrative while preserving the rule that prose is not parsed as
+current state.
 
 | Stage | State |
 |---|---|
 | AUTO-0021-01 Design / Contract | COMPLETE / VERIFIED — PR #198; Quality #409/#410; merged `8121e3d1b2b38c4088e32a7128c58686e459542a`. |
-| AUTO-0021-02 Document-Set v2 / README Marker | ACTIVE |
-| AUTO-0021-03 README Narrative Reconciliation | PENDING |
+| AUTO-0021-02 Document-Set v2 / README Marker | COMPLETE / VERIFIED — PR #199; Quality #411/#412; merged `8363f50e86470092cdccf116e8dc00dcc8f9d43c`. |
+| AUTO-0021-03 README Narrative Reconciliation | ACTIVE |
 | AUTO-0021-04 Final Audit | PENDING |
 
 ## Coherence Contract
@@ -60,6 +62,7 @@ remains scheduled for AUTO-0021-03 and is not parsed as current state.
 The typed source of current project state is
 `docs/CANONICAL_PROJECT_STATE.json`. It governs exactly:
 
+- `README.md`
 - `docs/AI_CHAT_START.md`
 - `docs/PROJECT_CONTEXT.md`
 - `docs/PROJECT_MAP.md`
@@ -67,7 +70,9 @@ The typed source of current project state is
 - `docs/ROADMAP.md`
 - `docs/MASTER_INDEX.md`
 
-Each document contains exactly one strict document-specific
+Document-set v2 validates that exact seven-document order with README first;
+document-set v1 preserves the historical exact six-document set. Each
+document contains exactly one strict document-specific
 `canonical-project-state` marker. The offline validator rejects missing,
 duplicate, malformed, unknown, stale, or contradictory marker claims and emits
 only bounded repository-relative diagnostics. Quality runs it before Ruff,
@@ -102,5 +107,5 @@ not approved and not published.
 
 ## Current Priority
 
-Complete AUTO-0021-02 exact gates. README narrative reconciliation remains
-stage -03; external control issue #130 remains a separate future decision.
+Complete AUTO-0021-03 exact gates. Final audit remains stage -04; external
+control issue #130 remains a separate future decision.
