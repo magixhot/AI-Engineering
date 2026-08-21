@@ -110,6 +110,8 @@ Current phase:
 
 AUTO-0001 through AUTO-0022 are COMPLETE / VERIFIED for their approved scopes. No successor milestone or stage is approved or active; AUTO-0023 is not inferred from numbering.
 
+The separate REL-0004-01 release-governance design records the exact post-AUTO-0022 delta and readiness contract. It does not change the canonical AUTO `QUIESCENT` state, select a version, freeze a candidate, or authorize publication.
+
 The remote control plane remains bounded to the read-only task classes `status`, `inspect`, `plan`, `diff`, and `quality_verify`. AUTO-0018 hardened that plane with deterministic failure taxonomy, bounded diagnostics, read retry/backoff, low-noise transport observability, and non-mutating stale-workspace guidance.
 
 AUTO-0019 adds bounded terminal recovery for aged unresolved claims. Recovery performs immediate reinspection and publishes a separate terminal envelope; it does not call the executor, OpenCode, or `quality_verify`, and it never replays the claimed request.
@@ -119,6 +121,8 @@ AUTO-0020 introduced the strict typed canonical project-state manifest and deter
 AUTO-0021 terminal closure merged as exact `master` `3e3c2b32d0caf677d55be9f090d4a1d236716e42`, confirmed by pre-merge Quality #417 and push-triggered Quality #418.
 
 AUTO-0022 issue-body update evidence merged as exact `master` `d541d751828d9d95a828799b4e3f0345c396b103`, confirmed by pre-merge Quality #423 and push-triggered Quality #424. The issue body exactly matches the approved artifact with SHA-256 `c99ffa0b885926a64db30c451eeb910ad5dc9b6449f1c4833908d94c43dc859e`.
+
+The REL-0004 decision contract starts from exact `master` `4914f3467c1f5e44b974d956f0ba8a18c40fd9f3` and immutable tag `v0.2.0` at `1faf14c121b7b5da7c8781e3de4e836f85838a76`. Any version choice and release action remain separately gated.
 
 The current automation scope does not authorize new remote write/apply task classes, automatic repository or documentation repair, workflow rerun/cancel/dispatch, service-control mutation, credential mutation, deployment/publication/release changes, or expanded OpenCode authority.
 

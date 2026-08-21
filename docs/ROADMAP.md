@@ -112,8 +112,10 @@ AUTO-0020-06 audit merged through PR #196 as exact `master`
 
 ## Current Priority
 
-No next milestone is approved or active. Preserve schema v2/document-set v2
-`QUIESCENT` state until a successor is separately designed and approved.
+Preserve schema v2/document-set v2 `QUIESCENT` AUTO state. REL-0004-01 records
+the separate release-line decision/readiness design; no version, candidate,
+tag, assets, or publication is approved. REL-0004-02 requires separate
+approval.
 
 ## AUTO-0021 — Repository Landing State Coherence
 
@@ -158,3 +160,26 @@ Delivery stages:
 The terminal audit finds exact equality between issue #130 body bytes and the
 approved artifact hash `c99ffa0b885926a64db30c451eeb910ad5dc9b6449f1c4833908d94c43dc859e`.
 No AUTO-0023 milestone is approved or inferred.
+
+## REL-0004 — Post-AUTO-0022 Release-Line Decision and Readiness
+
+**Status:** DESIGN CONTRACT
+
+REL-0004 is separately namespaced release governance and does not alter the
+AUTO-only canonical state. The immutable published baseline remains `v0.2.0`
+at exact tag commit `1faf14c121b7b5da7c8781e3de4e836f85838a76`; the audited
+starting point is exact `master`
+`4914f3467c1f5e44b974d956f0ba8a18c40fd9f3`, 403 commits after that tag.
+
+Delivery state:
+
+1. REL-0004-01 — design, exact baseline/delta audit, and readiness-gate
+   contract: COMPLETE / DESIGN-ONLY TRANSITION.
+2. REL-0004-02 — compatibility inventory and explicit version/scope decision:
+   NOT APPROVED.
+3. REL-0004-03 through REL-0004-06 — candidate preparation, readiness,
+   publication decision, and reconciliation: NOT APPROVED.
+
+No future version has been selected. No candidate freeze, version edit, tag,
+GitHub Release, asset upload, or package-registry publication is authorized by
+this design.

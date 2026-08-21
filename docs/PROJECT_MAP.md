@@ -119,6 +119,9 @@ services, or expand reconciliation/OpenCode authority.
 - AUTO-0022-02 exact issue-body artifact and guarded plan: COMPLETE / VERIFIED.
 - AUTO-0022-03 guarded issue-body update and evidence: COMPLETE / VERIFIED.
 - AUTO-0022-04 final audit / terminal closure: COMPLETE / TERMINAL.
+- REL-0004-01 release-line decision/readiness design:
+  COMPLETE / DESIGN-ONLY TRANSITION.
+- REL-0004-02 through REL-0004-06: NOT APPROVED.
 
 AUTO-0019 closed at exact `master`
 `c287e5cceef4e72148de7674f4095fedb78bd302` through Quality #394.
@@ -139,3 +142,8 @@ authority. Stage -03 applied only the exact approved issue body after the
 hash precondition and verified the result by independent read.
 The final audit found no cross-surface drift. AUTO-0022 is terminally closed
 without an approved AUTO-0023 successor.
+
+REL-0004 release governance is separately namespaced and does not alter that
+canonical AUTO `QUIESCENT` state. REL-0004-01 records only the exact baseline,
+delta, compatibility-decision requirements, readiness gates, and publication
+boundaries; it selects no version and authorizes no release action.
