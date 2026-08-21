@@ -10,6 +10,7 @@ from ai_engineering.project_state_coherence import (
     MARKER_OPEN,
     CoherenceIssue,
     CoherenceReason,
+    main,
     serialize_coherence_report,
     validate_project_state_coherence,
 )
@@ -101,6 +102,87 @@ def test_coherent_fixture_passes_with_historical_prose_ignored(
     assert report.coherent is True
     assert report.issues == ()
     assert serialize_coherence_report(report) == '{"coherent":true,"issues":[]}'
+
+
+def test_tracked_canonical_document_set_is_coherent() -> None:
+    repository_root = Path(__file__).resolve().parents[2]
+
+    report = validate_project_state_coherence(repository_root)
+
+    assert report.coherent is True
+    assert report.issues == ()
+
+
+def test_cli_returns_success_with_bounded_report(
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    repository_root = Path(__file__).resolve().parents[2]
+
+    result = main([str(repository_root)])
+
+    captured = capsys.readouterr()
+    assert result == 0
+    assert captured.out == '{"coherent":true,"issues":[]}\n'
+    assert captured.err == ""
+
+
+def test_cli_failure_does_not_expose_local_root(
+    tmp_path: Path,
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    result = main([str(tmp_path)])
+
+    captured = capsys.readouterr()
+    assert result == 1
+    assert str(tmp_path) not in captured.out
+    assert json.loads(captured.out) == {
+        "coherent": False,
+        "issues": [
+            {
+                "manifest_reason": "read_failed",
+                "path": "docs/CANONICAL_PROJECT_STATE.json",
+                "reason": "manifest_invalid",
+            }
+        ],
+    }
+    assert captured.err == ""
+
+
+def test_cli_rejects_extra_arguments_deterministically(
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    result = main([".", "extra"])
+
+    captured = capsys.readouterr()
+    assert result == 2
+    assert captured.out == ""
+    assert json.loads(captured.err) == {
+        "coherent": False,
+        "issues": [
+            {
+                "path": "docs/CANONICAL_PROJECT_STATE.json",
+                "reason": "invalid_arguments",
+            }
+        ],
+    }
+
+
+def test_quality_workflow_invokes_offline_coherence_gate() -> None:
+    repository_root = Path(__file__).resolve().parents[2]
+    workflow = (repository_root / ".github/workflows/quality.yml").read_text(
+        encoding="utf-8"
+    )
+
+    assert workflow.count(
+        "uv run python -B -m ai_engineering.project_state_coherence ."
+    ) == 1
+    assert workflow.index("Verify canonical project-state coherence") < (
+        workflow.index("uv run python -m ruff check .")
+    )
+    assert "uv run python -m ruff check ." in workflow
+    assert "uv run python -m mypy src tests" in workflow
+    assert "uv run python -m pytest" in workflow
+    assert "python -m ai_engineering.quality_verifier" in workflow
 
 
 def test_validation_is_deterministic_and_read_only(tmp_path: Path) -> None:

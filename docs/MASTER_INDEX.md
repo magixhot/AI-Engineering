@@ -1,5 +1,9 @@
 # AI-Engineering — Master Documentation Index
 
+<!-- canonical-project-state
+{"schema_version":1,"completed_through":"AUTO-0019","active_milestone":"AUTO-0020","active_stage":"AUTO-0020-04","active_state":"IMPLEMENTATION_ACTIVE"}
+-->
+
 ## Project Documents
 
 | Document | Purpose | Status |

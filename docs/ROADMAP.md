@@ -1,5 +1,9 @@
 # AI-Engineering Roadmap
 
+<!-- canonical-project-state
+{"schema_version":1,"completed_through":"AUTO-0019","active_milestone":"AUTO-0020","active_stage":"AUTO-0020-04","active_state":"IMPLEMENTATION_ACTIVE"}
+-->
+
 ## Completed / Verified
 
 The documentation foundation, MCP foundation, SDK-0001, TOOL-0001, REL-0001/REL-0002/REL-0003, CI-0001, SAFE-0001/SAFE-0002, and AUTO-0001 through AUTO-0019 are COMPLETE / VERIFIED for their approved scopes.
@@ -82,6 +86,6 @@ AUTO-0020 does not authorize automatic documentation edits, reconciliation apply
 
 ## Current Priority
 
-Complete AUTO-0020-03 deterministic read-only cross-document validator through the normal exact PR-head Quality gate, expected-head-protected merge, and exact post-merge `master` push Quality gate.
+Complete AUTO-0020-04 Quality integration and failure-mode coverage through the normal exact PR-head Quality gate, expected-head-protected merge, and exact post-merge `master` push Quality gate.
 
 Later AUTO-0020 implementation stages remain subject to the approved read-only validation boundary and the normal per-stage Quality gates.

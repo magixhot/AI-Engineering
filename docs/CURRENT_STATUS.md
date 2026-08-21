@@ -1,5 +1,9 @@
 # AI-Engineering — Current Status
 
+<!-- canonical-project-state
+{"schema_version":1,"completed_through":"AUTO-0019","active_milestone":"AUTO-0020","active_stage":"AUTO-0020-04","active_state":"IMPLEMENTATION_ACTIVE","release_line":"v0.2.0"}
+-->
+
 **Snapshot date:** 2026-08-19  
 **Status:** ACTIVE  
 **Release line:** 0.2.0  

@@ -29,6 +29,8 @@ jobs:
           python-version: "3.11"
       - uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
       - run: uv sync --locked --group dev
+      - name: Verify canonical project-state coherence
+        run: uv run python -B -m ai_engineering.project_state_coherence .
       - run: uv run python -m ruff check .
       - run: uv run python -m mypy src tests
       - run: uv run python -m pytest
