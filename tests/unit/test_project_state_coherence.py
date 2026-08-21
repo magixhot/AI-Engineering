@@ -76,6 +76,44 @@ def write_fixture(root: Path) -> None:
         )
 
 
+def write_quiescent_fixture(root: Path) -> None:
+    mapping = valid_mapping()
+    mapping.update(
+        {
+            "schema_version": 2,
+            "completed_through": "AUTO-0020",
+            "active_milestone": None,
+            "active_stage": None,
+            "active_state": "QUIESCENT",
+        }
+    )
+    manifest_path = root / MANIFEST_RELATIVE_PATH
+    manifest_path.parent.mkdir(parents=True, exist_ok=True)
+    manifest_path.write_text(
+        json.dumps(mapping, indent=2) + "\n", encoding="utf-8"
+    )
+    values: dict[str, object] = {
+        COMPLETED_THROUGH: "AUTO-0020",
+        ACTIVE_MILESTONE: None,
+        ACTIVE_STAGE: None,
+        ACTIVE_STATE: "QUIESCENT",
+        RELEASE_LINE: "v0.2.0",
+    }
+    for path, fields in DOCUMENT_PROJECTIONS:
+        marker: dict[str, object] = {"schema_version": 2}
+        marker.update({field: values[field] for field in fields})
+        document = root / path
+        document.parent.mkdir(parents=True, exist_ok=True)
+        document.write_text(
+            "# Canonical document\n\n"
+            + MARKER_OPEN
+            + json.dumps(marker, sort_keys=True)
+            + MARKER_CLOSE
+            + "\n",
+            encoding="utf-8",
+        )
+
+
 def replace_marker(root: Path, path: str, marker: str) -> None:
     document = root / path
     document.write_text(
@@ -102,6 +140,43 @@ def test_coherent_fixture_passes_with_historical_prose_ignored(
     assert report.coherent is True
     assert report.issues == ()
     assert serialize_coherence_report(report) == '{"coherent":true,"issues":[]}'
+
+
+def test_quiescent_schema_v2_fixture_is_coherent(tmp_path: Path) -> None:
+    write_quiescent_fixture(tmp_path)
+
+    report = validate_project_state_coherence(tmp_path)
+
+    assert report.coherent is True
+    assert report.issues == ()
+
+
+def test_quiescent_marker_rejects_fabricated_active_successor(
+    tmp_path: Path,
+) -> None:
+    write_quiescent_fixture(tmp_path)
+    path = "docs/PROJECT_MAP.md"
+    marker = (
+        MARKER_OPEN
+        + json.dumps(
+            {
+                "schema_version": 2,
+                "completed_through": "AUTO-0020",
+                "active_milestone": "AUTO-0021",
+            },
+            sort_keys=True,
+        )
+        + MARKER_CLOSE
+    )
+    replace_marker(tmp_path, path, marker)
+
+    report = validate_project_state_coherence(tmp_path)
+
+    assert report.issues[0] == CoherenceIssue(
+        path=path,
+        reason=CoherenceReason.MARKER_MISMATCH,
+        field=ACTIVE_MILESTONE,
+    )
 
 
 def test_tracked_canonical_document_set_is_coherent() -> None:

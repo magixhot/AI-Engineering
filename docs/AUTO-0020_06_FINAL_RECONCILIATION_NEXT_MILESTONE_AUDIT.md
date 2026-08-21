@@ -78,3 +78,14 @@ AUTO-0020-06 audit evidence is accepted only after exact PR-head Quality,
 expected-head-protected merge, and push-triggered Quality success on the exact
 merged `master` SHA. Until then AUTO-0020 remains in
 `FINAL_RECONCILIATION_ACTIVE`.
+
+## Audit Closure and Approved Decision
+
+PR #196 passed pre-merge Quality #405, merged with expected-head protection as
+exact `master` `143ccdcbd9b39e89188cbad63577b0dc1e353941`, and that SHA
+passed push-triggered Quality #406 (run id `32493445761`). The audit is
+COMPLETE / VERIFIED.
+
+The separately requested decision selected option 1: add a narrow terminal
+state representation without declaring AUTO-0021. The approved extension is
+documented in `AUTO-0020_TERMINAL_QUIESCENT_STATE_EXTENSION.md`.

@@ -1,7 +1,7 @@
 # AI-Engineering
 
 <!-- canonical-project-state
-{"schema_version":1,"completed_through":"AUTO-0019","active_milestone":"AUTO-0020","active_stage":"AUTO-0020-06","active_state":"FINAL_RECONCILIATION_ACTIVE"}
+{"schema_version":2,"completed_through":"AUTO-0020","active_milestone":null,"active_stage":null,"active_state":"QUIESCENT"}
 -->
 
 ## Chat Bootstrap
@@ -22,20 +22,19 @@ Continue from `CURRENT_STATUS.md`; its marker and current-state section are auth
 
 ## Current Working State
 
-The foundations and AUTO-0001 through AUTO-0019 are COMPLETE / VERIFIED for
-their approved scopes. AUTO-0020 stages 01 through 05 are COMPLETE / VERIFIED.
-AUTO-0020-06 final reconciliation / next-milestone audit is the only active
-stage.
+The foundations and AUTO-0001 through AUTO-0020 are COMPLETE / VERIFIED for
+their approved scopes. No successor milestone or stage is active. Canonical
+state is schema v2 `QUIESCENT`.
 
 The verified AUTO-0019 closure baseline is exact `master`
 `c287e5cceef4e72148de7674f4095fedb78bd302`, confirmed by push-triggered
 Quality #394 (run id `32484748127`).
 
-AUTO-0020-05 merged through PR #195 as exact `master`
-`6e19e5f7ee35ee818a9b0ea1c8257d7f2609e364` after pre-merge Quality #403
-and push-triggered Quality #404.
+AUTO-0020-06 audit merged through PR #196 as exact `master`
+`143ccdcbd9b39e89188cbad63577b0dc1e353941` after pre-merge Quality #405
+and push-triggered Quality #406.
 
-## Active Gate
+## Milestone State
 
 ```text
 AUTO-0020-01 design/contract                         COMPLETE / VERIFIED
@@ -43,7 +42,8 @@ AUTO-0020-02 typed manifest and strict parser        COMPLETE / VERIFIED
 AUTO-0020-03 deterministic read-only validator       COMPLETE / VERIFIED
 AUTO-0020-04 Quality integration/failure coverage    COMPLETE / VERIFIED
 AUTO-0020-05 canonical document reconciliation       COMPLETE / VERIFIED
-AUTO-0020-06 final reconciliation/next audit          ACTIVE
+AUTO-0020-06 final reconciliation/next audit          COMPLETE / VERIFIED
+next milestone                                        NOT APPROVED / NOT ACTIVE
 ```
 
 Read `AUTO-0020_CANONICAL_PROJECT_STATE_DOCUMENTATION_COHERENCE_GATE_DESIGN.md`,
@@ -72,9 +72,8 @@ and does not execute or re-execute a claimed request.
 
 ## Current Priority
 
-Complete the AUTO-0020-06 final audit and its exact Quality gates. Do not
-declare or start AUTO-0021, and do not change the manifest lifecycle model,
-until the audited terminal-state modeling decision is separately approved.
+Preserve the quiescent state until a concrete next milestone is separately
+designed and approved. Do not infer AUTO-0021 from numbering alone.
 
 ## General Engineering Guardrails
 
