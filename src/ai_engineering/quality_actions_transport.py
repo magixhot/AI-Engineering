@@ -19,6 +19,7 @@ from .quality_verification import (
 
 _GH_TIMEOUT_SECONDS = 30
 _PAGE_SIZE = 100
+_MAX_PAGES = 100
 _WORKFLOW_FILE = "quality.yml"
 
 
@@ -81,22 +82,23 @@ class GhActionsReadTransport:
         except QualityVerificationError as exc:
             raise QualityActionsTransportError("invalid verification input") from exc
 
-        raw = self._runner(("gh", "api", "--paginate", "--slurp", endpoint))
-        try:
-            pages = json.loads(raw)
-        except json.JSONDecodeError as exc:
-            raise QualityActionsTransportError(
-                "GitHub Actions returned malformed JSON"
-            ) from exc
-        if not isinstance(pages, list):
-            raise QualityActionsTransportError(
-                "GitHub Actions paginated response is not a list"
-            )
-
         evidence: list[WorkflowRunEvidence] = []
-        for page in pages:
-            evidence.extend(self._parse_page(page))
-        return evidence
+        for page_number in range(1, _MAX_PAGES + 1):
+            page_endpoint = f"{endpoint}&page={page_number}"
+            raw = self._runner(("gh", "api", page_endpoint))
+            try:
+                page = json.loads(raw)
+            except json.JSONDecodeError as exc:
+                raise QualityActionsTransportError(
+                    "GitHub Actions returned malformed JSON"
+                ) from exc
+            page_evidence = self._parse_page(page)
+            evidence.extend(page_evidence)
+            if len(page_evidence) < _PAGE_SIZE:
+                return evidence
+        raise QualityActionsTransportError(
+            "GitHub Actions pagination limit exceeded"
+        )
 
     @staticmethod
     def _parse_page(page: Any) -> list[WorkflowRunEvidence]:

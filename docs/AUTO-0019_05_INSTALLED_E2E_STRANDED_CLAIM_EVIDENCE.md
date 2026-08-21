@@ -29,6 +29,28 @@ This repository evidence does not prove that a long-running workstation service
 has synchronized and reloaded the AUTO-0019-04 runtime. Installed E2E evidence
 therefore remains required.
 
+## Installed compatibility observation
+
+The first installed probe published canonical request
+`sha256:d61960632421eaafcdc7300cd69965b0028f6bb9f148ea0b9dcb93ecf83831ff`
+as public comment `5369266460` and its exact claim as comment `5369268039`.
+The claim was created at `2026-08-21T11:29:47Z` and no ordinary terminal result
+was published.
+
+The installed worker failed closed before recovery discovery because its GitHub
+CLI supports `gh api --paginate` but not the newer `--slurp` flag used by both
+control-comment and exact-Quality transports. Direct authenticated GitHub API
+reading succeeded without that flag. Local diagnostics remained bounded as
+`transport_read_failure`; no request executor, OpenCode call, `quality_verify`,
+repository mutation, or recovery publication occurred.
+
+The corrective prerequisite replaces `--slurp` with explicit bounded
+`page=N` reads in both transports. It preserves read-only GET behavior,
+full-page traversal, deterministic bounds, existing retry/fail-closed behavior,
+and single-attempt publication semantics. The original public fixture remains
+valid and claimed while this correction passes its normal Quality gates and is
+loaded by the installed service.
+
 ## Installed-E2E precondition
 
 The operator must explicitly fast-forward the validated local checkout to the
