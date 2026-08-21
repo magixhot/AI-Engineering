@@ -82,6 +82,6 @@ AUTO-0020 does not authorize automatic documentation edits, reconciliation apply
 
 ## Current Priority
 
-Complete AUTO-0020-02 typed canonical-state manifest and strict parser through the normal exact PR-head Quality gate, expected-head-protected merge, and exact post-merge `master` push Quality gate.
+Complete AUTO-0020-03 deterministic read-only cross-document validator through the normal exact PR-head Quality gate, expected-head-protected merge, and exact post-merge `master` push Quality gate.
 
 Later AUTO-0020 implementation stages remain subject to the approved read-only validation boundary and the normal per-stage Quality gates.
