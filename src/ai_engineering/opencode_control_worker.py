@@ -43,6 +43,8 @@ DEFAULT_CONTROL_ISSUE = 130
 DEFAULT_POLL_SECONDS = 10.0
 DEFAULT_READ_ATTEMPTS = 3
 DEFAULT_READ_RETRY_BASE_SECONDS = 1.0
+CONTROL_COMMENTS_PAGE_SIZE = 100
+MAX_CONTROL_COMMENT_PAGES = 100
 DEFAULT_RECOVERY_GRACE_SECONDS = 300.0
 MIN_RECOVERY_GRACE_SECONDS = 60.0
 MAX_RECOVERY_GRACE_SECONDS = 86_400.0
@@ -331,22 +333,29 @@ class GhIssueTransport:
             raise ControlWorkerError("gh executable not found") from exc
         return completed.stdout
 
+    def _read_pages_once(self, endpoint: str) -> list[object]:
+        pages: list[object] = []
+        for page_number in range(1, MAX_CONTROL_COMMENT_PAGES + 1):
+            page_endpoint = f"{endpoint}&page={page_number}"
+            raw = self._run("api", page_endpoint)
+            try:
+                page = json.loads(raw)
+            except json.JSONDecodeError as exc:
+                raise ControlWorkerError(
+                    "GitHub returned malformed JSON"
+                ) from exc
+            if not isinstance(page, list):
+                raise ControlWorkerError("GitHub comments page is not a list")
+            pages.append(page)
+            if len(page) < CONTROL_COMMENTS_PAGE_SIZE:
+                return pages
+        raise ControlWorkerError("GitHub comments pagination limit exceeded")
+
     def _read_pages(self, endpoint: str) -> list[object]:
         last_error: ControlWorkerError | None = None
         for attempt in range(1, self._read_attempts + 1):
             try:
-                raw = self._run("api", "--paginate", "--slurp", endpoint)
-                try:
-                    pages = json.loads(raw)
-                except json.JSONDecodeError as exc:
-                    raise ControlWorkerError(
-                        "GitHub returned malformed JSON"
-                    ) from exc
-                if not isinstance(pages, list):
-                    raise ControlWorkerError(
-                        "GitHub comments response is not paginated"
-                    )
-                return pages
+                return self._read_pages_once(endpoint)
             except ControlWorkerError as exc:
                 last_error = exc
                 if attempt >= self._read_attempts:
@@ -367,7 +376,7 @@ class GhIssueTransport:
     def list_comments(self) -> list[IssueComment]:
         endpoint = (
             f"repos/{self._repository}/issues/{self._issue_number}/comments"
-            "?per_page=100"
+            f"?per_page={CONTROL_COMMENTS_PAGE_SIZE}"
         )
         pages = self._read_pages(endpoint)
 

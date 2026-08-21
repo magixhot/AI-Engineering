@@ -23,7 +23,7 @@ class RetryReadTransport(GhIssueTransport):
         self.calls += 1
         if self.calls < 3:
             raise ControlWorkerError("private transport detail must stay local")
-        return "[[]]"
+        return "[]"
 
 
 class AlwaysFailReadTransport:
