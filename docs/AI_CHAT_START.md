@@ -1,7 +1,7 @@
 # AI-Engineering
 
 <!-- canonical-project-state
-{"schema_version":2,"completed_through":"AUTO-0021","active_milestone":"AUTO-0022","active_stage":"AUTO-0022-02","active_state":"IMPLEMENTATION_ACTIVE"}
+{"schema_version":2,"completed_through":"AUTO-0021","active_milestone":"AUTO-0022","active_stage":"AUTO-0022-03","active_state":"IMPLEMENTATION_ACTIVE"}
 -->
 
 ## Chat Bootstrap
@@ -23,8 +23,8 @@ Continue from `CURRENT_STATUS.md`; its marker and current-state section are auth
 ## Current Working State
 
 The foundations and AUTO-0001 through AUTO-0021 are COMPLETE / VERIFIED for
-their approved scopes. AUTO-0022-01 is COMPLETE / VERIFIED; AUTO-0022-02 exact
-issue-body artifact and guarded plan is the only active stage.
+their approved scopes. AUTO-0022-01 and AUTO-0022-02 are COMPLETE / VERIFIED;
+AUTO-0022-03 body-only update and post-write evidence is the only active stage.
 
 The verified AUTO-0019 closure baseline is exact `master`
 `c287e5cceef4e72148de7674f4095fedb78bd302`, confirmed by push-triggered
@@ -54,6 +54,10 @@ AUTO-0022-01 merged through PR #203 as exact `master`
 `3efd7714b1302f13c371f81e6b8894f08b517c6f` after pre-merge Quality #419
 and push-triggered Quality #420.
 
+AUTO-0022-02 merged through PR #204 as exact `master`
+`39c9933fa3ec5bde0ab62bc89fc0a4c6b300b838` after pre-merge Quality #421
+and push-triggered Quality #422.
+
 ## Milestone State
 
 ```text
@@ -68,8 +72,8 @@ AUTO-0021-02 document-set v2 / README marker          COMPLETE / VERIFIED
 AUTO-0021-03 README narrative reconciliation          COMPLETE / VERIFIED
 AUTO-0021-04 final audit                              COMPLETE / VERIFIED
 AUTO-0022-01 control-surface coherence design         COMPLETE / VERIFIED
-AUTO-0022-02 exact issue-body artifact/plan           ACTIVE
-AUTO-0022-03 guarded issue-body update/evidence       PENDING
+AUTO-0022-02 exact issue-body artifact/plan           COMPLETE / VERIFIED
+AUTO-0022-03 guarded issue-body update/evidence       ACTIVE
 AUTO-0022-04 final audit                              PENDING
 ```
 
@@ -80,7 +84,8 @@ Quality runs the coherence validator offline before Ruff, mypy, and pytest.
 For current work, also read
 `AUTO-0022_GITHUB_CONTROL_SURFACE_COHERENCE_DESIGN.md`,
 `AUTO-0022_ISSUE_130_DESIRED_BODY.md`, and
-`AUTO-0022_02_GUARDED_ISSUE_BODY_UPDATE_PLAN.md`.
+`AUTO-0022_02_GUARDED_ISSUE_BODY_UPDATE_PLAN.md`, and
+`AUTO-0022_03_ISSUE_BODY_UPDATE_EVIDENCE.md`.
 
 ## Permanent Authority Boundaries
 
@@ -104,9 +109,9 @@ and does not execute or re-execute a claimed request.
 
 ## Current Priority
 
-Complete AUTO-0022-02 through exact PR-head Quality, expected-head-protected
-merge, and exact post-merge `master` Quality. Do not mutate issue #130 before
-separate AUTO-0022-03 authorization and a fresh exact precondition check.
+Complete AUTO-0022-03 evidence through exact PR-head Quality,
+expected-head-protected merge, and exact post-merge `master` Quality. Then
+continue only with the separately gated AUTO-0022-04 final audit.
 
 ## General Engineering Guardrails
 

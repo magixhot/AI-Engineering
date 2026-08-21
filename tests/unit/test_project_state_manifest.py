@@ -98,7 +98,7 @@ def test_tracked_manifest_loads_from_exact_portable_path() -> None:
     assert state.schema_version == 2
     assert state.completed_through == "AUTO-0021"
     assert state.active_milestone == "AUTO-0022"
-    assert state.active_stage == "AUTO-0022-02"
+    assert state.active_stage == "AUTO-0022-03"
     assert state.active_state is ProjectStateActivity.IMPLEMENTATION_ACTIVE
     assert state.document_set_version == 2
     assert tuple(item.path for item in state.document_projections) == (

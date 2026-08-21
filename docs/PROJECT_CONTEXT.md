@@ -94,14 +94,17 @@ AUTO-0021 terminal closure merged through PR #202 as exact `master`
 `3e3c2b32d0caf677d55be9f090d4a1d236716e42` after Quality #417/#418.
 AUTO-0021 is COMPLETE / VERIFIED. AUTO-0022-01 merged through PR #203 as exact
 `master` `3efd7714b1302f13c371f81e6b8894f08b517c6f` after Quality #419/#420.
-AUTO-0022-02 exact issue-body artifact and guarded plan is the active stage.
+AUTO-0022-02 merged through PR #204 as exact `master`
+`39c9933fa3ec5bde0ab62bc89fc0a4c6b300b838` after Quality #421/#422.
+AUTO-0022-03 body-only update and post-write evidence is the active stage.
 
 Document-set v2 adds only repository-root `README.md` to the exact governed
 set while document-set v1 retains its historical six-document compatibility.
 AUTO-0022 governs only the body coherence of open control issue #130. It does
 not alter the offline repository-byte contract or add generic issue automation.
-Stage -02 does not mutate the issue; the body-only update remains separately
-authorized stage -03 and must satisfy the fresh exact hash precondition.
+Stage -03 satisfied the fresh exact hash precondition, applied the approved
+body once, and independently verified exact desired-body equality. No new
+protocol, task, or worker authority was added.
 
 ## Release Boundary
 
