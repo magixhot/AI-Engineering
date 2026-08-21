@@ -1,7 +1,7 @@
 # AI-Engineering
 
 <!-- canonical-project-state
-{"schema_version":2,"completed_through":"AUTO-0020","active_milestone":"AUTO-0021","active_stage":"AUTO-0021-04","active_state":"FINAL_RECONCILIATION_ACTIVE"}
+{"schema_version":2,"completed_through":"AUTO-0021","active_milestone":null,"active_stage":null,"active_state":"QUIESCENT"}
 -->
 
 ## Chat Bootstrap
@@ -22,12 +22,9 @@ Continue from `CURRENT_STATUS.md`; its marker and current-state section are auth
 
 ## Current Working State
 
-The foundations and AUTO-0001 through AUTO-0020 are COMPLETE / VERIFIED for
-their approved scopes. AUTO-0021-01 is COMPLETE / VERIFIED. AUTO-0021-02
-document-set v2 / README marker implementation is COMPLETE / VERIFIED.
-AUTO-0021-03 README narrative reconciliation is COMPLETE / VERIFIED.
-AUTO-0021-04 final reconciliation / next-surface audit is the only active
-stage.
+The foundations and AUTO-0001 through AUTO-0021 are COMPLETE / VERIFIED for
+their approved scopes. No successor milestone or stage is active. Canonical
+state is schema v2/document-set v2 `QUIESCENT`.
 
 The verified AUTO-0019 closure baseline is exact `master`
 `c287e5cceef4e72148de7674f4095fedb78bd302`, confirmed by push-triggered
@@ -45,6 +42,10 @@ AUTO-0021-03 merged through PR #200 as exact `master`
 `ad30d3155ee1561e0c6e37c3e4ffd5996b55dd72` after pre-merge Quality #413
 and push-triggered Quality #414.
 
+AUTO-0021-04 merged through PR #201 as exact `master`
+`965e2722ee9d232d526e716edbdabd6d9f8a0197` after pre-merge Quality #415
+and push-triggered Quality #416.
+
 ## Milestone State
 
 ```text
@@ -57,7 +58,8 @@ AUTO-0020-06 final reconciliation/next audit          COMPLETE / VERIFIED
 AUTO-0021-01 landing coherence design                 COMPLETE / VERIFIED
 AUTO-0021-02 document-set v2 / README marker          COMPLETE / VERIFIED
 AUTO-0021-03 README narrative reconciliation          COMPLETE / VERIFIED
-AUTO-0021-04 final audit                              ACTIVE
+AUTO-0021-04 final audit                              COMPLETE / VERIFIED
+next milestone                                        NOT APPROVED / NOT ACTIVE
 ```
 
 Read `AUTO-0020_CANONICAL_PROJECT_STATE_DOCUMENTATION_COHERENCE_GATE_DESIGN.md`,
@@ -89,9 +91,8 @@ and does not execute or re-execute a claimed request.
 
 ## Current Priority
 
-Complete AUTO-0021-04 final reconciliation through exact PR-head Quality,
-expected-head-protected merge, and exact post-merge `master` Quality. Do not
-infer or start AUTO-0022 from numbering alone.
+Preserve the quiescent state until a concrete successor is separately designed
+and approved. Do not infer or start AUTO-0022 from numbering alone.
 
 ## General Engineering Guardrails
 
