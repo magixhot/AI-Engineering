@@ -2,8 +2,8 @@
   "schema_version": 2,
   "completed_through": "AUTO-0021",
   "active_milestone": "AUTO-0022",
-  "active_stage": "AUTO-0022-01",
-  "active_state": "DESIGN_ACTIVE",
+  "active_stage": "AUTO-0022-02",
+  "active_state": "IMPLEMENTATION_ACTIVE",
   "release_line": "v0.2.0",
   "document_set_version": 2,
   "document_projections": {
