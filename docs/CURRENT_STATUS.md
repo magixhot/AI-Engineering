@@ -22,6 +22,10 @@ The MCP/SDK/tooling/release/safety foundations and AUTO-0001 through AUTO-0022
 are COMPLETE / VERIFIED for their approved scopes. No successor milestone or
 stage is approved or active.
 
+REL-0004-01 is a separately namespaced release-governance design. It records
+the exact post-v0.2.0 delta and future readiness gates without changing the
+AUTO-only canonical `QUIESCENT` identity.
+
 AUTO-0019 closed on exact `master`
 `c287e5cceef4e72148de7674f4095fedb78bd302`. Push-triggered Quality #394
 (run id `32484748127`) completed successfully for that exact SHA.
@@ -68,6 +72,20 @@ AUTO-0022 reconciled that exact external surface without expanding authority.
 | AUTO-0022-02 Exact Desired Body / Guarded Plan | COMPLETE / VERIFIED — PR #204; Quality #421/#422; merged `39c9933fa3ec5bde0ab62bc89fc0a4c6b300b838`. |
 | AUTO-0022-03 Body-Only Update / Post-Write Evidence | COMPLETE / VERIFIED — PR #205; Quality #423/#424; merged `d541d751828d9d95a828799b4e3f0345c396b103`; exact post-read matched `c99ffa0b885926a64db30c451eeb910ad5dc9b6449f1c4833908d94c43dc859e`. |
 | AUTO-0022-04 Final Audit / Closure | COMPLETE / TERMINAL CLOSURE |
+
+## REL-0004 Release-Line Decision State
+
+| Stage | State |
+|---|---|
+| REL-0004-01 Decision / Readiness Design | COMPLETE / DESIGN-ONLY TRANSITION |
+| REL-0004-02 Compatibility Inventory / Version Decision | NOT APPROVED |
+| REL-0004-03 through REL-0004-06 | NOT APPROVED |
+
+The immutable published release remains v0.2.0 at exact tag commit
+`1faf14c121b7b5da7c8781e3de4e836f85838a76`. The audited current baseline is
+exact `master` `4914f3467c1f5e44b974d956f0ba8a18c40fd9f3`, 403 commits after that tag.
+No version change, candidate, tag, release, asset upload, or PyPI action is
+approved.
 
 ## Coherence Contract
 
@@ -119,5 +137,6 @@ not approved and not published.
 
 ## Current Priority
 
-Preserve schema v2/document-set v2 `QUIESCENT` state until a successor is
-separately designed and approved. No AUTO-0023 identity is inferred.
+Preserve schema v2/document-set v2 `QUIESCENT` AUTO state. Continue only after
+separate approval of REL-0004-02 compatibility inventory/version decision; no
+version or publication action is implied.

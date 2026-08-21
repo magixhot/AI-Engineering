@@ -62,6 +62,8 @@ AUTO-0019 recovery does not call either path.
 - Keep package installation, workstation repair, service-control mutation,
   workflow rerun/cancel/dispatch, deployment/publication, and new remote
   write/apply authority behind separately approved contracts.
+- Preserve the immutable v0.2.0 boundary while deciding release readiness from
+  the audited post-v0.2.0 delta, without implying a version or publication.
 
 ## Engineering Principles
 
@@ -102,6 +104,13 @@ AUTO-0022-02 merged through PR #204 as exact `master`
 AUTO-0022-03 merged through PR #205 as exact `master`
 `d541d751828d9d95a828799b4e3f0345c396b103` after Quality #423/#424.
 AUTO-0022 is COMPLETE / VERIFIED and no successor milestone is active.
+
+REL-0004-01 separately records the release-line decision/readiness design from
+exact `master` `4914f3467c1f5e44b974d956f0ba8a18c40fd9f3`. That starting
+point is 403 commits after immutable `v0.2.0` tag commit
+`1faf14c121b7b5da7c8781e3de4e836f85838a76`. It does not change the canonical
+AUTO `QUIESCENT` state, choose a version, freeze a candidate, or authorize
+publication. REL-0004-02 is not approved.
 
 Document-set v2 adds only repository-root `README.md` to the exact governed
 set while document-set v1 retains its historical six-document compatibility.
