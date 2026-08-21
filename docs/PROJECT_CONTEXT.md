@@ -1,7 +1,7 @@
 # AI-Engineering
 
 <!-- canonical-project-state
-{"schema_version":2,"completed_through":"AUTO-0021","active_milestone":null,"release_line":"v0.2.0"}
+{"schema_version":2,"completed_through":"AUTO-0021","active_milestone":"AUTO-0022","release_line":"v0.2.0"}
 -->
 
 ## Project Purpose
@@ -49,8 +49,8 @@ AUTO-0019 recovery does not call either path.
 
 - Preserve all completed foundations and AUTO-0001 through AUTO-0021 within
   their approved authority boundaries.
-- Preserve schema v2/document-set v2 `QUIESCENT` state while no successor is
-  approved.
+- Complete AUTO-0022 design-first coherence of exact external issue #130
+  without adding protocol or worker authority.
 - Keep `docs/CANONICAL_PROJECT_STATE.json` strict, minimal, and typed.
 - Keep coherence validation deterministic, offline, read-only, fail-closed,
   and limited to declared document projections.
@@ -90,12 +90,14 @@ AUTO-0021-03 merged through PR #200 as exact `master`
 `ad30d3155ee1561e0c6e37c3e4ffd5996b55dd72` after Quality #413/#414.
 AUTO-0021-04 merged through PR #201 as exact `master`
 `965e2722ee9d232d526e716edbdabd6d9f8a0197` after Quality #415/#416.
-AUTO-0021 is COMPLETE / VERIFIED and no successor is active.
+AUTO-0021 terminal closure merged through PR #202 as exact `master`
+`3e3c2b32d0caf677d55be9f090d4a1d236716e42` after Quality #417/#418.
+AUTO-0021 is COMPLETE / VERIFIED. AUTO-0022-01 is the active design stage.
 
 Document-set v2 adds only repository-root `README.md` to the exact governed
 set while document-set v1 retains its historical six-document compatibility.
-The open control issue #130 is an external surface and remains outside this
-offline repository-byte contract.
+AUTO-0022 governs only the body coherence of open control issue #130. It does
+not alter the offline repository-byte contract or add generic issue automation.
 
 ## Release Boundary
 

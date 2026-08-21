@@ -1,7 +1,7 @@
 # AI-Engineering — Master Documentation Index
 
 <!-- canonical-project-state
-{"schema_version":2,"completed_through":"AUTO-0021","active_milestone":null,"active_stage":null,"active_state":"QUIESCENT"}
+{"schema_version":2,"completed_through":"AUTO-0021","active_milestone":"AUTO-0022","active_stage":"AUTO-0022-01","active_state":"DESIGN_ACTIVE"}
 -->
 
 ## Canonical Project Documents
@@ -39,6 +39,7 @@
 | AUTO-0021_03_README_NARRATIVE_RECONCILIATION_EVIDENCE.md | README landing claims and preserved boundaries | Complete / Verified |
 | AUTO-0021_04_FINAL_RECONCILIATION_NEXT_SURFACE_AUDIT.md | Repository-byte closure and external next-surface audit | Complete / Verified |
 | AUTO-0021_TERMINAL_QUIESCENT_CLOSURE.md | Schema v2/document-set v2 terminal state without a successor | Current contract |
+| AUTO-0022_GITHUB_CONTROL_SURFACE_COHERENCE_DESIGN.md | Exact issue #130 body reconciliation without authority expansion | Active |
 
 ## Engineering State
 
@@ -51,7 +52,7 @@
 | AUTO-0021-02 Document-Set v2 / README Marker | COMPLETE / VERIFIED |
 | AUTO-0021-03 README Narrative Reconciliation | COMPLETE / VERIFIED |
 | AUTO-0021-04 Final Reconciliation / Next-Surface Audit | COMPLETE / VERIFIED |
-| Active successor milestone | NONE / QUIESCENT |
+| AUTO-0022-01 GitHub Control Surface Coherence Design | ACTIVE |
 
 ## AUTO-0020 Delivery Evidence
 
@@ -95,5 +96,6 @@ AUTO-0021-01 is COMPLETE / VERIFIED through PR #198 and Quality #409/#410.
 AUTO-0021-02 is COMPLETE / VERIFIED through PR #199 and Quality #411/#412.
 AUTO-0021-03 is COMPLETE / VERIFIED through PR #200 and Quality #413/#414.
 AUTO-0021-04 is COMPLETE / VERIFIED through PR #201 and Quality #415/#416.
-Preserve terminal `QUIESCENT` state until a successor is separately designed
-and approved.
+AUTO-0021 terminal closure is verified through PR #202 and Quality #417/#418.
+Complete AUTO-0022-01 exact gates, then continue only with the exact issue-body
+artifact and guarded mutation-plan scope.

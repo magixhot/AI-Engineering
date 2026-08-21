@@ -1,7 +1,7 @@
 # AI-Engineering
 
 <!-- canonical-project-state
-{"schema_version":2,"completed_through":"AUTO-0021","active_milestone":null}
+{"schema_version":2,"completed_through":"AUTO-0021","active_milestone":"AUTO-0022"}
 -->
 
 ## Repository Structure
@@ -115,7 +115,8 @@ services, or expand reconciliation/OpenCode authority.
 - AUTO-0021-02 document-set v2 / README marker: COMPLETE / VERIFIED.
 - AUTO-0021-03 README narrative reconciliation: COMPLETE / VERIFIED.
 - AUTO-0021-04 final audit: COMPLETE / VERIFIED.
-- Next milestone: NOT APPROVED / NOT ACTIVE.
+- AUTO-0022-01 GitHub control-surface coherence design: ACTIVE.
+- AUTO-0022-02 through AUTO-0022-04: PENDING.
 
 AUTO-0019 closed at exact `master`
 `c287e5cceef4e72148de7674f4095fedb78bd302` through Quality #394.
@@ -131,4 +132,5 @@ repository-root `README.md`. Document-set v2 governs it first in deterministic
 order; no glob or generic Markdown policy is added.
 
 AUTO-0021 is terminally closed with schema v2/document-set v2 `QUIESCENT`;
-AUTO-0022 is not inferred or fabricated.
+AUTO-0022 now has an explicit design identity. It targets only issue #130 body
+coherence and adds no protocol/runtime authority.

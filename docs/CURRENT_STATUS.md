@@ -1,26 +1,26 @@
 # AI-Engineering — Current Status
 
 <!-- canonical-project-state
-{"schema_version":2,"completed_through":"AUTO-0021","active_milestone":null,"active_stage":null,"active_state":"QUIESCENT","release_line":"v0.2.0"}
+{"schema_version":2,"completed_through":"AUTO-0021","active_milestone":"AUTO-0022","active_stage":"AUTO-0022-01","active_state":"DESIGN_ACTIVE","release_line":"v0.2.0"}
 -->
 
 **Snapshot date:** 2026-08-21
 
-**Status:** QUIESCENT
+**Status:** ACTIVE
 
 **Release line:** v0.2.0 (immutable historical release boundary)
 
 **Completed through:** AUTO-0021
 
-**Current milestone:** None
+**Current milestone:** AUTO-0022 — GitHub Control Surface Coherence
 
-**Active stage:** None
+**Active stage:** AUTO-0022-01 — Design / Exact Drift Audit
 
 ## Authoritative State
 
 The MCP/SDK/tooling/release/safety foundations and AUTO-0001 through AUTO-0021
-are COMPLETE / VERIFIED for their approved scopes. No successor milestone or
-stage is approved or active.
+are COMPLETE / VERIFIED for their approved scopes. AUTO-0022-01 is the only
+active stage.
 
 AUTO-0019 closed on exact `master`
 `c287e5cceef4e72148de7674f4095fedb78bd302`. Push-triggered Quality #394
@@ -56,10 +56,19 @@ current state.
 | AUTO-0021-03 README Narrative Reconciliation | COMPLETE / VERIFIED — PR #200; Quality #413/#414; merged `ad30d3155ee1561e0c6e37c3e4ffd5996b55dd72`. |
 | AUTO-0021-04 Final Audit | COMPLETE / VERIFIED — PR #201; Quality #415/#416; merged `965e2722ee9d232d526e716edbdabd6d9f8a0197`. |
 
-The final audit finds no remaining repository-byte landing contradiction.
-Open issue #130 remains a separately governed external surface with a stale
-task-class list; AUTO-0021 does not authorize mutating it. No AUTO-0022 scope
-is approved.
+AUTO-0021 final audit found no remaining repository-byte landing
+contradiction. Open issue #130 remains an external surface with a stale
+task-class list. AUTO-0022-01 defines its exact body-only reconciliation
+contract; this design stage does not mutate the issue.
+
+## AUTO-0022 Audit and Delivery State
+
+| Stage | State |
+|---|---|
+| AUTO-0022-01 Design / Exact Drift Audit | ACTIVE |
+| AUTO-0022-02 Exact Desired Body / Guarded Plan | PENDING |
+| AUTO-0022-03 Body-Only Update / Post-Write Evidence | PENDING |
+| AUTO-0022-04 Final Audit / Closure | PENDING |
 
 ## Coherence Contract
 
@@ -111,6 +120,5 @@ not approved and not published.
 
 ## Current Priority
 
-Preserve schema v2/document-set v2 `QUIESCENT` state until a successor is
-separately designed and approved. External control issue #130 remains a
-separate future decision; no AUTO-0022 is approved.
+Complete AUTO-0022-01 exact gates. Do not mutate issue #130 before stage -02
+defines the exact desired body and guarded precondition.
