@@ -2,9 +2,9 @@
 
 ## Completed / Verified
 
-The documentation foundation, MCP foundation, SDK-0001, TOOL-0001, REL-0001/REL-0002/REL-0003, CI-0001, SAFE-0001/SAFE-0002, and AUTO-0001 through AUTO-0018 are COMPLETE / VERIFIED for their approved scopes.
+The documentation foundation, MCP foundation, SDK-0001, TOOL-0001, REL-0001/REL-0002/REL-0003, CI-0001, SAFE-0001/SAFE-0002, and AUTO-0001 through AUTO-0019 are COMPLETE / VERIFIED for their approved scopes.
 
-Established automation boundaries remain layered and unchanged: AUTO-0007 is the permanent read-only reconciliation planner; AUTO-0008 is the guarded one-step apply boundary; AUTO-0009 is bounded multi-step orchestration; AUTO-0010 is the restrictive policy gate; AUTO-0011 is the optional explicit single-candidate approval gate; AUTO-0012 adds deterministic execution evidence; AUTO-0013 adds bounded read-only remote inspection/control transport; AUTO-0014 adds local worker lifecycle supervision; AUTO-0015 adds exact post-merge Quality verification; AUTO-0016 adds portable workstation bootstrap/doctor behavior plus the narrow read-only Quality relay; AUTO-0017 reconciles canonical project state/roadmap documentation with the verified implementation state; and AUTO-0018 hardens reliability/observability of the existing read-only control plane without expanding authority.
+Established automation boundaries remain layered and unchanged: AUTO-0007 is the permanent read-only reconciliation planner; AUTO-0008 is the guarded one-step apply boundary; AUTO-0009 is bounded multi-step orchestration; AUTO-0010 is the restrictive policy gate; AUTO-0011 is the optional explicit single-candidate approval gate; AUTO-0012 adds deterministic execution evidence; AUTO-0013 adds bounded read-only remote inspection/control transport; AUTO-0014 adds local worker lifecycle supervision; AUTO-0015 adds exact post-merge Quality verification; AUTO-0016 adds portable workstation bootstrap/doctor behavior plus the narrow read-only Quality relay; AUTO-0017 reconciles canonical project state/roadmap documentation with the verified implementation state; AUTO-0018 hardens reliability/observability of the existing read-only control plane; and AUTO-0019 adds bounded terminal recovery for aged unresolved claims without replaying their requests.
 
 ## AUTO-0014 — Local Control Worker Service / Lifecycle
 
@@ -53,16 +53,35 @@ AUTO-0018 did not add remote write/apply authority, automatic repository repair,
 
 ## AUTO-0019 — Read-Only Control Request Recovery / Terminalization
 
-**Status:** DESIGN ACTIVE
+**Status:** COMPLETE / VERIFIED
 
-AUTO-0019 is the next selected milestone after AUTO-0018. The fresh post-completion audit identified a remaining lifecycle ambiguity: the worker publishes `CLAIMED` before execution and a terminal result afterward, while claimed request ids are thereafter treated as consumed. A process or transport failure between claim visibility and terminal result visibility can therefore strand a request indefinitely.
+AUTO-0019 implemented and verified the approved no-replay recovery contract. A visible claim remains an execution fence; an aged unresolved claim may be terminalized with bounded `claim_recovery_required` evidence, but recovery never executes or re-executes the claimed request.
 
-AUTO-0019-01 defines a no-replay recovery contract: a visible claim remains an execution fence, and an aged unresolved claim may be terminalized with bounded fail-closed evidence but must not be automatically executed or re-executed. If the objective is still desired, the operator submits a new canonical request.
+Delivered stages:
+
+1. AUTO-0019-01 — design/contract.
+2. AUTO-0019-02 — typed unresolved-claim lifecycle primitives.
+3. AUTO-0019-03 — deterministic aged-claim discovery, immediate reinspection, and terminalization.
+4. AUTO-0019-04 — ambiguous-publication/concurrency hardening and focused failure-mode tests.
+5. AUTO-0019-05 — installed/E2E stranded-claim evidence, distinct liveness verification, and cross-boundary audit.
+6. AUTO-0019-06 — final reconciliation and hardening evidence.
+
+Final exact post-merge verification succeeded on `master` `c287e5cceef4e72148de7674f4095fedb78bd302` through push-triggered Quality #394 (run id `32484748127`).
 
 AUTO-0019 preserves the existing task-class and authority boundaries. It does not add remote write/apply authority, automatic repository synchronization/repair, workflow mutation, service-control mutation, credentials, deployment/publication/release scope, or broader OpenCode authority.
 
+## AUTO-0020 — Canonical Project-State Documentation Coherence Gate
+
+**Status:** DESIGN ACTIVE
+
+The fresh post-AUTO-0019 audit found that the six canonical bootstrap/state documents disagree about the completed and active milestone state. Several still identify AUTO-0014-06 as active, `PROJECT_CONTEXT.md` remains at AUTO-0018-06, and this roadmap still identified AUTO-0019-01 as current before this design update.
+
+AUTO-0020 defines a narrow machine-readable canonical-state contract, deterministic offline/read-only cross-document validation, and Quality integration that rejects stale or ambiguous current-state claims. It will then reconcile the governed documents through exact verified AUTO-0019 evidence.
+
+AUTO-0020 does not authorize automatic documentation edits, reconciliation apply/run, repository repair, workflow mutation, service control, credentials, deployment/publication/release changes, or broader OpenCode authority.
+
 ## Current Priority
 
-Complete AUTO-0019-01 design/contract through the normal exact PR-head Quality gate, expected-head-protected merge, and exact post-merge `master` push Quality relay.
+Complete AUTO-0020-01 design/contract through the normal exact PR-head Quality gate, expected-head-protected merge, and exact post-merge `master` push Quality gate.
 
-Runtime implementation stages remain subject to the approved AUTO-0019 design boundary and the normal per-stage Quality gates.
+Later AUTO-0020 implementation stages remain subject to the approved read-only validation boundary and the normal per-stage Quality gates.
