@@ -1,7 +1,7 @@
 # AI-Engineering
 
 <!-- canonical-project-state
-{"schema_version":2,"completed_through":"AUTO-0020","active_milestone":null,"release_line":"v0.2.0"}
+{"schema_version":2,"completed_through":"AUTO-0020","active_milestone":"AUTO-0021","release_line":"v0.2.0"}
 -->
 
 ## Project Purpose
@@ -48,8 +48,8 @@ AUTO-0019 recovery does not call either path.
 
 - Preserve all completed foundations and AUTO-0001 through AUTO-0020 within
   their approved authority boundaries.
-- Preserve schema v2 `QUIESCENT` state while no successor milestone is
-  approved.
+- Complete AUTO-0021 design-first extension of the strict document set to
+  repository-root `README.md` without adding generic prose parsing.
 - Keep `docs/CANONICAL_PROJECT_STATE.json` strict, minimal, and typed.
 - Keep coherence validation deterministic, offline, read-only, fail-closed,
   and limited to declared document projections.
@@ -79,9 +79,13 @@ AUTO-0020-06 final audit is verified on exact `master`
 `143ccdcbd9b39e89188cbad63577b0dc1e353941` through pre-merge Quality #405
 and push-triggered Quality #406. AUTO-0020 is COMPLETE / VERIFIED.
 
-The approved schema v2 extension represents the absence of a successor with
-`active_milestone=null`, `active_stage=null`, and
-`active_state="QUIESCENT"`. Schema v1 active manifests remain supported.
+The AUTO-0020 terminal state is verified on exact `master`
+`c72c79a477de630f50532a454e11d513e9727a79` through Quality #407/#408.
+AUTO-0021-01 is the active design stage.
+
+The approved AUTO-0021 scope adds only repository-root `README.md` to a
+versioned exact document set. The open control issue #130 is an external
+surface and remains outside this offline repository-byte contract.
 
 ## Release Boundary
 

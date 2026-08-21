@@ -1,26 +1,26 @@
 # AI-Engineering — Current Status
 
 <!-- canonical-project-state
-{"schema_version":2,"completed_through":"AUTO-0020","active_milestone":null,"active_stage":null,"active_state":"QUIESCENT","release_line":"v0.2.0"}
+{"schema_version":2,"completed_through":"AUTO-0020","active_milestone":"AUTO-0021","active_stage":"AUTO-0021-01","active_state":"DESIGN_ACTIVE","release_line":"v0.2.0"}
 -->
 
 **Snapshot date:** 2026-08-21
 
-**Status:** QUIESCENT
+**Status:** ACTIVE
 
 **Release line:** v0.2.0 (immutable historical release boundary)
 
 **Completed through:** AUTO-0020
 
-**Current milestone:** None
+**Current milestone:** AUTO-0021 — Repository Landing State Coherence
 
-**Active stage:** None
+**Active stage:** AUTO-0021-01 — Design / Contract
 
 ## Authoritative State
 
 The MCP/SDK/tooling/release/safety foundations and AUTO-0001 through AUTO-0020
-are COMPLETE / VERIFIED for their approved scopes. No successor milestone or
-stage is approved or active.
+are COMPLETE / VERIFIED for their approved scopes. AUTO-0021-01 is the only
+active stage.
 
 AUTO-0019 closed on exact `master`
 `c287e5cceef4e72148de7674f4095fedb78bd302`. Push-triggered Quality #394
@@ -36,6 +36,23 @@ AUTO-0019 closed on exact `master`
 | AUTO-0020-04 Quality Integration / Failure Coverage | COMPLETE / VERIFIED | PR #194; Quality #401/#402; merged `e62f69d4db2f288bb072cfa38108d5872d5ebdb4`. |
 | AUTO-0020-05 Canonical Document Reconciliation / Repository-Wide Evidence | COMPLETE / VERIFIED | PR #195; Quality #403/#404; merged `6e19e5f7ee35ee818a9b0ea1c8257d7f2609e364`. |
 | AUTO-0020-06 Final Reconciliation / Next-Milestone Audit | COMPLETE / VERIFIED | PR #196; Quality #405/#406; merged `143ccdcbd9b39e89188cbad63577b0dc1e353941`. |
+
+The terminal quiescent-state correction merged through PR #197 as exact
+`master` `c72c79a477de630f50532a454e11d513e9727a79` after Quality #407/#408.
+
+## AUTO-0021 Audit and Delivery State
+
+The fresh audit found that root `README.md` is the first bootstrap document
+and public GitHub landing page but remains outside the six-document coherence
+manifest. Its current phase still says AUTO-0018-06, so Quality cannot reject
+that contradiction.
+
+| Stage | State |
+|---|---|
+| AUTO-0021-01 Design / Contract | ACTIVE |
+| AUTO-0021-02 Document-Set v2 / README Marker | PENDING |
+| AUTO-0021-03 README Narrative Reconciliation | PENDING |
+| AUTO-0021-04 Final Audit | PENDING |
 
 ## Coherence Contract
 
@@ -84,6 +101,6 @@ not approved and not published.
 
 ## Current Priority
 
-Maintain schema v2 `QUIESCENT` state until a concrete successor milestone is
-separately designed and approved. Do not infer or start AUTO-0021 from
-numbering alone.
+Complete AUTO-0021-01 exact gates. The milestone governs only `README.md` in
+addition to the existing six documents; external control issue #130 remains a
+separate future decision.

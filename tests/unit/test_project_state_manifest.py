@@ -80,9 +80,9 @@ def test_tracked_manifest_loads_from_exact_portable_path() -> None:
     assert MANIFEST_RELATIVE_PATH == Path("docs/CANONICAL_PROJECT_STATE.json")
     assert state.schema_version == 2
     assert state.completed_through == "AUTO-0020"
-    assert state.active_milestone is None
-    assert state.active_stage is None
-    assert state.active_state is ProjectStateActivity.QUIESCENT
+    assert state.active_milestone == "AUTO-0021"
+    assert state.active_stage == "AUTO-0021-01"
+    assert state.active_state is ProjectStateActivity.DESIGN_ACTIVE
 
 
 def test_schema_v2_projects_quiescent_terminal_state() -> None:
