@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "completed_through": "AUTO-0019",
+  "active_milestone": "AUTO-0020",
+  "active_stage": "AUTO-0020-02",
+  "active_state": "IMPLEMENTATION_ACTIVE",
+  "release_line": "v0.2.0",
+  "document_set_version": 1,
+  "document_projections": {
+    "docs/AI_CHAT_START.md": [
+      "completed_through",
+      "active_milestone",
+      "active_stage",
+      "active_state"
+    ],
+    "docs/PROJECT_CONTEXT.md": [
+      "completed_through",
+      "active_milestone",
+      "release_line"
+    ],
+    "docs/PROJECT_MAP.md": [
+      "completed_through",
+      "active_milestone"
+    ],
+    "docs/CURRENT_STATUS.md": [
+      "completed_through",
+      "active_milestone",
+      "active_stage",
+      "active_state",
+      "release_line"
+    ],
+    "docs/ROADMAP.md": [
+      "completed_through",
+      "active_milestone",
+      "active_stage",
+      "active_state"
+    ],
+    "docs/MASTER_INDEX.md": [
+      "completed_through",
+      "active_milestone",
+      "active_stage",
+      "active_state"
+    ]
+  }
+}
