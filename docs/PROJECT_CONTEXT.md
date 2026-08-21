@@ -48,8 +48,8 @@ AUTO-0019 recovery does not call either path.
 
 - Preserve all completed foundations and AUTO-0001 through AUTO-0019 within
   their approved authority boundaries.
-- Complete AUTO-0020-05 by reconciling the six governed documents with exact
-  verified AUTO-0019 closure and active AUTO-0020 state.
+- Complete AUTO-0020-06 final reconciliation / next-milestone audit without
+  inventing an unapproved successor or changing schema lifecycle semantics.
 - Keep `docs/CANONICAL_PROJECT_STATE.json` strict, minimal, and typed.
 - Keep coherence validation deterministic, offline, read-only, fail-closed,
   and limited to declared document projections.
@@ -75,10 +75,15 @@ AUTO-0019 final reconciliation is verified on exact `master`
 `c287e5cceef4e72148de7674f4095fedb78bd302` through push-triggered Quality
 #394 (run id `32484748127`).
 
-AUTO-0020-04 Quality integration is verified on exact `master`
-`e62f69d4db2f288bb072cfa38108d5872d5ebdb4` through pre-merge Quality #401
-and push-triggered Quality #402. AUTO-0020-05 is the active documentation and
-repository-wide evidence stage.
+AUTO-0020-05 canonical reconciliation is verified on exact `master`
+`6e19e5f7ee35ee818a9b0ea1c8257d7f2609e364` through pre-merge Quality #403
+and push-triggered Quality #404. AUTO-0020-06 is the active final audit stage.
+
+Schema v1 requires `active_milestone` to be the immediate successor to
+`completed_through` and supports only active lifecycle values. Therefore it
+cannot represent “AUTO-0020 complete with no approved next milestone.” The
+final audit records this gap; resolving it requires a separate approved
+decision.
 
 ## Release Boundary
 

@@ -1,7 +1,7 @@
 # AI-Engineering — Current Status
 
 <!-- canonical-project-state
-{"schema_version":1,"completed_through":"AUTO-0019","active_milestone":"AUTO-0020","active_stage":"AUTO-0020-05","active_state":"IMPLEMENTATION_ACTIVE","release_line":"v0.2.0"}
+{"schema_version":1,"completed_through":"AUTO-0019","active_milestone":"AUTO-0020","active_stage":"AUTO-0020-06","active_state":"FINAL_RECONCILIATION_ACTIVE","release_line":"v0.2.0"}
 -->
 
 **Snapshot date:** 2026-08-21
@@ -14,13 +14,13 @@
 
 **Current milestone:** AUTO-0020 — Canonical Project-State Documentation Coherence Gate
 
-**Active stage:** AUTO-0020-05 — Canonical Document Reconciliation / Repository-Wide Evidence
+**Active stage:** AUTO-0020-06 — Final Reconciliation / Next-Milestone Audit
 
 ## Authoritative State
 
 The MCP/SDK/tooling/release/safety foundations and AUTO-0001 through AUTO-0019
 are COMPLETE / VERIFIED for their approved scopes. AUTO-0020 stages 01 through
-04 are COMPLETE / VERIFIED. AUTO-0020-05 is the only active stage.
+05 are COMPLETE / VERIFIED. AUTO-0020-06 is the only active stage.
 
 AUTO-0019 closed on exact `master`
 `c287e5cceef4e72148de7674f4095fedb78bd302`. Push-triggered Quality #394
@@ -34,8 +34,8 @@ AUTO-0019 closed on exact `master`
 | AUTO-0020-02 Typed Manifest / Strict Parser | COMPLETE / VERIFIED | PR #192; Quality #397/#398; merged `85597fcc8e9acc0240330f31f6d9a904175d0e44`. |
 | AUTO-0020-03 Read-Only Cross-Document Validator | COMPLETE / VERIFIED | PR #193; Quality #399/#400; merged `a9abe654ee3f2b42bab3fd2684ac27be463dbb73`. |
 | AUTO-0020-04 Quality Integration / Failure Coverage | COMPLETE / VERIFIED | PR #194; Quality #401/#402; merged `e62f69d4db2f288bb072cfa38108d5872d5ebdb4`. |
-| AUTO-0020-05 Canonical Document Reconciliation / Repository-Wide Evidence | ACTIVE | Reconcile all six governed documents and prove the tracked set coherent. |
-| AUTO-0020-06 Final Reconciliation / Next-Milestone Audit | PENDING | Starts only after the -05 exact post-merge gate. |
+| AUTO-0020-05 Canonical Document Reconciliation / Repository-Wide Evidence | COMPLETE / VERIFIED | PR #195; Quality #403/#404; merged `6e19e5f7ee35ee818a9b0ea1c8257d7f2609e364`. |
+| AUTO-0020-06 Final Reconciliation / Next-Milestone Audit | ACTIVE | Final audit and terminal-state modeling decision. |
 
 ## Coherence Contract
 
@@ -84,6 +84,8 @@ not approved and not published.
 
 ## Current Priority
 
-Complete AUTO-0020-05 through repository-wide coherence evidence, exact
-PR-head Quality, expected-head-protected merge, and exact post-merge
-`master` push Quality. Do not start AUTO-0020-06 before that gate succeeds.
+Complete AUTO-0020-06 through its exact Quality gates. Schema v1 cannot encode
+“AUTO-0020 complete with no approved successor”: it requires the active
+milestone number to equal `completed_through + 1` and supports only active
+lifecycle values. Do not invent AUTO-0021 or alter that model without a
+separately approved decision.

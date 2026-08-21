@@ -1,7 +1,7 @@
 # AI-Engineering
 
 <!-- canonical-project-state
-{"schema_version":1,"completed_through":"AUTO-0019","active_milestone":"AUTO-0020","active_stage":"AUTO-0020-05","active_state":"IMPLEMENTATION_ACTIVE"}
+{"schema_version":1,"completed_through":"AUTO-0019","active_milestone":"AUTO-0020","active_stage":"AUTO-0020-06","active_state":"FINAL_RECONCILIATION_ACTIVE"}
 -->
 
 ## Chat Bootstrap
@@ -23,17 +23,17 @@ Continue from `CURRENT_STATUS.md`; its marker and current-state section are auth
 ## Current Working State
 
 The foundations and AUTO-0001 through AUTO-0019 are COMPLETE / VERIFIED for
-their approved scopes. AUTO-0020 stages 01 through 04 are COMPLETE / VERIFIED.
-AUTO-0020-05 canonical document reconciliation and repository-wide evidence is
-the only active stage.
+their approved scopes. AUTO-0020 stages 01 through 05 are COMPLETE / VERIFIED.
+AUTO-0020-06 final reconciliation / next-milestone audit is the only active
+stage.
 
 The verified AUTO-0019 closure baseline is exact `master`
 `c287e5cceef4e72148de7674f4095fedb78bd302`, confirmed by push-triggered
 Quality #394 (run id `32484748127`).
 
-AUTO-0020-04 merged through PR #194 as exact `master`
-`e62f69d4db2f288bb072cfa38108d5872d5ebdb4` after pre-merge Quality #401.
-Push-triggered Quality #402 is the exact post-merge gate for that SHA.
+AUTO-0020-05 merged through PR #195 as exact `master`
+`6e19e5f7ee35ee818a9b0ea1c8257d7f2609e364` after pre-merge Quality #403
+and push-triggered Quality #404.
 
 ## Active Gate
 
@@ -42,8 +42,8 @@ AUTO-0020-01 design/contract                         COMPLETE / VERIFIED
 AUTO-0020-02 typed manifest and strict parser        COMPLETE / VERIFIED
 AUTO-0020-03 deterministic read-only validator       COMPLETE / VERIFIED
 AUTO-0020-04 Quality integration/failure coverage    COMPLETE / VERIFIED
-AUTO-0020-05 canonical document reconciliation       ACTIVE
-AUTO-0020-06 final reconciliation/next audit          PENDING
+AUTO-0020-05 canonical document reconciliation       COMPLETE / VERIFIED
+AUTO-0020-06 final reconciliation/next audit          ACTIVE
 ```
 
 Read `AUTO-0020_CANONICAL_PROJECT_STATE_DOCUMENTATION_COHERENCE_GATE_DESIGN.md`,
@@ -72,11 +72,9 @@ and does not execute or re-execute a claimed request.
 
 ## Current Priority
 
-Reconcile the six governed documents with verified AUTO-0019 closure and active
-AUTO-0020-05, prove the tracked document set coherent, then pass exact PR-head
-Quality, expected-head-protected merge, and exact post-merge `master` Quality.
-
-Do not start AUTO-0020-06 before that gate succeeds.
+Complete the AUTO-0020-06 final audit and its exact Quality gates. Do not
+declare or start AUTO-0021, and do not change the manifest lifecycle model,
+until the audited terminal-state modeling decision is separately approved.
 
 ## General Engineering Guardrails
 
