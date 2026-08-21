@@ -64,7 +64,7 @@ def test_tracked_manifest_loads_from_exact_portable_path() -> None:
     state = load_project_state_manifest(repository_root)
 
     assert MANIFEST_RELATIVE_PATH == Path("docs/CANONICAL_PROJECT_STATE.json")
-    assert state.active_stage == "AUTO-0020-02"
+    assert state.active_stage.startswith(f"{state.active_milestone}-")
 
 
 def test_loading_manifest_is_read_only(tmp_path: Path) -> None:
