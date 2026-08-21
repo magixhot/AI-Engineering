@@ -1,7 +1,7 @@
 # AI-Engineering
 
 <!-- canonical-project-state
-{"schema_version":2,"completed_through":"AUTO-0021","active_milestone":"AUTO-0022","release_line":"v0.2.0"}
+{"schema_version":2,"completed_through":"AUTO-0022","active_milestone":null,"release_line":"v0.2.0"}
 -->
 
 ## Project Purpose
@@ -38,7 +38,10 @@ platform includes:
 - AUTO-0019 bounded no-replay terminal recovery for aged unresolved claims;
 - AUTO-0020 a strict project-state manifest, offline/read-only coherence
   validator, document-set v2 Quality enforcement for seven canonical
-  documents, and exact document-set v1 compatibility.
+  documents, and exact document-set v1 compatibility;
+- AUTO-0021 repository landing-state coherence for root `README.md`;
+- AUTO-0022 exact public control-issue body coherence with guarded body-only
+  update evidence.
 
 GitHub is the external control/audit plane. The installed user-scoped worker is
 the local bridge. OpenCode remains loopback-only for task classes that require
@@ -47,10 +50,10 @@ AUTO-0019 recovery does not call either path.
 
 ## Current Objectives
 
-- Preserve all completed foundations and AUTO-0001 through AUTO-0021 within
+- Preserve all completed foundations and AUTO-0001 through AUTO-0022 within
   their approved authority boundaries.
-- Complete AUTO-0022 design-first coherence of exact external issue #130
-  without adding protocol or worker authority.
+- Preserve exact external issue #130 body coherence without adding protocol
+  or worker authority.
 - Keep `docs/CANONICAL_PROJECT_STATE.json` strict, minimal, and typed.
 - Keep coherence validation deterministic, offline, read-only, fail-closed,
   and limited to declared document projections.
@@ -96,7 +99,9 @@ AUTO-0021 is COMPLETE / VERIFIED. AUTO-0022-01 merged through PR #203 as exact
 `master` `3efd7714b1302f13c371f81e6b8894f08b517c6f` after Quality #419/#420.
 AUTO-0022-02 merged through PR #204 as exact `master`
 `39c9933fa3ec5bde0ab62bc89fc0a4c6b300b838` after Quality #421/#422.
-AUTO-0022-03 body-only update and post-write evidence is the active stage.
+AUTO-0022-03 merged through PR #205 as exact `master`
+`d541d751828d9d95a828799b4e3f0345c396b103` after Quality #423/#424.
+AUTO-0022 is COMPLETE / VERIFIED and no successor milestone is active.
 
 Document-set v2 adds only repository-root `README.md` to the exact governed
 set while document-set v1 retains its historical six-document compatibility.
@@ -105,6 +110,8 @@ not alter the offline repository-byte contract or add generic issue automation.
 Stage -03 satisfied the fresh exact hash precondition, applied the approved
 body once, and independently verified exact desired-body equality. No new
 protocol, task, or worker authority was added.
+The final cross-surface audit found no drift and transitions the canonical
+state to `QUIESCENT` without inferring AUTO-0023.
 
 ## Release Boundary
 
