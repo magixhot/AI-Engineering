@@ -109,7 +109,7 @@ def _parse_marker(text: str) -> dict[str, Any]:
     return value
 
 
-def _expected_values(state: CanonicalProjectState) -> dict[str, str]:
+def _expected_values(state: CanonicalProjectState) -> dict[str, str | None]:
     return {
         COMPLETED_THROUGH: state.completed_through,
         ACTIVE_MILESTONE: state.active_milestone,

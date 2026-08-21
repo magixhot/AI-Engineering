@@ -9,7 +9,8 @@ from enum import Enum
 from pathlib import Path
 from typing import Any, Mapping
 
-SCHEMA_VERSION = 1
+SCHEMA_VERSION = 2
+SUPPORTED_SCHEMA_VERSIONS = (1, 2)
 DOCUMENT_SET_VERSION = 1
 MANIFEST_RELATIVE_PATH = Path("docs/CANONICAL_PROJECT_STATE.json")
 
@@ -83,6 +84,7 @@ class ProjectStateActivity(str, Enum):
     IMPLEMENTATION_ACTIVE = "IMPLEMENTATION_ACTIVE"
     EVIDENCE_ACTIVE = "EVIDENCE_ACTIVE"
     FINAL_RECONCILIATION_ACTIVE = "FINAL_RECONCILIATION_ACTIVE"
+    QUIESCENT = "QUIESCENT"
 
 
 class ManifestErrorReason(str, Enum):
@@ -123,8 +125,8 @@ class CanonicalProjectState:
 
     schema_version: int
     completed_through: str
-    active_milestone: str
-    active_stage: str
+    active_milestone: str | None
+    active_stage: str | None
     active_state: ProjectStateActivity
     release_line: str
     document_set_version: int
@@ -144,6 +146,14 @@ def _require_integer(value: Any, expected: int) -> int:
     if isinstance(value, bool) or not isinstance(value, int):
         raise ProjectStateManifestError(ManifestErrorReason.INVALID_FIELD_TYPE)
     if value != expected:
+        raise ProjectStateManifestError(ManifestErrorReason.UNSUPPORTED_SCHEMA)
+    return value
+
+
+def _require_schema_version(value: Any) -> int:
+    if isinstance(value, bool) or not isinstance(value, int):
+        raise ProjectStateManifestError(ManifestErrorReason.INVALID_FIELD_TYPE)
+    if value not in SUPPORTED_SCHEMA_VERSIONS:
         raise ProjectStateManifestError(ManifestErrorReason.UNSUPPORTED_SCHEMA)
     return value
 
@@ -222,25 +232,43 @@ def build_project_state_manifest(
     if set(mapping) != _ROOT_KEYS:
         raise ProjectStateManifestError(ManifestErrorReason.SCHEMA_FIELDS)
 
-    schema_version = _require_integer(mapping["schema_version"], SCHEMA_VERSION)
+    schema_version = _require_schema_version(mapping["schema_version"])
     document_set_version = _require_integer(
         mapping["document_set_version"], DOCUMENT_SET_VERSION
     )
     completed_through, completed_number = _require_milestone(
         mapping[COMPLETED_THROUGH]
     )
-    active_milestone, active_number = _require_milestone(
-        mapping[ACTIVE_MILESTONE]
-    )
-    if active_number != completed_number + 1:
-        raise ProjectStateManifestError(ManifestErrorReason.INVALID_FIELD_VALUE)
+    active_state = _require_activity(mapping[ACTIVE_STATE])
+    active_milestone: str | None
+    active_stage: str | None
+    if active_state is ProjectStateActivity.QUIESCENT:
+        if (
+            schema_version != 2
+            or mapping[ACTIVE_MILESTONE] is not None
+            or mapping[ACTIVE_STAGE] is not None
+        ):
+            raise ProjectStateManifestError(
+                ManifestErrorReason.INVALID_FIELD_VALUE
+            )
+        active_milestone = None
+        active_stage = None
+    else:
+        active_milestone, active_number = _require_milestone(
+            mapping[ACTIVE_MILESTONE]
+        )
+        if active_number != completed_number + 1:
+            raise ProjectStateManifestError(
+                ManifestErrorReason.INVALID_FIELD_VALUE
+            )
+        active_stage = _require_stage(mapping[ACTIVE_STAGE], active_number)
 
     return CanonicalProjectState(
         schema_version=schema_version,
         completed_through=completed_through,
         active_milestone=active_milestone,
-        active_stage=_require_stage(mapping[ACTIVE_STAGE], active_number),
-        active_state=_require_activity(mapping[ACTIVE_STATE]),
+        active_stage=active_stage,
+        active_state=active_state,
         release_line=_require_release_line(mapping[RELEASE_LINE]),
         document_set_version=document_set_version,
         document_projections=_require_document_projections(

@@ -1,7 +1,7 @@
 # AI-Engineering
 
 <!-- canonical-project-state
-{"schema_version":1,"completed_through":"AUTO-0019","active_milestone":"AUTO-0020"}
+{"schema_version":2,"completed_through":"AUTO-0020","active_milestone":null}
 -->
 
 ## Repository Structure
@@ -108,12 +108,14 @@ services, or expand reconciliation/OpenCode authority.
 - AUTO-0020-04 Quality integration/failure coverage: COMPLETE / VERIFIED.
 - AUTO-0020-05 canonical document reconciliation/repository-wide evidence:
   COMPLETE / VERIFIED.
-- AUTO-0020-06 final reconciliation/next-milestone audit: ACTIVE.
+- AUTO-0020-06 final reconciliation/next-milestone audit:
+  COMPLETE / VERIFIED.
+- Next milestone: NOT APPROVED / NOT ACTIVE.
 
 AUTO-0019 closed at exact `master`
 `c287e5cceef4e72148de7674f4095fedb78bd302` through Quality #394.
-AUTO-0020-05 merged at exact `master`
-`6e19e5f7ee35ee818a9b0ea1c8257d7f2609e364` through Quality #403/#404.
+AUTO-0020-06 audit merged at exact `master`
+`143ccdcbd9b39e89188cbad63577b0dc1e353941` through Quality #405/#406.
 
-Schema v1 has no quiescent/completed-without-successor lifecycle value. The
-AUTO-0020-06 audit must not fabricate AUTO-0021 or change that contract.
+Schema v2 adds the narrow `QUIESCENT` terminal representation while retaining
+schema v1 active-manifest compatibility. No AUTO-0021 identity is fabricated.

@@ -1,7 +1,7 @@
 # AI-Engineering Roadmap
 
 <!-- canonical-project-state
-{"schema_version":1,"completed_through":"AUTO-0019","active_milestone":"AUTO-0020","active_stage":"AUTO-0020-06","active_state":"FINAL_RECONCILIATION_ACTIVE"}
+{"schema_version":2,"completed_through":"AUTO-0020","active_milestone":null,"active_stage":null,"active_state":"QUIESCENT"}
 -->
 
 ## Completed / Verified
@@ -76,7 +76,7 @@ AUTO-0019 preserves the existing task-class and authority boundaries. It does no
 
 ## AUTO-0020 — Canonical Project-State Documentation Coherence Gate
 
-**Status:** FINAL RECONCILIATION ACTIVE
+**Status:** COMPLETE / VERIFIED
 
 The fresh post-AUTO-0019 audit found that the six canonical bootstrap/state
 documents disagreed about the completed and active milestone state. At the
@@ -84,7 +84,11 @@ milestone start, several identified AUTO-0014-06 as active,
 `PROJECT_CONTEXT.md` identified AUTO-0018-06, and this roadmap identified
 AUTO-0019-01 as current.
 
-AUTO-0020 defines a narrow machine-readable canonical-state contract, deterministic offline/read-only cross-document validation, and Quality integration that rejects stale or ambiguous current-state claims. It will then reconcile the governed documents through exact verified AUTO-0019 evidence.
+AUTO-0020 defined a narrow machine-readable canonical-state contract,
+deterministic offline/read-only cross-document validation, and Quality
+integration that rejects stale or ambiguous current-state claims. It
+reconciled the governed documents through exact verified AUTO-0019 evidence
+and closed with a schema v2 quiescent state that does not invent a successor.
 
 AUTO-0020 does not authorize automatic documentation edits, reconciliation apply/run, repository repair, workflow mutation, service control, credentials, deployment/publication/release changes, or broader OpenCode authority.
 
@@ -95,16 +99,16 @@ Delivery state:
 3. AUTO-0020-03 — deterministic read-only cross-document validator: COMPLETE / VERIFIED.
 4. AUTO-0020-04 — Quality integration and failure-mode coverage: COMPLETE / VERIFIED.
 5. AUTO-0020-05 — canonical document reconciliation and repository-wide evidence: COMPLETE / VERIFIED.
-6. AUTO-0020-06 — final reconciliation / next-milestone audit: ACTIVE.
+6. AUTO-0020-06 — final reconciliation / next-milestone audit: COMPLETE / VERIFIED.
 
 AUTO-0020-04 merged through PR #194 as exact `master`
 `e62f69d4db2f288bb072cfa38108d5872d5ebdb4` after Quality #401/#402.
 AUTO-0020-05 merged through PR #195 as exact `master`
 `6e19e5f7ee35ee818a9b0ea1c8257d7f2609e364` after Quality #403/#404.
+AUTO-0020-06 audit merged through PR #196 as exact `master`
+`143ccdcbd9b39e89188cbad63577b0dc1e353941` after Quality #405/#406.
 
 ## Current Priority
 
-Complete AUTO-0020-06 final audit and exact Quality gates. The audit must not
-declare AUTO-0021 or change the schema v1 lifecycle model. A separate approved
-decision is required to represent a completed milestone with no active
-successor.
+No next milestone is approved or active. Preserve schema v2 `QUIESCENT`
+state until a concrete successor is separately designed and approved.

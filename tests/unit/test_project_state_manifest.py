@@ -33,6 +33,20 @@ def valid_mapping() -> dict[str, object]:
     }
 
 
+def quiescent_mapping() -> dict[str, object]:
+    mapping = valid_mapping()
+    mapping.update(
+        {
+            "schema_version": 2,
+            "completed_through": "AUTO-0020",
+            "active_milestone": None,
+            "active_stage": None,
+            "active_state": "QUIESCENT",
+        }
+    )
+    return mapping
+
+
 def assert_rejected(
     mapping: dict[str, object], reason: ManifestErrorReason
 ) -> None:
@@ -64,7 +78,32 @@ def test_tracked_manifest_loads_from_exact_portable_path() -> None:
     state = load_project_state_manifest(repository_root)
 
     assert MANIFEST_RELATIVE_PATH == Path("docs/CANONICAL_PROJECT_STATE.json")
-    assert state.active_stage.startswith(f"{state.active_milestone}-")
+    assert state.schema_version == 2
+    assert state.completed_through == "AUTO-0020"
+    assert state.active_milestone is None
+    assert state.active_stage is None
+    assert state.active_state is ProjectStateActivity.QUIESCENT
+
+
+def test_schema_v2_projects_quiescent_terminal_state() -> None:
+    state = build_project_state_manifest(quiescent_mapping())
+
+    assert state.schema_version == 2
+    assert state.completed_through == "AUTO-0020"
+    assert state.active_milestone is None
+    assert state.active_stage is None
+    assert state.active_state is ProjectStateActivity.QUIESCENT
+
+
+def test_schema_v2_preserves_active_state_contract() -> None:
+    mapping = valid_mapping()
+    mapping["schema_version"] = 2
+
+    state = build_project_state_manifest(mapping)
+
+    assert state.active_milestone == "AUTO-0020"
+    assert state.active_stage == "AUTO-0020-02"
+    assert state.active_state is ProjectStateActivity.IMPLEMENTATION_ACTIVE
 
 
 def test_loading_manifest_is_read_only(tmp_path: Path) -> None:
@@ -145,12 +184,49 @@ def test_manifest_rejects_non_integer_versions(key: str, value: object) -> None:
     assert_rejected(mapping, ManifestErrorReason.INVALID_FIELD_TYPE)
 
 
-@pytest.mark.parametrize("key", ["schema_version", "document_set_version"])
-def test_manifest_rejects_unknown_versions(key: str) -> None:
+def test_manifest_rejects_unknown_schema_version() -> None:
     mapping = valid_mapping()
-    mapping[key] = 2
+    mapping["schema_version"] = 3
 
     assert_rejected(mapping, ManifestErrorReason.UNSUPPORTED_SCHEMA)
+
+
+def test_manifest_rejects_unknown_document_set_version() -> None:
+    mapping = valid_mapping()
+    mapping["document_set_version"] = 2
+
+    assert_rejected(mapping, ManifestErrorReason.UNSUPPORTED_SCHEMA)
+
+
+@pytest.mark.parametrize(
+    ("schema_version", "active_milestone", "active_stage"),
+    [
+        (1, None, None),
+        (2, "AUTO-0021", None),
+        (2, None, "AUTO-0021-01"),
+        (2, "AUTO-0021", "AUTO-0021-01"),
+    ],
+)
+def test_quiescent_state_rejects_legacy_or_non_null_active_identity(
+    schema_version: int,
+    active_milestone: object,
+    active_stage: object,
+) -> None:
+    mapping = quiescent_mapping()
+    mapping["schema_version"] = schema_version
+    mapping["active_milestone"] = active_milestone
+    mapping["active_stage"] = active_stage
+
+    assert_rejected(mapping, ManifestErrorReason.INVALID_FIELD_VALUE)
+
+
+@pytest.mark.parametrize("key", ["active_milestone", "active_stage"])
+def test_active_schema_v2_state_requires_active_identity(key: str) -> None:
+    mapping = valid_mapping()
+    mapping["schema_version"] = 2
+    mapping[key] = None
+
+    assert_rejected(mapping, ManifestErrorReason.INVALID_FIELD_TYPE)
 
 
 @pytest.mark.parametrize(
