@@ -1,7 +1,7 @@
 # AI-Engineering — Master Documentation Index
 
 <!-- canonical-project-state
-{"schema_version":2,"completed_through":"AUTO-0020","active_milestone":null,"active_stage":null,"active_state":"QUIESCENT"}
+{"schema_version":2,"completed_through":"AUTO-0020","active_milestone":"AUTO-0021","active_stage":"AUTO-0021-01","active_state":"DESIGN_ACTIVE"}
 -->
 
 ## Canonical Project Documents
@@ -35,6 +35,7 @@
 | AUTO-0020_05_CANONICAL_DOCUMENT_RECONCILIATION_EVIDENCE.md | Six-document reconciliation and repository-wide coherence evidence | Complete / Verified |
 | AUTO-0020_06_FINAL_RECONCILIATION_NEXT_MILESTONE_AUDIT.md | Final coherence closure and terminal-state modeling audit | Complete / Verified |
 | AUTO-0020_TERMINAL_QUIESCENT_STATE_EXTENSION.md | Schema v2 terminal state without an active successor | Current contract |
+| AUTO-0021_REPOSITORY_LANDING_STATE_COHERENCE_DESIGN.md | Exact README extension of the canonical document set | Active |
 
 ## Engineering State
 
@@ -43,7 +44,7 @@
 | MCP / SDK / tooling foundations | COMPLETE / VERIFIED |
 | Release line v0.2.0 | VERIFIED HISTORICAL LINE |
 | AUTO-0001 through AUTO-0020 | COMPLETE / VERIFIED |
-| Active successor milestone | NONE / QUIESCENT |
+| AUTO-0021-01 Repository Landing State Coherence Design | ACTIVE |
 
 ## AUTO-0020 Delivery Evidence
 
@@ -82,6 +83,5 @@ repository mutation authority.
 
 ## Current Continuation Point
 
-No successor milestone is approved or active. Preserve schema v2
-`QUIESCENT` state until a concrete next milestone receives a separate design
-and approval.
+AUTO-0021-01 is the approved active design stage. Complete its exact gates,
+then continue only with the approved README/document-set-v2 scope.

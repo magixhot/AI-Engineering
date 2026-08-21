@@ -1,7 +1,7 @@
 # AI-Engineering
 
 <!-- canonical-project-state
-{"schema_version":2,"completed_through":"AUTO-0020","active_milestone":null,"active_stage":null,"active_state":"QUIESCENT"}
+{"schema_version":2,"completed_through":"AUTO-0020","active_milestone":"AUTO-0021","active_stage":"AUTO-0021-01","active_state":"DESIGN_ACTIVE"}
 -->
 
 ## Chat Bootstrap
@@ -23,16 +23,16 @@ Continue from `CURRENT_STATUS.md`; its marker and current-state section are auth
 ## Current Working State
 
 The foundations and AUTO-0001 through AUTO-0020 are COMPLETE / VERIFIED for
-their approved scopes. No successor milestone or stage is active. Canonical
-state is schema v2 `QUIESCENT`.
+their approved scopes. AUTO-0021-01 repository landing-state coherence design
+is the only active stage.
 
 The verified AUTO-0019 closure baseline is exact `master`
 `c287e5cceef4e72148de7674f4095fedb78bd302`, confirmed by push-triggered
 Quality #394 (run id `32484748127`).
 
-AUTO-0020-06 audit merged through PR #196 as exact `master`
-`143ccdcbd9b39e89188cbad63577b0dc1e353941` after pre-merge Quality #405
-and push-triggered Quality #406.
+AUTO-0020 terminal state merged through PR #197 as exact `master`
+`c72c79a477de630f50532a454e11d513e9727a79` after pre-merge Quality #407
+and push-triggered Quality #408.
 
 ## Milestone State
 
@@ -43,12 +43,17 @@ AUTO-0020-03 deterministic read-only validator       COMPLETE / VERIFIED
 AUTO-0020-04 Quality integration/failure coverage    COMPLETE / VERIFIED
 AUTO-0020-05 canonical document reconciliation       COMPLETE / VERIFIED
 AUTO-0020-06 final reconciliation/next audit          COMPLETE / VERIFIED
-next milestone                                        NOT APPROVED / NOT ACTIVE
+AUTO-0021-01 landing coherence design                 ACTIVE
+AUTO-0021-02 document-set v2 / README marker          PENDING
+AUTO-0021-03 README narrative reconciliation          PENDING
+AUTO-0021-04 final audit                              PENDING
 ```
 
 Read `AUTO-0020_CANONICAL_PROJECT_STATE_DOCUMENTATION_COHERENCE_GATE_DESIGN.md`,
 `CANONICAL_PROJECT_STATE.json`, and the six governed canonical documents.
 Quality runs the coherence validator offline before Ruff, mypy, and pytest.
+For current work, also read
+`AUTO-0021_REPOSITORY_LANDING_STATE_COHERENCE_DESIGN.md`.
 
 ## Permanent Authority Boundaries
 
@@ -72,8 +77,9 @@ and does not execute or re-execute a claimed request.
 
 ## Current Priority
 
-Preserve the quiescent state until a concrete next milestone is separately
-designed and approved. Do not infer AUTO-0021 from numbering alone.
+Complete AUTO-0021-01 design through exact PR-head Quality,
+expected-head-protected merge, and exact post-merge `master` Quality. Do not
+start implementation stage -02 before that gate succeeds.
 
 ## General Engineering Guardrails
 
