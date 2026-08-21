@@ -1,5 +1,9 @@
 # AI-Engineering
 
+<!-- canonical-project-state
+{"schema_version":2,"completed_through":"AUTO-0020","active_milestone":"AUTO-0021","active_stage":"AUTO-0021-02","active_state":"IMPLEMENTATION_ACTIVE","release_line":"v0.2.0"}
+-->
+
 **Status:** Active
 
 **Version:** 0.2.0

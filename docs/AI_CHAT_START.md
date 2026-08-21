@@ -1,7 +1,7 @@
 # AI-Engineering
 
 <!-- canonical-project-state
-{"schema_version":2,"completed_through":"AUTO-0020","active_milestone":"AUTO-0021","active_stage":"AUTO-0021-01","active_state":"DESIGN_ACTIVE"}
+{"schema_version":2,"completed_through":"AUTO-0020","active_milestone":"AUTO-0021","active_stage":"AUTO-0021-02","active_state":"IMPLEMENTATION_ACTIVE"}
 -->
 
 ## Chat Bootstrap
@@ -23,8 +23,8 @@ Continue from `CURRENT_STATUS.md`; its marker and current-state section are auth
 ## Current Working State
 
 The foundations and AUTO-0001 through AUTO-0020 are COMPLETE / VERIFIED for
-their approved scopes. AUTO-0021-01 repository landing-state coherence design
-is the only active stage.
+their approved scopes. AUTO-0021-01 is COMPLETE / VERIFIED. AUTO-0021-02
+document-set v2 / README marker implementation is the only active stage.
 
 The verified AUTO-0019 closure baseline is exact `master`
 `c287e5cceef4e72148de7674f4095fedb78bd302`, confirmed by push-triggered
@@ -43,14 +43,15 @@ AUTO-0020-03 deterministic read-only validator       COMPLETE / VERIFIED
 AUTO-0020-04 Quality integration/failure coverage    COMPLETE / VERIFIED
 AUTO-0020-05 canonical document reconciliation       COMPLETE / VERIFIED
 AUTO-0020-06 final reconciliation/next audit          COMPLETE / VERIFIED
-AUTO-0021-01 landing coherence design                 ACTIVE
-AUTO-0021-02 document-set v2 / README marker          PENDING
+AUTO-0021-01 landing coherence design                 COMPLETE / VERIFIED
+AUTO-0021-02 document-set v2 / README marker          ACTIVE
 AUTO-0021-03 README narrative reconciliation          PENDING
 AUTO-0021-04 final audit                              PENDING
 ```
 
 Read `AUTO-0020_CANONICAL_PROJECT_STATE_DOCUMENTATION_COHERENCE_GATE_DESIGN.md`,
-`CANONICAL_PROJECT_STATE.json`, and the six governed canonical documents.
+`CANONICAL_PROJECT_STATE.json`, `README.md`, and the six governed documents
+under `docs/`.
 Quality runs the coherence validator offline before Ruff, mypy, and pytest.
 For current work, also read
 `AUTO-0021_REPOSITORY_LANDING_STATE_COHERENCE_DESIGN.md`.
@@ -77,9 +78,9 @@ and does not execute or re-execute a claimed request.
 
 ## Current Priority
 
-Complete AUTO-0021-01 design through exact PR-head Quality,
+Complete AUTO-0021-02 through exact PR-head Quality,
 expected-head-protected merge, and exact post-merge `master` Quality. Do not
-start implementation stage -02 before that gate succeeds.
+reconcile README narrative before stage -03.
 
 ## General Engineering Guardrails
 

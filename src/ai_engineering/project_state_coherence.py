@@ -1,4 +1,4 @@
-"""Read-only canonical project-state coherence validation for AUTO-0020."""
+"""Read-only canonical project-state coherence validation for AUTO-0020/0021."""
 
 from __future__ import annotations
 
@@ -38,6 +38,7 @@ class CoherenceReason(str, Enum):
     MARKER_DUPLICATE = "marker_duplicate"
     MARKER_MALFORMED = "marker_malformed"
     MARKER_DUPLICATE_KEY = "marker_duplicate_key"
+    MARKER_POSITION = "marker_position"
     MARKER_FIELDS = "marker_fields"
     MARKER_MISMATCH = "marker_mismatch"
 
@@ -144,6 +145,23 @@ def _validate_marker(
             raise _MarkerError(CoherenceReason.MARKER_MISMATCH, field=field)
 
 
+def _validate_marker_position(
+    text: str,
+    state: CanonicalProjectState,
+    projection: DocumentProjection,
+) -> None:
+    if state.document_set_version != 2 or projection.path != "README.md":
+        return
+    heading, separator, remainder = text.partition("\n")
+    if (
+        not separator
+        or not heading.startswith("# ")
+        or heading.startswith("##")
+        or not remainder.startswith("\n" + MARKER_OPEN)
+    ):
+        raise _MarkerError(CoherenceReason.MARKER_POSITION)
+
+
 def _manifest_issue(
     reason: ManifestErrorReason,
 ) -> CoherenceReport:
@@ -202,6 +220,7 @@ def validate_project_state_coherence(repository_root: Path) -> CoherenceReport:
             continue
         try:
             _validate_marker(text, state, projection)
+            _validate_marker_position(text, state, projection)
         except _MarkerError as exc:
             issues.append(
                 CoherenceIssue(

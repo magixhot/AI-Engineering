@@ -1,4 +1,4 @@
-"""Strict canonical project-state manifest primitives for AUTO-0020."""
+"""Strict canonical project-state manifest primitives for AUTO-0020/0021."""
 
 from __future__ import annotations
 
@@ -11,17 +11,9 @@ from typing import Any, Mapping
 
 SCHEMA_VERSION = 2
 SUPPORTED_SCHEMA_VERSIONS = (1, 2)
-DOCUMENT_SET_VERSION = 1
+DOCUMENT_SET_VERSION = 2
+SUPPORTED_DOCUMENT_SET_VERSIONS = (1, DOCUMENT_SET_VERSION)
 MANIFEST_RELATIVE_PATH = Path("docs/CANONICAL_PROJECT_STATE.json")
-
-CANONICAL_DOCUMENTS = (
-    "docs/AI_CHAT_START.md",
-    "docs/PROJECT_CONTEXT.md",
-    "docs/PROJECT_MAP.md",
-    "docs/CURRENT_STATUS.md",
-    "docs/ROADMAP.md",
-    "docs/MASTER_INDEX.md",
-)
 
 COMPLETED_THROUGH = "completed_through"
 ACTIVE_MILESTONE = "active_milestone"
@@ -29,7 +21,7 @@ ACTIVE_STAGE = "active_stage"
 ACTIVE_STATE = "active_state"
 RELEASE_LINE = "release_line"
 
-DOCUMENT_PROJECTIONS: tuple[tuple[str, tuple[str, ...]], ...] = (
+DOCUMENT_PROJECTIONS_V1: tuple[tuple[str, tuple[str, ...]], ...] = (
     (
         "docs/AI_CHAT_START.md",
         (COMPLETED_THROUGH, ACTIVE_MILESTONE, ACTIVE_STAGE, ACTIVE_STATE),
@@ -61,6 +53,27 @@ DOCUMENT_PROJECTIONS: tuple[tuple[str, tuple[str, ...]], ...] = (
         (COMPLETED_THROUGH, ACTIVE_MILESTONE, ACTIVE_STAGE, ACTIVE_STATE),
     ),
 )
+DOCUMENT_PROJECTIONS: tuple[tuple[str, tuple[str, ...]], ...] = (
+    (
+        "README.md",
+        (
+            COMPLETED_THROUGH,
+            ACTIVE_MILESTONE,
+            ACTIVE_STAGE,
+            ACTIVE_STATE,
+            RELEASE_LINE,
+        ),
+    ),
+    *DOCUMENT_PROJECTIONS_V1,
+)
+CANONICAL_DOCUMENTS_V1 = tuple(
+    path for path, _fields in DOCUMENT_PROJECTIONS_V1
+)
+CANONICAL_DOCUMENTS = tuple(path for path, _fields in DOCUMENT_PROJECTIONS)
+_DOCUMENT_PROJECTIONS_BY_VERSION = {
+    1: DOCUMENT_PROJECTIONS_V1,
+    2: DOCUMENT_PROJECTIONS,
+}
 
 _ROOT_KEYS = {
     "schema_version",
@@ -142,10 +155,10 @@ def _reject_duplicate_pairs(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
     return result
 
 
-def _require_integer(value: Any, expected: int) -> int:
+def _require_document_set_version(value: Any) -> int:
     if isinstance(value, bool) or not isinstance(value, int):
         raise ProjectStateManifestError(ManifestErrorReason.INVALID_FIELD_TYPE)
-    if value != expected:
+    if value not in SUPPORTED_DOCUMENT_SET_VERSIONS:
         raise ProjectStateManifestError(ManifestErrorReason.UNSUPPORTED_SCHEMA)
     return value
 
@@ -199,15 +212,21 @@ def _require_release_line(value: Any) -> str:
     return text
 
 
-def _require_document_projections(value: Any) -> tuple[DocumentProjection, ...]:
+def _require_document_projections(
+    value: Any, document_set_version: int
+) -> tuple[DocumentProjection, ...]:
     if not isinstance(value, dict):
         raise ProjectStateManifestError(ManifestErrorReason.INVALID_FIELD_TYPE)
-    if set(value) != set(CANONICAL_DOCUMENTS):
+    expected_projections = _DOCUMENT_PROJECTIONS_BY_VERSION[
+        document_set_version
+    ]
+    canonical_documents = tuple(path for path, _fields in expected_projections)
+    if set(value) != set(canonical_documents):
         raise ProjectStateManifestError(ManifestErrorReason.DOCUMENT_SET)
 
-    expected_by_path = dict(DOCUMENT_PROJECTIONS)
+    expected_by_path = dict(expected_projections)
     projections: list[DocumentProjection] = []
-    for path in CANONICAL_DOCUMENTS:
+    for path in canonical_documents:
         fields = value[path]
         if not isinstance(fields, list) or not all(
             isinstance(field, str) for field in fields
@@ -233,9 +252,11 @@ def build_project_state_manifest(
         raise ProjectStateManifestError(ManifestErrorReason.SCHEMA_FIELDS)
 
     schema_version = _require_schema_version(mapping["schema_version"])
-    document_set_version = _require_integer(
-        mapping["document_set_version"], DOCUMENT_SET_VERSION
+    document_set_version = _require_document_set_version(
+        mapping["document_set_version"]
     )
+    if schema_version == 1 and document_set_version != 1:
+        raise ProjectStateManifestError(ManifestErrorReason.DOCUMENT_SET)
     completed_through, completed_number = _require_milestone(
         mapping[COMPLETED_THROUGH]
     )
@@ -272,7 +293,7 @@ def build_project_state_manifest(
         release_line=_require_release_line(mapping[RELEASE_LINE]),
         document_set_version=document_set_version,
         document_projections=_require_document_projections(
-            mapping["document_projections"]
+            mapping["document_projections"], document_set_version
         ),
     )
 

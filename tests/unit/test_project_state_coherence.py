@@ -20,6 +20,7 @@ from ai_engineering.project_state_manifest import (
     ACTIVE_STATE,
     COMPLETED_THROUGH,
     DOCUMENT_PROJECTIONS,
+    DOCUMENT_PROJECTIONS_V1,
     MANIFEST_RELATIVE_PATH,
     RELEASE_LINE,
     ManifestErrorReason,
@@ -36,7 +37,7 @@ def valid_mapping() -> dict[str, object]:
         "release_line": "v0.2.0",
         "document_set_version": 1,
         "document_projections": {
-            path: list(fields) for path, fields in DOCUMENT_PROJECTIONS
+            path: list(fields) for path, fields in DOCUMENT_PROJECTIONS_V1
         },
     }
 
@@ -52,7 +53,7 @@ def state_values() -> dict[str, str]:
 
 
 def marker_for(path: str, **overrides: object) -> str:
-    fields = dict(DOCUMENT_PROJECTIONS)[path]
+    fields = dict(DOCUMENT_PROJECTIONS_V1)[path]
     values = state_values()
     marker: dict[str, object] = {"schema_version": 1}
     marker.update({field: values[field] for field in fields})
@@ -66,7 +67,7 @@ def write_fixture(root: Path) -> None:
     manifest_path.write_text(
         json.dumps(valid_mapping(), indent=2) + "\n", encoding="utf-8"
     )
-    for path, _fields in DOCUMENT_PROJECTIONS:
+    for path, _fields in DOCUMENT_PROJECTIONS_V1:
         document = root / path
         document.parent.mkdir(parents=True, exist_ok=True)
         document.write_text(
@@ -99,7 +100,7 @@ def write_quiescent_fixture(root: Path) -> None:
         ACTIVE_STATE: "QUIESCENT",
         RELEASE_LINE: "v0.2.0",
     }
-    for path, fields in DOCUMENT_PROJECTIONS:
+    for path, fields in DOCUMENT_PROJECTIONS_V1:
         marker: dict[str, object] = {"schema_version": 2}
         marker.update({field: values[field] for field in fields})
         document = root / path
@@ -120,6 +121,53 @@ def replace_marker(root: Path, path: str, marker: str) -> None:
         f"# Canonical document\n\n{marker}\n\nHistorical prose.\n",
         encoding="utf-8",
     )
+
+
+def current_mapping() -> dict[str, object]:
+    return {
+        "schema_version": 2,
+        "completed_through": "AUTO-0020",
+        "active_milestone": "AUTO-0021",
+        "active_stage": "AUTO-0021-02",
+        "active_state": "IMPLEMENTATION_ACTIVE",
+        "release_line": "v0.2.0",
+        "document_set_version": 2,
+        "document_projections": {
+            path: list(fields) for path, fields in DOCUMENT_PROJECTIONS
+        },
+    }
+
+
+def current_marker_for(path: str, **overrides: object) -> str:
+    values: dict[str, object] = {
+        COMPLETED_THROUGH: "AUTO-0020",
+        ACTIVE_MILESTONE: "AUTO-0021",
+        ACTIVE_STAGE: "AUTO-0021-02",
+        ACTIVE_STATE: "IMPLEMENTATION_ACTIVE",
+        RELEASE_LINE: "v0.2.0",
+    }
+    marker: dict[str, object] = {"schema_version": 2}
+    marker.update(
+        {field: values[field] for field in dict(DOCUMENT_PROJECTIONS)[path]}
+    )
+    marker.update(overrides)
+    return MARKER_OPEN + json.dumps(marker, sort_keys=True) + MARKER_CLOSE
+
+
+def write_current_fixture(root: Path) -> None:
+    manifest_path = root / MANIFEST_RELATIVE_PATH
+    manifest_path.parent.mkdir(parents=True, exist_ok=True)
+    manifest_path.write_text(
+        json.dumps(current_mapping(), indent=2) + "\n", encoding="utf-8"
+    )
+    for path, _fields in DOCUMENT_PROJECTIONS:
+        document = root / path
+        document.parent.mkdir(parents=True, exist_ok=True)
+        document.write_text(
+            f"# Canonical document\n\n{current_marker_for(path)}\n\n"
+            "Historical evidence: AUTO-0018-06 was once active.\n",
+            encoding="utf-8",
+        )
 
 
 def snapshot(root: Path) -> dict[str, bytes]:
@@ -149,6 +197,179 @@ def test_quiescent_schema_v2_fixture_is_coherent(tmp_path: Path) -> None:
 
     assert report.coherent is True
     assert report.issues == ()
+
+
+def test_document_set_v2_fixture_is_coherent_with_readme_first(
+    tmp_path: Path,
+) -> None:
+    write_current_fixture(tmp_path)
+
+    report = validate_project_state_coherence(tmp_path)
+
+    assert report.coherent is True
+    assert report.issues == ()
+
+
+def test_document_set_v2_findings_follow_readme_first_order(
+    tmp_path: Path,
+) -> None:
+    write_current_fixture(tmp_path)
+    (tmp_path / "README.md").unlink()
+    (tmp_path / "docs/AI_CHAT_START.md").unlink()
+
+    report = validate_project_state_coherence(tmp_path)
+
+    assert tuple(issue.path for issue in report.issues) == (
+        "README.md",
+        "docs/AI_CHAT_START.md",
+    )
+
+
+def test_document_set_v2_readme_historical_prose_is_not_parsed(
+    tmp_path: Path,
+) -> None:
+    write_current_fixture(tmp_path)
+    readme = tmp_path / "README.md"
+    readme.write_text(
+        readme.read_text(encoding="utf-8")
+        + "\nOld current phase: AUTO-0018-06.\n",
+        encoding="utf-8",
+    )
+
+    report = validate_project_state_coherence(tmp_path)
+
+    assert report.coherent is True
+    assert report.issues == ()
+
+
+def test_document_set_v2_validation_is_read_only(tmp_path: Path) -> None:
+    write_current_fixture(tmp_path)
+    before = snapshot(tmp_path)
+
+    first = validate_project_state_coherence(tmp_path)
+    second = validate_project_state_coherence(tmp_path)
+
+    assert first == second
+    assert snapshot(tmp_path) == before
+
+
+def test_document_set_v2_missing_readme_fails_closed(tmp_path: Path) -> None:
+    write_current_fixture(tmp_path)
+    (tmp_path / "README.md").unlink()
+
+    report = validate_project_state_coherence(tmp_path)
+
+    assert report.issues == (
+        CoherenceIssue(
+            path="README.md",
+            reason=CoherenceReason.DOCUMENT_READ_FAILED,
+        ),
+    )
+
+
+def test_document_set_v2_readme_directory_is_rejected(tmp_path: Path) -> None:
+    write_current_fixture(tmp_path)
+    readme = tmp_path / "README.md"
+    readme.unlink()
+    readme.mkdir()
+
+    report = validate_project_state_coherence(tmp_path)
+
+    assert report.issues == (
+        CoherenceIssue(path="README.md", reason=CoherenceReason.DOCUMENT_TYPE),
+    )
+
+
+def test_document_set_v2_readme_symlink_is_rejected(tmp_path: Path) -> None:
+    write_current_fixture(tmp_path)
+    readme = tmp_path / "README.md"
+    target = tmp_path / "target.md"
+    target.write_text(current_marker_for("README.md"), encoding="utf-8")
+    readme.unlink()
+    readme.symlink_to(target)
+
+    report = validate_project_state_coherence(tmp_path)
+
+    assert report.issues[0] == CoherenceIssue(
+        path="README.md", reason=CoherenceReason.DOCUMENT_TYPE
+    )
+
+
+@pytest.mark.parametrize(
+    ("marker", "reason"),
+    [
+        ("No state marker.", CoherenceReason.MARKER_MISSING),
+        (MARKER_OPEN + "{" + MARKER_CLOSE, CoherenceReason.MARKER_MALFORMED),
+        (
+            current_marker_for("README.md")
+            + "\n"
+            + current_marker_for("README.md"),
+            CoherenceReason.MARKER_DUPLICATE,
+        ),
+        (
+            current_marker_for("README.md", token="extra"),
+            CoherenceReason.MARKER_FIELDS,
+        ),
+    ],
+)
+def test_document_set_v2_readme_marker_failures_are_bounded(
+    tmp_path: Path,
+    marker: str,
+    reason: CoherenceReason,
+) -> None:
+    write_current_fixture(tmp_path)
+    replace_marker(tmp_path, "README.md", marker)
+
+    report = validate_project_state_coherence(tmp_path)
+
+    assert report.issues[0].path == "README.md"
+    assert report.issues[0].reason is reason
+
+
+@pytest.mark.parametrize(
+    ("field", "value"),
+    [
+        ("schema_version", 1),
+        (ACTIVE_STAGE, "AUTO-0021-01"),
+    ],
+)
+def test_document_set_v2_readme_marker_mismatch_is_bounded(
+    tmp_path: Path,
+    field: str,
+    value: object,
+) -> None:
+    write_current_fixture(tmp_path)
+    replace_marker(
+        tmp_path,
+        "README.md",
+        current_marker_for("README.md", **{field: value}),
+    )
+
+    report = validate_project_state_coherence(tmp_path)
+
+    assert report.issues[0] == CoherenceIssue(
+        path="README.md",
+        reason=CoherenceReason.MARKER_MISMATCH,
+        field=field,
+    )
+
+
+def test_document_set_v2_readme_marker_must_follow_heading(
+    tmp_path: Path,
+) -> None:
+    write_current_fixture(tmp_path)
+    (tmp_path / "README.md").write_text(
+        "# Canonical document\n\nIntro before marker.\n\n"
+        + current_marker_for("README.md")
+        + "\n",
+        encoding="utf-8",
+    )
+
+    report = validate_project_state_coherence(tmp_path)
+
+    assert report.issues[0] == CoherenceIssue(
+        path="README.md", reason=CoherenceReason.MARKER_POSITION
+    )
 
 
 def test_quiescent_marker_rejects_fabricated_active_successor(
@@ -271,7 +492,7 @@ def test_validation_is_deterministic_and_read_only(tmp_path: Path) -> None:
     assert snapshot(tmp_path) == before
 
 
-@pytest.mark.parametrize("path", [path for path, _ in DOCUMENT_PROJECTIONS])
+@pytest.mark.parametrize("path", [path for path, _ in DOCUMENT_PROJECTIONS_V1])
 def test_each_missing_document_fails_closed(tmp_path: Path, path: str) -> None:
     write_fixture(tmp_path)
     (tmp_path / path).unlink()
