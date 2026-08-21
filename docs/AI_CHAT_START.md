@@ -24,8 +24,9 @@ Continue from `CURRENT_STATUS.md`; its marker and current-state section are auth
 
 The foundations and AUTO-0001 through AUTO-0022 are COMPLETE / VERIFIED for
 their approved scopes. No successor milestone or stage is approved or active.
-REL-0004-01 separately records the release-line decision/readiness design; it
-does not occupy or change the AUTO-only canonical milestone fields.
+REL-0004-01 separately records the release-line design. REL-0004-02 selects
+intended version `0.3.0` and exact candidate scope without occupying or
+changing the AUTO-only canonical milestone fields.
 
 The verified AUTO-0019 closure baseline is exact `master`
 `c287e5cceef4e72148de7674f4095fedb78bd302`, confirmed by push-triggered
@@ -81,7 +82,8 @@ AUTO-0022-02 exact issue-body artifact/plan           COMPLETE / VERIFIED
 AUTO-0022-03 guarded issue-body update/evidence       COMPLETE / VERIFIED
 AUTO-0022-04 final audit / terminal closure           COMPLETE / TERMINAL
 REL-0004-01 release-line decision/readiness design    COMPLETE / DESIGN-ONLY
-REL-0004-02 compatibility/version decision            NOT APPROVED
+REL-0004-02 compatibility/version decision            COMPLETE / 0.3.0 SELECTED
+REL-0004-03 candidate preparation                     NOT APPROVED
 ```
 
 Read `AUTO-0020_CANONICAL_PROJECT_STATE_DOCUMENTATION_COHERENCE_GATE_DESIGN.md`,
@@ -94,7 +96,8 @@ For current work, also read
 `AUTO-0022_02_GUARDED_ISSUE_BODY_UPDATE_PLAN.md`,
 `AUTO-0022_03_ISSUE_BODY_UPDATE_EVIDENCE.md`, and
 `AUTO-0022_04_FINAL_CROSS_SURFACE_AUDIT.md`. For release-governance work, read
-`REL-0004_POST_AUTO_0022_RELEASE_LINE_DECISION_DESIGN.md`.
+`REL-0004_POST_AUTO_0022_RELEASE_LINE_DECISION_DESIGN.md` and
+`REL-0004_02_COMPATIBILITY_INVENTORY_VERSION_DECISION.md`.
 
 ## Permanent Authority Boundaries
 
@@ -118,9 +121,10 @@ and does not execute or re-execute a claimed request.
 
 ## Current Priority
 
-Preserve schema v2/document-set v2 `QUIESCENT` AUTO state. No release version,
-candidate, tag, assets, or publication is approved. REL-0004-02 requires a
-separate explicit decision.
+Preserve schema v2/document-set v2 `QUIESCENT` AUTO state and immutable
+published v0.2.0. Intended `0.3.0` is selected, but package/runtime metadata,
+candidate, tag, assets, and publication are unchanged. REL-0004-03 requires
+separate approval.
 
 ## General Engineering Guardrails
 

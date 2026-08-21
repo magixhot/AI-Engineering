@@ -45,6 +45,7 @@
 | AUTO-0022_03_ISSUE_BODY_UPDATE_EVIDENCE.md | Exact issue #130 body-only update and independent post-read evidence | Complete / Verified |
 | AUTO-0022_04_FINAL_CROSS_SURFACE_AUDIT.md | Exact cross-surface equality audit and terminal closure decision | Current terminal audit |
 | REL-0004_POST_AUTO_0022_RELEASE_LINE_DECISION_DESIGN.md | Exact post-v0.2.0 delta, compatibility decision, readiness gates, and publication boundaries | Current contract / design |
+| REL-0004_02_COMPATIBILITY_INVENTORY_VERSION_DECISION.md | Exact compatibility inventory, 0.3.0 decision, candidate scope, and pre-candidate blockers | Current decision / evidence |
 
 ## Engineering State
 
@@ -62,7 +63,8 @@
 | AUTO-0022-03 Body-Only Update / Post-Write Evidence | COMPLETE / VERIFIED |
 | AUTO-0022-04 Final Cross-Surface Audit / Closure | COMPLETE / TERMINAL CLOSURE |
 | REL-0004-01 Release-Line Decision / Readiness Design | COMPLETE / DESIGN-ONLY TRANSITION |
-| REL-0004-02 Compatibility Inventory / Version Decision | NOT APPROVED |
+| REL-0004-02 Compatibility Inventory / Version Decision | COMPLETE / `0.3.0` SELECTED / CANDIDATE NOT PREPARED |
+| REL-0004-03 Candidate Preparation | NOT APPROVED |
 
 ## AUTO-0020 Delivery Evidence
 
@@ -111,7 +113,7 @@ AUTO-0022-01 is COMPLETE / VERIFIED through PR #203 and Quality #419/#420.
 AUTO-0022-02 is COMPLETE / VERIFIED through PR #204 and Quality #421/#422.
 AUTO-0022-03 is COMPLETE / VERIFIED through PR #205 and Quality #423/#424.
 AUTO-0022 is terminally reconciled and the canonical AUTO state remains
-`QUIESCENT`. REL-0004-01 records a separately namespaced release-governance
-design from exact `master` `4914f3467c1f5e44b974d956f0ba8a18c40fd9f3`;
-REL-0004-02 requires separate approval. No version or release action is
-authorized.
+`QUIESCENT`. REL-0004-02 selects intended `0.3.0` from exact baseline
+`113e848d950629d501b5fef6e0ccdf1279d9e7f8`; package metadata and the
+published line remain v0.2.0. REL-0004-03 requires separate approval. No
+candidate, tag, asset, registry, or publication action is authorized.

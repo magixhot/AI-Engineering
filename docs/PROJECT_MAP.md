@@ -121,7 +121,9 @@ services, or expand reconciliation/OpenCode authority.
 - AUTO-0022-04 final audit / terminal closure: COMPLETE / TERMINAL.
 - REL-0004-01 release-line decision/readiness design:
   COMPLETE / DESIGN-ONLY TRANSITION.
-- REL-0004-02 through REL-0004-06: NOT APPROVED.
+- REL-0004-02 compatibility inventory/version decision:
+  COMPLETE / `0.3.0` SELECTED / CANDIDATE NOT PREPARED.
+- REL-0004-03 through REL-0004-06: NOT APPROVED.
 
 AUTO-0019 closed at exact `master`
 `c287e5cceef4e72148de7674f4095fedb78bd302` through Quality #394.
@@ -144,6 +146,7 @@ The final audit found no cross-surface drift. AUTO-0022 is terminally closed
 without an approved AUTO-0023 successor.
 
 REL-0004 release governance is separately namespaced and does not alter that
-canonical AUTO `QUIESCENT` state. REL-0004-01 records only the exact baseline,
-delta, compatibility-decision requirements, readiness gates, and publication
-boundaries; it selects no version and authorizes no release action.
+canonical AUTO `QUIESCENT` state. REL-0004-02 selects intended `0.3.0` and its
+scope, while package metadata and the published line remain v0.2.0. Candidate
+preparation must align active MCP initialize metadata and complete the public
+CLI help tree; no release action is authorized.
