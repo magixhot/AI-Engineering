@@ -1,6 +1,6 @@
 # AUTO-0019-05 — Installed / E2E Stranded-Claim Evidence
 
-Status: EVIDENCE / PENDING INSTALLED E2E
+Status: VERIFIED EVIDENCE / PENDING STAGE GATE
 
 ## Purpose
 
@@ -50,6 +50,82 @@ full-page traversal, deterministic bounds, existing retry/fail-closed behavior,
 and single-attempt publication semantics. The original public fixture remains
 valid and claimed while this correction passes its normal Quality gates and is
 loaded by the installed service.
+
+The correction merged through PR #188 as exact `master`
+`b1136c3f57616aa5197f078300a1fa54879aad1c`. Pre-merge Quality #389
+(run id `32478745136`) succeeded on exact PR head
+`31ac082bd9941e9c85b2ba34243ffc7d71170cf6`. Push-triggered post-merge
+Quality #390 (run id `32479152403`) then succeeded on the exact merged
+`master` SHA.
+
+## Verified installed recovery
+
+Before resuming polling, the operator reported the installed checkout at exact
+`b1136c3f57616aa5197f078300a1fa54879aad1c`, a clean worktree, the canonical
+service inactive, and the installed worker loading the corrected transport
+without the unsupported `--slurp` option. The service was then started
+explicitly and reported active. The installed lifecycle constructs the worker
+with the deterministic default recovery grace of 300 seconds, within the
+validated 60-to-86,400-second bounds.
+
+On its normal poll, the installed worker published recovery comment
+`5369813615` at `2026-08-21T12:29:30Z` for the original request id:
+
+`sha256:d61960632421eaafcdc7300cd69965b0028f6bb9f148ea0b9dcb93ecf83831ff`
+
+The bounded recovery envelope reported:
+
+- `state = FAILED`;
+- `kind = claim_recovery_required`;
+- `reason = claimed_without_terminal_result`;
+- `replay_attempted = false`;
+- task class `status`;
+- repository `magixhot/AI-Engineering`;
+- protocol version `1`.
+
+Inspection of the control issue found exactly one recovery envelope for this
+request id and no ordinary terminal result. The worker did not publish a
+second claim. Because recovery terminalized the public request without entering
+the task executor, it did not invoke OpenCode or `quality_verify` and did not
+replay the stranded request.
+
+## Verified distinct liveness probe
+
+After recovery, the trusted operator published a new `quality_verify` request
+with the distinct objective `AUTO-0019-05 installed liveness probe after
+stranded-claim recovery.` for exact installed `master`
+`b1136c3f57616aa5197f078300a1fa54879aad1c`.
+
+The public evidence is:
+
+- request id
+  `sha256:20409e5ce207053b7137d36ce798c9e94e31f591ae360f40d93bc80bdf3b6ec3`;
+- request comment `5369824268`, created at `2026-08-21T12:30:41Z`;
+- claim comment `5369825467`, created at `2026-08-21T12:30:49Z`;
+- terminal result comment `5369827138`, created at
+  `2026-08-21T12:31:00Z`.
+
+The terminal result reported `SUCCEEDED`, branch `master`, exact head
+`b1136c3f57616aa5197f078300a1fa54879aad1c`, and `pre_clean=true` /
+`post_clean=true`. Its nested Quality evidence reported workflow
+`.github/workflows/quality.yml`, event/branch `push` / `master`, exact target
+head, workflow id `334955954`, run id `32479152403`, run attempt `1`, terminal
+status `completed`, conclusion `success`, and `satisfies_gate=true`.
+
+The distinct request was claimed once and completed normally. This proves that
+terminal recovery did not damage subsequent worker polling or the existing
+exact-Quality path. The liveness task class does not invoke OpenCode.
+
+## Observed boundary result
+
+The recovery and liveness observations preserved the approved boundaries. The
+worker performed no repository synchronization, repair, workflow mutation,
+service control, deployment, release, package publication, credential change,
+or expansion of remote task authority. Exact branch/HEAD and clean pre/post
+state were preserved by the installed Quality result; neither recovery nor
+Quality verification has repository or remotes mutation authority. Public
+evidence contains only the portable repository, protocol, request, comment,
+commit, and Quality identifiers required for audit.
 
 ## Installed-E2E precondition
 
