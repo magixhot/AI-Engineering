@@ -2,11 +2,18 @@
   "schema_version": 2,
   "completed_through": "AUTO-0020",
   "active_milestone": "AUTO-0021",
-  "active_stage": "AUTO-0021-01",
-  "active_state": "DESIGN_ACTIVE",
+  "active_stage": "AUTO-0021-02",
+  "active_state": "IMPLEMENTATION_ACTIVE",
   "release_line": "v0.2.0",
-  "document_set_version": 1,
+  "document_set_version": 2,
   "document_projections": {
+    "README.md": [
+      "completed_through",
+      "active_milestone",
+      "active_stage",
+      "active_state",
+      "release_line"
+    ],
     "docs/AI_CHAT_START.md": [
       "completed_through",
       "active_milestone",

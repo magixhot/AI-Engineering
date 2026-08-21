@@ -81,11 +81,14 @@ and push-triggered Quality #406. AUTO-0020 is COMPLETE / VERIFIED.
 
 The AUTO-0020 terminal state is verified on exact `master`
 `c72c79a477de630f50532a454e11d513e9727a79` through Quality #407/#408.
-AUTO-0021-01 is the active design stage.
+AUTO-0021-01 merged through PR #198 as exact `master`
+`8121e3d1b2b38c4088e32a7128c58686e459542a` after Quality #409/#410.
+AUTO-0021-02 is the active implementation stage.
 
-The approved AUTO-0021 scope adds only repository-root `README.md` to a
-versioned exact document set. The open control issue #130 is an external
-surface and remains outside this offline repository-byte contract.
+Document-set v2 adds only repository-root `README.md` to the exact governed
+set while document-set v1 retains its historical six-document compatibility.
+The open control issue #130 is an external surface and remains outside this
+offline repository-byte contract.
 
 ## Release Boundary
 

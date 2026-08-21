@@ -1,7 +1,7 @@
 # AI-Engineering — Master Documentation Index
 
 <!-- canonical-project-state
-{"schema_version":2,"completed_through":"AUTO-0020","active_milestone":"AUTO-0021","active_stage":"AUTO-0021-01","active_state":"DESIGN_ACTIVE"}
+{"schema_version":2,"completed_through":"AUTO-0020","active_milestone":"AUTO-0021","active_stage":"AUTO-0021-02","active_state":"IMPLEMENTATION_ACTIVE"}
 -->
 
 ## Canonical Project Documents
@@ -44,7 +44,8 @@
 | MCP / SDK / tooling foundations | COMPLETE / VERIFIED |
 | Release line v0.2.0 | VERIFIED HISTORICAL LINE |
 | AUTO-0001 through AUTO-0020 | COMPLETE / VERIFIED |
-| AUTO-0021-01 Repository Landing State Coherence Design | ACTIVE |
+| AUTO-0021-01 Repository Landing State Coherence Design | COMPLETE / VERIFIED |
+| AUTO-0021-02 Document-Set v2 / README Marker | ACTIVE |
 
 ## AUTO-0020 Delivery Evidence
 
@@ -83,5 +84,6 @@ repository mutation authority.
 
 ## Current Continuation Point
 
-AUTO-0021-01 is the approved active design stage. Complete its exact gates,
-then continue only with the approved README/document-set-v2 scope.
+AUTO-0021-01 is COMPLETE / VERIFIED through PR #198 and Quality #409/#410.
+Complete AUTO-0021-02 exact gates, then continue only with the approved README
+narrative reconciliation scope.

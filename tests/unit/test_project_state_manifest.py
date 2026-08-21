@@ -7,7 +7,9 @@ import pytest
 
 from ai_engineering.project_state_manifest import (
     CANONICAL_DOCUMENTS,
+    CANONICAL_DOCUMENTS_V1,
     DOCUMENT_PROJECTIONS,
+    DOCUMENT_PROJECTIONS_V1,
     MANIFEST_RELATIVE_PATH,
     ManifestErrorReason,
     ProjectStateActivity,
@@ -27,6 +29,21 @@ def valid_mapping() -> dict[str, object]:
         "active_state": "IMPLEMENTATION_ACTIVE",
         "release_line": "v0.2.0",
         "document_set_version": 1,
+        "document_projections": {
+            path: list(fields) for path, fields in DOCUMENT_PROJECTIONS_V1
+        },
+    }
+
+
+def current_mapping() -> dict[str, object]:
+    return {
+        "schema_version": 2,
+        "completed_through": "AUTO-0020",
+        "active_milestone": "AUTO-0021",
+        "active_stage": "AUTO-0021-02",
+        "active_state": "IMPLEMENTATION_ACTIVE",
+        "release_line": "v0.2.0",
+        "document_set_version": 2,
         "document_projections": {
             path: list(fields) for path, fields in DOCUMENT_PROJECTIONS
         },
@@ -67,7 +84,7 @@ def test_build_manifest_projects_strict_typed_state() -> None:
     assert state.release_line == "v0.2.0"
     assert state.document_set_version == 1
     paths = tuple(item.path for item in state.document_projections)
-    assert paths == CANONICAL_DOCUMENTS
+    assert paths == CANONICAL_DOCUMENTS_V1
     assert not hasattr(state, "head_sha")
     assert not hasattr(state, "authority")
 
@@ -81,8 +98,32 @@ def test_tracked_manifest_loads_from_exact_portable_path() -> None:
     assert state.schema_version == 2
     assert state.completed_through == "AUTO-0020"
     assert state.active_milestone == "AUTO-0021"
-    assert state.active_stage == "AUTO-0021-01"
-    assert state.active_state is ProjectStateActivity.DESIGN_ACTIVE
+    assert state.active_stage == "AUTO-0021-02"
+    assert state.active_state is ProjectStateActivity.IMPLEMENTATION_ACTIVE
+    assert state.document_set_version == 2
+    assert tuple(item.path for item in state.document_projections) == (
+        CANONICAL_DOCUMENTS
+    )
+
+
+def test_document_set_v2_projects_readme_first() -> None:
+    state = build_project_state_manifest(current_mapping())
+
+    assert state.document_set_version == 2
+    assert state.document_projections[0].path == "README.md"
+    assert tuple(item.path for item in state.document_projections) == (
+        CANONICAL_DOCUMENTS
+    )
+
+
+def test_document_set_v1_preserves_exact_historical_six_documents() -> None:
+    state = build_project_state_manifest(valid_mapping())
+
+    assert state.document_set_version == 1
+    assert tuple(item.path for item in state.document_projections) == (
+        CANONICAL_DOCUMENTS_V1
+    )
+    assert "README.md" not in CANONICAL_DOCUMENTS_V1
 
 
 def test_schema_v2_projects_quiescent_terminal_state() -> None:
@@ -193,9 +234,46 @@ def test_manifest_rejects_unknown_schema_version() -> None:
 
 def test_manifest_rejects_unknown_document_set_version() -> None:
     mapping = valid_mapping()
-    mapping["document_set_version"] = 2
+    mapping["document_set_version"] = 3
 
     assert_rejected(mapping, ManifestErrorReason.UNSUPPORTED_SCHEMA)
+
+
+@pytest.mark.parametrize(
+    "mapping",
+    [
+        {
+            **valid_mapping(),
+            "document_projections": {
+                path: list(fields) for path, fields in DOCUMENT_PROJECTIONS
+            },
+        },
+        {
+            **current_mapping(),
+            "document_projections": {
+                path: list(fields) for path, fields in DOCUMENT_PROJECTIONS_V1
+            },
+        },
+    ],
+)
+def test_manifest_rejects_document_set_version_projection_mismatch(
+    mapping: dict[str, object],
+) -> None:
+    assert_rejected(mapping, ManifestErrorReason.DOCUMENT_SET)
+
+
+def test_schema_v1_rejects_document_set_v2() -> None:
+    mapping = current_mapping()
+    mapping.update(
+        {
+            "schema_version": 1,
+            "completed_through": "AUTO-0019",
+            "active_milestone": "AUTO-0020",
+            "active_stage": "AUTO-0020-02",
+        }
+    )
+
+    assert_rejected(mapping, ManifestErrorReason.DOCUMENT_SET)
 
 
 @pytest.mark.parametrize(

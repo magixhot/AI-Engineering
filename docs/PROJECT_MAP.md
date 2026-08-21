@@ -110,8 +110,10 @@ services, or expand reconciliation/OpenCode authority.
   COMPLETE / VERIFIED.
 - AUTO-0020-06 final reconciliation/next-milestone audit:
   COMPLETE / VERIFIED.
-- AUTO-0021-01 repository landing-state coherence design: ACTIVE.
-- AUTO-0021-02 through AUTO-0021-04: PENDING.
+- AUTO-0021-01 repository landing-state coherence design:
+  COMPLETE / VERIFIED.
+- AUTO-0021-02 document-set v2 / README marker: ACTIVE.
+- AUTO-0021-03 through AUTO-0021-04: PENDING.
 
 AUTO-0019 closed at exact `master`
 `c287e5cceef4e72148de7674f4095fedb78bd302` through Quality #394.
@@ -123,4 +125,5 @@ schema v1 active-manifest compatibility. That terminal state remains the
 verified AUTO-0020 baseline.
 
 AUTO-0021 now has an explicit design identity. Its approved target is the
-repository-root `README.md`; no glob or generic Markdown policy is added.
+repository-root `README.md`. Document-set v2 governs it first in deterministic
+order; no glob or generic Markdown policy is added.
