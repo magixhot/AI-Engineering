@@ -1,7 +1,7 @@
 # AI-Engineering — Master Documentation Index
 
 <!-- canonical-project-state
-{"schema_version":2,"completed_through":"AUTO-0021","active_milestone":"AUTO-0022","active_stage":"AUTO-0022-02","active_state":"IMPLEMENTATION_ACTIVE"}
+{"schema_version":2,"completed_through":"AUTO-0021","active_milestone":"AUTO-0022","active_stage":"AUTO-0022-03","active_state":"IMPLEMENTATION_ACTIVE"}
 -->
 
 ## Canonical Project Documents
@@ -41,7 +41,8 @@
 | AUTO-0021_TERMINAL_QUIESCENT_CLOSURE.md | Schema v2/document-set v2 terminal state without a successor | Current contract |
 | AUTO-0022_GITHUB_CONTROL_SURFACE_COHERENCE_DESIGN.md | Exact issue #130 body reconciliation without authority expansion | Current contract |
 | AUTO-0022_ISSUE_130_DESIRED_BODY.md | Exact approved future body bytes for issue #130 | Approved artifact |
-| AUTO-0022_02_GUARDED_ISSUE_BODY_UPDATE_PLAN.md | Hash-guarded, single-attempt body-only update procedure | Active |
+| AUTO-0022_02_GUARDED_ISSUE_BODY_UPDATE_PLAN.md | Hash-guarded, single-attempt body-only update procedure | Complete / Verified |
+| AUTO-0022_03_ISSUE_BODY_UPDATE_EVIDENCE.md | Exact issue #130 body-only update and independent post-read evidence | Active |
 
 ## Engineering State
 
@@ -55,7 +56,8 @@
 | AUTO-0021-03 README Narrative Reconciliation | COMPLETE / VERIFIED |
 | AUTO-0021-04 Final Reconciliation / Next-Surface Audit | COMPLETE / VERIFIED |
 | AUTO-0022-01 GitHub Control Surface Coherence Design | COMPLETE / VERIFIED |
-| AUTO-0022-02 Exact Desired Body / Guarded Plan | ACTIVE |
+| AUTO-0022-02 Exact Desired Body / Guarded Plan | COMPLETE / VERIFIED |
+| AUTO-0022-03 Body-Only Update / Post-Write Evidence | ACTIVE |
 
 ## AUTO-0020 Delivery Evidence
 
@@ -101,5 +103,6 @@ AUTO-0021-03 is COMPLETE / VERIFIED through PR #200 and Quality #413/#414.
 AUTO-0021-04 is COMPLETE / VERIFIED through PR #201 and Quality #415/#416.
 AUTO-0021 terminal closure is verified through PR #202 and Quality #417/#418.
 AUTO-0022-01 is COMPLETE / VERIFIED through PR #203 and Quality #419/#420.
-Complete AUTO-0022-02 exact gates; issue #130 remains unchanged until separate
-AUTO-0022-03 authorization and its fresh hash precondition.
+AUTO-0022-02 is COMPLETE / VERIFIED through PR #204 and Quality #421/#422.
+Complete AUTO-0022-03 evidence exact gates, then continue only with the
+separately gated AUTO-0022-04 final audit.

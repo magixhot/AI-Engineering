@@ -1,7 +1,7 @@
 # AI-Engineering — Current Status
 
 <!-- canonical-project-state
-{"schema_version":2,"completed_through":"AUTO-0021","active_milestone":"AUTO-0022","active_stage":"AUTO-0022-02","active_state":"IMPLEMENTATION_ACTIVE","release_line":"v0.2.0"}
+{"schema_version":2,"completed_through":"AUTO-0021","active_milestone":"AUTO-0022","active_stage":"AUTO-0022-03","active_state":"IMPLEMENTATION_ACTIVE","release_line":"v0.2.0"}
 -->
 
 **Snapshot date:** 2026-08-21
@@ -14,13 +14,13 @@
 
 **Current milestone:** AUTO-0022 — GitHub Control Surface Coherence
 
-**Active stage:** AUTO-0022-02 — Exact Desired Body / Guarded Plan
+**Active stage:** AUTO-0022-03 — Body-Only Update / Post-Write Evidence
 
 ## Authoritative State
 
 The MCP/SDK/tooling/release/safety foundations and AUTO-0001 through AUTO-0021
-are COMPLETE / VERIFIED for their approved scopes. AUTO-0022-01 is COMPLETE /
-VERIFIED and AUTO-0022-02 is the only active stage.
+are COMPLETE / VERIFIED for their approved scopes. AUTO-0022-01 and
+AUTO-0022-02 are COMPLETE / VERIFIED; AUTO-0022-03 is the only active stage.
 
 AUTO-0019 closed on exact `master`
 `c287e5cceef4e72148de7674f4095fedb78bd302`. Push-triggered Quality #394
@@ -66,8 +66,8 @@ contract; this design stage does not mutate the issue.
 | Stage | State |
 |---|---|
 | AUTO-0022-01 Design / Exact Drift Audit | COMPLETE / VERIFIED — PR #203; Quality #419/#420; merged `3efd7714b1302f13c371f81e6b8894f08b517c6f`. |
-| AUTO-0022-02 Exact Desired Body / Guarded Plan | ACTIVE |
-| AUTO-0022-03 Body-Only Update / Post-Write Evidence | PENDING |
+| AUTO-0022-02 Exact Desired Body / Guarded Plan | COMPLETE / VERIFIED — PR #204; Quality #421/#422; merged `39c9933fa3ec5bde0ab62bc89fc0a4c6b300b838`. |
+| AUTO-0022-03 Body-Only Update / Post-Write Evidence | ACTIVE — exact body applied once; independent post-read matched `c99ffa0b885926a64db30c451eeb910ad5dc9b6449f1c4833908d94c43dc859e`. |
 | AUTO-0022-04 Final Audit / Closure | PENDING |
 
 ## Coherence Contract
@@ -120,6 +120,5 @@ not approved and not published.
 
 ## Current Priority
 
-Complete AUTO-0022-02 through exact PR-head and post-merge Quality gates. Do
-not mutate issue #130 before separate AUTO-0022-03 authorization and a fresh
-exact precondition check.
+Complete AUTO-0022-03 evidence through exact PR-head and post-merge Quality
+gates. Then continue only with the separately gated AUTO-0022-04 final audit.

@@ -116,8 +116,9 @@ services, or expand reconciliation/OpenCode authority.
 - AUTO-0021-03 README narrative reconciliation: COMPLETE / VERIFIED.
 - AUTO-0021-04 final audit: COMPLETE / VERIFIED.
 - AUTO-0022-01 GitHub control-surface coherence design: COMPLETE / VERIFIED.
-- AUTO-0022-02 exact issue-body artifact and guarded plan: ACTIVE.
-- AUTO-0022-03 through AUTO-0022-04: PENDING.
+- AUTO-0022-02 exact issue-body artifact and guarded plan: COMPLETE / VERIFIED.
+- AUTO-0022-03 guarded issue-body update and evidence: ACTIVE.
+- AUTO-0022-04 final audit: PENDING.
 
 AUTO-0019 closed at exact `master`
 `c287e5cceef4e72148de7674f4095fedb78bd302` through Quality #394.
@@ -134,5 +135,5 @@ order; no glob or generic Markdown policy is added.
 
 AUTO-0021 is terminally closed with schema v2/document-set v2 `QUIESCENT`;
 AUTO-0022 targets only issue #130 body coherence and adds no protocol/runtime
-authority. Stage -02 freezes the exact desired body and guarded plan without
-performing the external write.
+authority. Stage -03 applied only the exact approved issue body after the
+hash precondition and verified the result by independent read.
