@@ -112,10 +112,10 @@ AUTO-0020-06 audit merged through PR #196 as exact `master`
 
 ## Current Priority
 
-Preserve schema v2/document-set v2 `QUIESCENT` AUTO state. REL-0004-01 records
-the separate release-line decision/readiness design; no version, candidate,
-tag, assets, or publication is approved. REL-0004-02 requires separate
-approval.
+Preserve schema v2/document-set v2 `QUIESCENT` AUTO state and immutable
+published v0.2.0. REL-0004-02 selects intended `0.3.0`; package metadata,
+candidate, tag, assets, and publication remain unchanged. REL-0004-03 requires
+separate approval.
 
 ## AUTO-0021 — Repository Landing State Coherence
 
@@ -176,10 +176,14 @@ Delivery state:
 1. REL-0004-01 — design, exact baseline/delta audit, and readiness-gate
    contract: COMPLETE / DESIGN-ONLY TRANSITION.
 2. REL-0004-02 — compatibility inventory and explicit version/scope decision:
-   NOT APPROVED.
-3. REL-0004-03 through REL-0004-06 — candidate preparation, readiness,
-   publication decision, and reconciliation: NOT APPROVED.
+   COMPLETE / `0.3.0` SELECTED / CANDIDATE NOT PREPARED.
+3. REL-0004-03 — bounded compatibility corrections, version metadata, lockfile,
+   release notes, and candidate preparation: NOT APPROVED.
+4. REL-0004-04 through REL-0004-06 — readiness, publication decision, and
+   reconciliation: NOT APPROVED.
 
-No future version has been selected. No candidate freeze, version edit, tag,
-GitHub Release, asset upload, or package-registry publication is authorized by
-this design.
+The selected intended version is `0.3.0`. Before candidate selection, the
+active MCP initialize version must be aligned and the public CLI help tree must
+expose all supported routes. No candidate freeze, version edit, tag, GitHub
+Release, asset upload, or package-registry publication is authorized by this
+decision stage.

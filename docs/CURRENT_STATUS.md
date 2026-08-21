@@ -22,9 +22,10 @@ The MCP/SDK/tooling/release/safety foundations and AUTO-0001 through AUTO-0022
 are COMPLETE / VERIFIED for their approved scopes. No successor milestone or
 stage is approved or active.
 
-REL-0004-01 is a separately namespaced release-governance design. It records
-the exact post-v0.2.0 delta and future readiness gates without changing the
-AUTO-only canonical `QUIESCENT` identity.
+REL-0004 is separately namespaced release governance and does not change the
+AUTO-only canonical `QUIESCENT` identity. Stage -02 selects intended version
+`0.3.0` from the exact compatibility inventory; no candidate or publication
+exists.
 
 AUTO-0019 closed on exact `master`
 `c287e5cceef4e72148de7674f4095fedb78bd302`. Push-triggered Quality #394
@@ -78,14 +79,20 @@ AUTO-0022 reconciled that exact external surface without expanding authority.
 | Stage | State |
 |---|---|
 | REL-0004-01 Decision / Readiness Design | COMPLETE / DESIGN-ONLY TRANSITION |
-| REL-0004-02 Compatibility Inventory / Version Decision | NOT APPROVED |
-| REL-0004-03 through REL-0004-06 | NOT APPROVED |
+| REL-0004-02 Compatibility Inventory / Version Decision | COMPLETE / `0.3.0` SELECTED / CANDIDATE NOT PREPARED |
+| REL-0004-03 Candidate Preparation | NOT APPROVED |
+| REL-0004-04 through REL-0004-06 | NOT APPROVED |
 
 The immutable published release remains v0.2.0 at exact tag commit
-`1faf14c121b7b5da7c8781e3de4e836f85838a76`. The audited current baseline is
-exact `master` `4914f3467c1f5e44b974d956f0ba8a18c40fd9f3`, 403 commits after that tag.
-No version change, candidate, tag, release, asset upload, or PyPI action is
-approved.
+`1faf14c121b7b5da7c8781e3de4e836f85838a76`. The -02 decision baseline is
+exact `master` `113e848d950629d501b5fef6e0ccdf1279d9e7f8`, 405 commits after that tag.
+Intended next version is `0.3.0`; package/runtime metadata remains `0.2.0`
+until approved candidate preparation. No candidate, tag, release, asset
+upload, or PyPI action is approved.
+
+Candidate preparation must correct two audited blockers: active MCP initialize
+still reports literal `0.1.0`, and the CLI parent help tree omits the otherwise
+working `reconcile run/approve` and `workstation doctor` routes.
 
 ## Coherence Contract
 
@@ -137,6 +144,7 @@ not approved and not published.
 
 ## Current Priority
 
-Preserve schema v2/document-set v2 `QUIESCENT` AUTO state. Continue only after
-separate approval of REL-0004-02 compatibility inventory/version decision; no
-version or publication action is implied.
+Preserve schema v2/document-set v2 `QUIESCENT` AUTO state and immutable
+published v0.2.0. Continue only after separate approval of REL-0004-03 bounded
+candidate preparation; no tag, asset, registry, or publication action is
+implied.

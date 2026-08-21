@@ -1,6 +1,10 @@
-# Release Checklist v0.1.0 / v0.2.0
+# Release Checklist v0.1.0 / v0.2.0 / intended v0.3.0
 
 This checklist records release-line verification state. It does not establish general production readiness beyond the checks listed here. Historical `v0.1.0` remains immutable; `v0.2.0` is the current published GitHub release. PyPI remains separately gated.
+
+The intended next version is `0.3.0` under REL-0004-02. Package metadata is
+still `0.2.0`; no candidate, tag, GitHub Release, asset, or registry
+publication exists for v0.3.0.
 
 ## MCP Server Core
 
@@ -59,6 +63,18 @@ This checklist records release-line verification state. It does not establish ge
 - [x] Sdist SHA-256: `6594377eda9324aeec82f5db7c7874f68d8cca3dbbbe2ef7f97532a0f341a9b2`.
 - [x] Release notes preserve bounded client-compatibility and security claims.
 - [x] PyPI was not published.
+
+### Intended v0.3.0 — decision only
+
+- [x] Exact compatibility inventory completed from decision baseline `113e848d950629d501b5fef6e0ccdf1279d9e7f8`.
+- [x] Intended package version `0.3.0` and intended tag `v0.3.0` selected.
+- [x] Scope bounded to verified v0.2.0 plus completed AUTO-0003 through AUTO-0022 and required release-governance preparation.
+- [ ] Align package/lock/MCP initialize version metadata to `0.3.0`.
+- [ ] Expose all supported routes in the installed CLI parent help tree.
+- [ ] Prepare exact release notes and freeze a candidate SHA.
+- [ ] Obtain fresh Linux, distribution, installed-wheel/MCP/CLI, and Windows-local evidence.
+- [ ] Obtain separate publication approval before tag, GitHub Release, or asset actions.
+- [ ] PyPI remains NOT APPROVED / NOT PUBLISHED.
 
 ## CI Verification
 

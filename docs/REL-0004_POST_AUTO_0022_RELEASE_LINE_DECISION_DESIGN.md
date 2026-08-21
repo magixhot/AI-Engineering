@@ -160,3 +160,14 @@ The design stage is complete only when this contract and its exact inventory
 pass exact PR-head Quality, expected-head-protected merge, and exact
 push-triggered post-merge Quality. Completion authorizes no REL-0004-02 work,
 version change, candidate selection, or publication action.
+
+## REL-0004-02 Decision Record
+
+REL-0004-02 completes the required exact compatibility inventory in
+`REL-0004_02_COMPATIBILITY_INVENTORY_VERSION_DECISION.md` and selects intended
+next version `0.3.0` with intended tag `v0.3.0`.
+
+The decision does not change package/runtime metadata or freeze a candidate.
+It identifies active MCP initialize-version alignment and complete public CLI
+help-tree exposure as mandatory pre-candidate corrections. REL-0004-03 remains
+separately approval-gated, and all publication boundaries above remain intact.
