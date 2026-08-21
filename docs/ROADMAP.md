@@ -1,16 +1,16 @@
 # AI-Engineering Roadmap
 
 <!-- canonical-project-state
-{"schema_version":2,"completed_through":"AUTO-0021","active_milestone":"AUTO-0022","active_stage":"AUTO-0022-03","active_state":"IMPLEMENTATION_ACTIVE"}
+{"schema_version":2,"completed_through":"AUTO-0022","active_milestone":null,"active_stage":null,"active_state":"QUIESCENT"}
 -->
 
 ## Completed / Verified
 
 The documentation foundation, MCP foundation, SDK-0001, TOOL-0001,
 REL-0001/REL-0002/REL-0003, CI-0001, SAFE-0001/SAFE-0002, and AUTO-0001
-through AUTO-0021 are COMPLETE / VERIFIED for their approved scopes.
+through AUTO-0022 are COMPLETE / VERIFIED for their approved scopes.
 
-Established automation boundaries remain layered and unchanged: AUTO-0007 is the permanent read-only reconciliation planner; AUTO-0008 is the guarded one-step apply boundary; AUTO-0009 is bounded multi-step orchestration; AUTO-0010 is the restrictive policy gate; AUTO-0011 is the optional explicit single-candidate approval gate; AUTO-0012 adds deterministic execution evidence; AUTO-0013 adds bounded read-only remote inspection/control transport; AUTO-0014 adds local worker lifecycle supervision; AUTO-0015 adds exact post-merge Quality verification; AUTO-0016 adds portable workstation bootstrap/doctor behavior plus the narrow read-only Quality relay; AUTO-0017 reconciles canonical project state/roadmap documentation with the verified implementation state; AUTO-0018 hardens reliability/observability of the existing read-only control plane; AUTO-0019 adds bounded terminal recovery for aged unresolved claims without replaying their requests; AUTO-0020 adds offline canonical-state coherence; and AUTO-0021 extends that exact contract to the repository landing README.
+Established automation boundaries remain layered and unchanged: AUTO-0007 is the permanent read-only reconciliation planner; AUTO-0008 is the guarded one-step apply boundary; AUTO-0009 is bounded multi-step orchestration; AUTO-0010 is the restrictive policy gate; AUTO-0011 is the optional explicit single-candidate approval gate; AUTO-0012 adds deterministic execution evidence; AUTO-0013 adds bounded read-only remote inspection/control transport; AUTO-0014 adds local worker lifecycle supervision; AUTO-0015 adds exact post-merge Quality verification; AUTO-0016 adds portable workstation bootstrap/doctor behavior plus the narrow read-only Quality relay; AUTO-0017 reconciles canonical project state/roadmap documentation with the verified implementation state; AUTO-0018 hardens reliability/observability of the existing read-only control plane; AUTO-0019 adds bounded terminal recovery for aged unresolved claims without replaying their requests; AUTO-0020 adds offline canonical-state coherence; AUTO-0021 extends that exact contract to the repository landing README; and AUTO-0022 reconciles the exact public control-issue body without expanding authority.
 
 ## AUTO-0014 — Local Control Worker Service / Lifecycle
 
@@ -112,8 +112,8 @@ AUTO-0020-06 audit merged through PR #196 as exact `master`
 
 ## Current Priority
 
-Complete AUTO-0022-03 post-write evidence through the normal exact gates, then
-perform the separately gated AUTO-0022-04 final cross-surface audit.
+No next milestone is approved or active. Preserve schema v2/document-set v2
+`QUIESCENT` state until a successor is separately designed and approved.
 
 ## AUTO-0021 — Repository Landing State Coherence
 
@@ -139,7 +139,7 @@ from this offline repository-byte milestone.
 
 ## AUTO-0022 — GitHub Control Surface Coherence
 
-**Status:** IMPLEMENTATION ACTIVE
+**Status:** COMPLETE / VERIFIED
 
 The fresh audit confirmed that issue #130 lists four read-only task classes,
 while the verified protocol also supports exact-head `quality_verify` and the
@@ -152,5 +152,9 @@ Delivery stages:
 
 1. AUTO-0022-01 — design, exact target, and drift audit: COMPLETE / VERIFIED — PR #203; Quality #419/#420; merged `3efd7714b1302f13c371f81e6b8894f08b517c6f`.
 2. AUTO-0022-02 — exact desired body and guarded mutation plan: COMPLETE / VERIFIED — PR #204; Quality #421/#422; merged `39c9933fa3ec5bde0ab62bc89fc0a4c6b300b838`.
-3. AUTO-0022-03 — body-only update and post-write evidence: ACTIVE.
-4. AUTO-0022-04 — final cross-surface audit and closure: PENDING.
+3. AUTO-0022-03 — body-only update and post-write evidence: COMPLETE / VERIFIED — PR #205; Quality #423/#424; merged `d541d751828d9d95a828799b4e3f0345c396b103`.
+4. AUTO-0022-04 — final cross-surface audit and terminal closure: COMPLETE / TERMINAL CLOSURE.
+
+The terminal audit finds exact equality between issue #130 body bytes and the
+approved artifact hash `c99ffa0b885926a64db30c451eeb910ad5dc9b6449f1c4833908d94c43dc859e`.
+No AUTO-0023 milestone is approved or inferred.

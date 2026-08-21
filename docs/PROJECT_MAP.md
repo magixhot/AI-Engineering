@@ -1,7 +1,7 @@
 # AI-Engineering
 
 <!-- canonical-project-state
-{"schema_version":2,"completed_through":"AUTO-0021","active_milestone":"AUTO-0022"}
+{"schema_version":2,"completed_through":"AUTO-0022","active_milestone":null}
 -->
 
 ## Repository Structure
@@ -117,8 +117,8 @@ services, or expand reconciliation/OpenCode authority.
 - AUTO-0021-04 final audit: COMPLETE / VERIFIED.
 - AUTO-0022-01 GitHub control-surface coherence design: COMPLETE / VERIFIED.
 - AUTO-0022-02 exact issue-body artifact and guarded plan: COMPLETE / VERIFIED.
-- AUTO-0022-03 guarded issue-body update and evidence: ACTIVE.
-- AUTO-0022-04 final audit: PENDING.
+- AUTO-0022-03 guarded issue-body update and evidence: COMPLETE / VERIFIED.
+- AUTO-0022-04 final audit / terminal closure: COMPLETE / TERMINAL.
 
 AUTO-0019 closed at exact `master`
 `c287e5cceef4e72148de7674f4095fedb78bd302` through Quality #394.
@@ -137,3 +137,5 @@ AUTO-0021 is terminally closed with schema v2/document-set v2 `QUIESCENT`;
 AUTO-0022 targets only issue #130 body coherence and adds no protocol/runtime
 authority. Stage -03 applied only the exact approved issue body after the
 hash precondition and verified the result by independent read.
+The final audit found no cross-surface drift. AUTO-0022 is terminally closed
+without an approved AUTO-0023 successor.

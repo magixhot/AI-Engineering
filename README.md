@@ -1,7 +1,7 @@
 # AI-Engineering
 
 <!-- canonical-project-state
-{"schema_version":2,"completed_through":"AUTO-0021","active_milestone":"AUTO-0022","active_stage":"AUTO-0022-03","active_state":"IMPLEMENTATION_ACTIVE","release_line":"v0.2.0"}
+{"schema_version":2,"completed_through":"AUTO-0022","active_milestone":null,"active_stage":null,"active_state":"QUIESCENT","release_line":"v0.2.0"}
 -->
 
 **Status:** Active
@@ -53,6 +53,7 @@ Current scope includes:
 * AUTO-0019 deterministic terminal recovery for aged unresolved claims
 * AUTO-0020 offline canonical project-state coherence enforcement
 * AUTO-0021 repository landing-state coherence
+* AUTO-0022 GitHub control-surface coherence
 * Local distribution verification
 * Automated quality gates
 * MCP Workspace path safety boundary
@@ -105,9 +106,9 @@ This document contains everything required to restore the current project contex
 
 Current phase:
 
-**AUTO-0022-03 guarded issue-body update and post-write evidence**
+**No active milestone — terminal QUIESCENT state**
 
-AUTO-0001 through AUTO-0021 are COMPLETE / VERIFIED for their approved scopes. AUTO-0022-01 and AUTO-0022-02 are COMPLETE / VERIFIED through PR #203/#204 and Quality #419 through #422. AUTO-0022-03 is the only active stage; the guarded body-only update of issue #130 succeeded and its bounded post-write evidence is being gated.
+AUTO-0001 through AUTO-0022 are COMPLETE / VERIFIED for their approved scopes. No successor milestone or stage is approved or active; AUTO-0023 is not inferred from numbering.
 
 The remote control plane remains bounded to the read-only task classes `status`, `inspect`, `plan`, `diff`, and `quality_verify`. AUTO-0018 hardened that plane with deterministic failure taxonomy, bounded diagnostics, read retry/backoff, low-noise transport observability, and non-mutating stale-workspace guidance.
 
@@ -116,6 +117,8 @@ AUTO-0019 adds bounded terminal recovery for aged unresolved claims. Recovery pe
 AUTO-0020 introduced the strict typed canonical project-state manifest and deterministic offline/read-only coherence validator. AUTO-0021 document-set v2 governs exactly `README.md` plus the historical six canonical documents under `docs/`, with README first in validation order. Document-set v1 retains exact six-document compatibility; the validator checks strict markers and does not interpret narrative prose.
 
 AUTO-0021 terminal closure merged as exact `master` `3e3c2b32d0caf677d55be9f090d4a1d236716e42`, confirmed by pre-merge Quality #417 and push-triggered Quality #418.
+
+AUTO-0022 issue-body update evidence merged as exact `master` `d541d751828d9d95a828799b4e3f0345c396b103`, confirmed by pre-merge Quality #423 and push-triggered Quality #424. The issue body exactly matches the approved artifact with SHA-256 `c99ffa0b885926a64db30c451eeb910ad5dc9b6449f1c4833908d94c43dc859e`.
 
 The current automation scope does not authorize new remote write/apply task classes, automatic repository or documentation repair, workflow rerun/cancel/dispatch, service-control mutation, credential mutation, deployment/publication/release changes, or expanded OpenCode authority.
 
