@@ -1,7 +1,7 @@
 # AI-Engineering Roadmap
 
 <!-- canonical-project-state
-{"schema_version":2,"completed_through":"AUTO-0021","active_milestone":null,"active_stage":null,"active_state":"QUIESCENT"}
+{"schema_version":2,"completed_through":"AUTO-0021","active_milestone":"AUTO-0022","active_stage":"AUTO-0022-01","active_state":"DESIGN_ACTIVE"}
 -->
 
 ## Completed / Verified
@@ -112,8 +112,8 @@ AUTO-0020-06 audit merged through PR #196 as exact `master`
 
 ## Current Priority
 
-No next milestone is approved or active. Preserve schema v2/document-set v2
-`QUIESCENT` state until a successor is separately designed and approved.
+Complete AUTO-0022-01 design through the normal exact gates. Do not mutate
+issue #130 before the exact desired-body artifact and guarded plan are gated.
 
 ## AUTO-0021 — Repository Landing State Coherence
 
@@ -136,3 +136,21 @@ Delivery stages:
 
 The open control issue #130 is an external operational surface and is excluded
 from this offline repository-byte milestone.
+
+## AUTO-0022 — GitHub Control Surface Coherence
+
+**Status:** DESIGN ACTIVE
+
+The fresh audit confirmed that issue #130 lists four read-only task classes,
+while the verified protocol also supports exact-head `quality_verify` and the
+public body predates AUTO-0019 no-replay recovery.
+
+AUTO-0022 reconciles exactly that issue body without changing protocol,
+runtime, task authority, other issue fields, or any other GitHub surface.
+
+Delivery stages:
+
+1. AUTO-0022-01 — design, exact target, and drift audit: ACTIVE.
+2. AUTO-0022-02 — exact desired body and guarded mutation plan: PENDING.
+3. AUTO-0022-03 — body-only update and post-write evidence: PENDING.
+4. AUTO-0022-04 — final cross-surface audit and closure: PENDING.

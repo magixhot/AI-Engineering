@@ -1,7 +1,7 @@
 # AI-Engineering
 
 <!-- canonical-project-state
-{"schema_version":2,"completed_through":"AUTO-0021","active_milestone":null,"active_stage":null,"active_state":"QUIESCENT","release_line":"v0.2.0"}
+{"schema_version":2,"completed_through":"AUTO-0021","active_milestone":"AUTO-0022","active_stage":"AUTO-0022-01","active_state":"DESIGN_ACTIVE","release_line":"v0.2.0"}
 -->
 
 **Status:** Active
@@ -105,9 +105,9 @@ This document contains everything required to restore the current project contex
 
 Current phase:
 
-**No active milestone — terminal QUIESCENT state**
+**AUTO-0022-01 GitHub control-surface coherence design**
 
-AUTO-0001 through AUTO-0021 are COMPLETE / VERIFIED for their approved scopes. No successor milestone or stage is approved or active; AUTO-0022 is not inferred from numbering.
+AUTO-0001 through AUTO-0021 are COMPLETE / VERIFIED for their approved scopes. AUTO-0022-01 is the only active stage and adds design/audit evidence only.
 
 The remote control plane remains bounded to the read-only task classes `status`, `inspect`, `plan`, `diff`, and `quality_verify`. AUTO-0018 hardened that plane with deterministic failure taxonomy, bounded diagnostics, read retry/backoff, low-noise transport observability, and non-mutating stale-workspace guidance.
 
@@ -115,7 +115,7 @@ AUTO-0019 adds bounded terminal recovery for aged unresolved claims. Recovery pe
 
 AUTO-0020 introduced the strict typed canonical project-state manifest and deterministic offline/read-only coherence validator. AUTO-0021 document-set v2 governs exactly `README.md` plus the historical six canonical documents under `docs/`, with README first in validation order. Document-set v1 retains exact six-document compatibility; the validator checks strict markers and does not interpret narrative prose.
 
-AUTO-0021 final reconciliation merged as exact `master` `965e2722ee9d232d526e716edbdabd6d9f8a0197`, confirmed by pre-merge Quality #415 and push-triggered Quality #416.
+AUTO-0021 terminal closure merged as exact `master` `3e3c2b32d0caf677d55be9f090d4a1d236716e42`, confirmed by pre-merge Quality #417 and push-triggered Quality #418.
 
 The current automation scope does not authorize new remote write/apply task classes, automatic repository or documentation repair, workflow rerun/cancel/dispatch, service-control mutation, credential mutation, deployment/publication/release changes, or expanded OpenCode authority.
 
