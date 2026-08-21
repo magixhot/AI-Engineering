@@ -1,5 +1,9 @@
 # AI-Engineering
 
+<!-- canonical-project-state
+{"schema_version":1,"completed_through":"AUTO-0019","active_milestone":"AUTO-0020","release_line":"v0.2.0"}
+-->
+
 ## Project Purpose
 
 AI-Engineering is the engineering platform for the AI Infrastructure ecosystem. Its primary

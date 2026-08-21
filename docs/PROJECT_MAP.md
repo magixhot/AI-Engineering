@@ -1,5 +1,9 @@
 # AI-Engineering
 
+<!-- canonical-project-state
+{"schema_version":1,"completed_through":"AUTO-0019","active_milestone":"AUTO-0020"}
+-->
+
 ## Repository Structure
 
 ```text

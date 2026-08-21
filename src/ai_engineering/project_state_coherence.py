@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import sys
 from dataclasses import dataclass
 from enum import Enum
 from pathlib import Path
@@ -232,3 +233,24 @@ def serialize_coherence_report(report: CoherenceReport) -> str:
         sort_keys=True,
         separators=(",", ":"),
     )
+
+
+def main(argv: list[str] | None = None) -> int:
+    """Run the offline coherence gate for one repository root."""
+
+    arguments = sys.argv[1:] if argv is None else argv
+    if len(arguments) > 1:
+        print(
+            '{"coherent":false,"issues":[{"path":"docs/'
+            'CANONICAL_PROJECT_STATE.json","reason":"invalid_arguments"}]}',
+            file=sys.stderr,
+        )
+        return 2
+    repository_root = Path(arguments[0] if arguments else ".")
+    report = validate_project_state_coherence(repository_root)
+    print(serialize_coherence_report(report))
+    return 0 if report.coherent else 1
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
