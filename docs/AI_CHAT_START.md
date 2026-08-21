@@ -1,7 +1,7 @@
 # AI-Engineering
 
 <!-- canonical-project-state
-{"schema_version":2,"completed_through":"AUTO-0020","active_milestone":"AUTO-0021","active_stage":"AUTO-0021-03","active_state":"EVIDENCE_ACTIVE"}
+{"schema_version":2,"completed_through":"AUTO-0020","active_milestone":"AUTO-0021","active_stage":"AUTO-0021-04","active_state":"FINAL_RECONCILIATION_ACTIVE"}
 -->
 
 ## Chat Bootstrap
@@ -25,7 +25,9 @@ Continue from `CURRENT_STATUS.md`; its marker and current-state section are auth
 The foundations and AUTO-0001 through AUTO-0020 are COMPLETE / VERIFIED for
 their approved scopes. AUTO-0021-01 is COMPLETE / VERIFIED. AUTO-0021-02
 document-set v2 / README marker implementation is COMPLETE / VERIFIED.
-AUTO-0021-03 README narrative reconciliation is the only active stage.
+AUTO-0021-03 README narrative reconciliation is COMPLETE / VERIFIED.
+AUTO-0021-04 final reconciliation / next-surface audit is the only active
+stage.
 
 The verified AUTO-0019 closure baseline is exact `master`
 `c287e5cceef4e72148de7674f4095fedb78bd302`, confirmed by push-triggered
@@ -39,6 +41,10 @@ AUTO-0021-02 merged through PR #199 as exact `master`
 `8363f50e86470092cdccf116e8dc00dcc8f9d43c` after pre-merge Quality #411
 and push-triggered Quality #412.
 
+AUTO-0021-03 merged through PR #200 as exact `master`
+`ad30d3155ee1561e0c6e37c3e4ffd5996b55dd72` after pre-merge Quality #413
+and push-triggered Quality #414.
+
 ## Milestone State
 
 ```text
@@ -50,8 +56,8 @@ AUTO-0020-05 canonical document reconciliation       COMPLETE / VERIFIED
 AUTO-0020-06 final reconciliation/next audit          COMPLETE / VERIFIED
 AUTO-0021-01 landing coherence design                 COMPLETE / VERIFIED
 AUTO-0021-02 document-set v2 / README marker          COMPLETE / VERIFIED
-AUTO-0021-03 README narrative reconciliation          ACTIVE
-AUTO-0021-04 final audit                              PENDING
+AUTO-0021-03 README narrative reconciliation          COMPLETE / VERIFIED
+AUTO-0021-04 final audit                              ACTIVE
 ```
 
 Read `AUTO-0020_CANONICAL_PROJECT_STATE_DOCUMENTATION_COHERENCE_GATE_DESIGN.md`,
@@ -83,9 +89,9 @@ and does not execute or re-execute a claimed request.
 
 ## Current Priority
 
-Complete AUTO-0021-03 README narrative reconciliation through exact PR-head
-Quality, expected-head-protected merge, and exact post-merge `master` Quality.
-Do not begin final audit stage -04 before that gate succeeds.
+Complete AUTO-0021-04 final reconciliation through exact PR-head Quality,
+expected-head-protected merge, and exact post-merge `master` Quality. Do not
+infer or start AUTO-0022 from numbering alone.
 
 ## General Engineering Guardrails
 

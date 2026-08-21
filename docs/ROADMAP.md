@@ -1,7 +1,7 @@
 # AI-Engineering Roadmap
 
 <!-- canonical-project-state
-{"schema_version":2,"completed_through":"AUTO-0020","active_milestone":"AUTO-0021","active_stage":"AUTO-0021-03","active_state":"EVIDENCE_ACTIVE"}
+{"schema_version":2,"completed_through":"AUTO-0020","active_milestone":"AUTO-0021","active_stage":"AUTO-0021-04","active_state":"FINAL_RECONCILIATION_ACTIVE"}
 -->
 
 ## Completed / Verified
@@ -112,12 +112,12 @@ AUTO-0020-06 audit merged through PR #196 as exact `master`
 
 ## Current Priority
 
-Complete AUTO-0021-03 README narrative reconciliation / landing evidence
-through the normal exact gates. Do not begin final audit before that succeeds.
+Complete AUTO-0021-04 final reconciliation / next-surface audit through the
+normal exact gates. Do not infer or start AUTO-0022 from numbering alone.
 
 ## AUTO-0021 — Repository Landing State Coherence
 
-**Status:** EVIDENCE ACTIVE
+**Status:** FINAL RECONCILIATION ACTIVE
 
 The fresh post-AUTO-0020 audit found that `README.md` is read first during
 bootstrap and is the public GitHub landing page, but it was outside the strict
@@ -131,8 +131,8 @@ Delivery stages:
 
 1. AUTO-0021-01 — design/contract and audit evidence: COMPLETE / VERIFIED.
 2. AUTO-0021-02 — document-set v2, README marker, compatibility/failure tests: COMPLETE / VERIFIED.
-3. AUTO-0021-03 — README narrative reconciliation and landing evidence: ACTIVE.
-4. AUTO-0021-04 — final reconciliation and next-surface audit: PENDING.
+3. AUTO-0021-03 — README narrative reconciliation and landing evidence: COMPLETE / VERIFIED.
+4. AUTO-0021-04 — final reconciliation and next-surface audit: ACTIVE.
 
 The open control issue #130 is an external operational surface and is excluded
 from this offline repository-byte milestone.
