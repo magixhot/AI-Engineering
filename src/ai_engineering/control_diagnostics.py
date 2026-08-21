@@ -24,6 +24,9 @@ class ControlFailureKind(str, Enum):
     EXECUTOR_FAILURE = "executor_failure"
     QUALITY_VERIFICATION_FAILURE = "quality_verification_failure"
     CLAIM_RECOVERY_REQUIRED = "claim_recovery_required"
+    CLAIM_RECOVERY_PUBLICATION_AMBIGUOUS = (
+        "claim_recovery_publication_ambiguous"
+    )
     SUCCESS = "success"
 
 
