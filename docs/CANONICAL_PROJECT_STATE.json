@@ -2,8 +2,8 @@
   "schema_version": 2,
   "completed_through": "AUTO-0020",
   "active_milestone": "AUTO-0021",
-  "active_stage": "AUTO-0021-03",
-  "active_state": "EVIDENCE_ACTIVE",
+  "active_stage": "AUTO-0021-04",
+  "active_state": "FINAL_RECONCILIATION_ACTIVE",
   "release_line": "v0.2.0",
   "document_set_version": 2,
   "document_projections": {

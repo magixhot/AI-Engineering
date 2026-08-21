@@ -1,7 +1,7 @@
 # AI-Engineering — Master Documentation Index
 
 <!-- canonical-project-state
-{"schema_version":2,"completed_through":"AUTO-0020","active_milestone":"AUTO-0021","active_stage":"AUTO-0021-03","active_state":"EVIDENCE_ACTIVE"}
+{"schema_version":2,"completed_through":"AUTO-0020","active_milestone":"AUTO-0021","active_stage":"AUTO-0021-04","active_state":"FINAL_RECONCILIATION_ACTIVE"}
 -->
 
 ## Canonical Project Documents
@@ -36,7 +36,8 @@
 | AUTO-0020_06_FINAL_RECONCILIATION_NEXT_MILESTONE_AUDIT.md | Final coherence closure and terminal-state modeling audit | Complete / Verified |
 | AUTO-0020_TERMINAL_QUIESCENT_STATE_EXTENSION.md | Schema v2 terminal state without an active successor | Current contract |
 | AUTO-0021_REPOSITORY_LANDING_STATE_COHERENCE_DESIGN.md | Exact README extension of the canonical document set | Current contract |
-| AUTO-0021_03_README_NARRATIVE_RECONCILIATION_EVIDENCE.md | README landing claims and preserved boundaries | Active evidence |
+| AUTO-0021_03_README_NARRATIVE_RECONCILIATION_EVIDENCE.md | README landing claims and preserved boundaries | Complete / Verified |
+| AUTO-0021_04_FINAL_RECONCILIATION_NEXT_SURFACE_AUDIT.md | Repository-byte closure and external next-surface audit | Active evidence |
 
 ## Engineering State
 
@@ -47,7 +48,8 @@
 | AUTO-0001 through AUTO-0020 | COMPLETE / VERIFIED |
 | AUTO-0021-01 Repository Landing State Coherence Design | COMPLETE / VERIFIED |
 | AUTO-0021-02 Document-Set v2 / README Marker | COMPLETE / VERIFIED |
-| AUTO-0021-03 README Narrative Reconciliation | ACTIVE |
+| AUTO-0021-03 README Narrative Reconciliation | COMPLETE / VERIFIED |
+| AUTO-0021-04 Final Reconciliation / Next-Surface Audit | ACTIVE |
 
 ## AUTO-0020 Delivery Evidence
 
@@ -89,5 +91,6 @@ repository mutation authority.
 
 AUTO-0021-01 is COMPLETE / VERIFIED through PR #198 and Quality #409/#410.
 AUTO-0021-02 is COMPLETE / VERIFIED through PR #199 and Quality #411/#412.
-Complete AUTO-0021-03 exact gates, then continue only with the approved final
-audit scope.
+AUTO-0021-03 is COMPLETE / VERIFIED through PR #200 and Quality #413/#414.
+Complete AUTO-0021-04 exact gates, then perform only the narrow terminal
+`QUIESCENT` transition unless a successor is separately approved.

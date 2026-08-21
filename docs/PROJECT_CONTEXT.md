@@ -86,7 +86,9 @@ AUTO-0021-01 merged through PR #198 as exact `master`
 `8121e3d1b2b38c4088e32a7128c58686e459542a` after Quality #409/#410.
 AUTO-0021-02 merged through PR #199 as exact `master`
 `8363f50e86470092cdccf116e8dc00dcc8f9d43c` after Quality #411/#412.
-AUTO-0021-03 is the active evidence stage.
+AUTO-0021-03 merged through PR #200 as exact `master`
+`ad30d3155ee1561e0c6e37c3e4ffd5996b55dd72` after Quality #413/#414.
+AUTO-0021-04 is the active final-reconciliation stage.
 
 Document-set v2 adds only repository-root `README.md` to the exact governed
 set while document-set v1 retains its historical six-document compatibility.

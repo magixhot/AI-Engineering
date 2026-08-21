@@ -1,7 +1,7 @@
 # AI-Engineering — Current Status
 
 <!-- canonical-project-state
-{"schema_version":2,"completed_through":"AUTO-0020","active_milestone":"AUTO-0021","active_stage":"AUTO-0021-03","active_state":"EVIDENCE_ACTIVE","release_line":"v0.2.0"}
+{"schema_version":2,"completed_through":"AUTO-0020","active_milestone":"AUTO-0021","active_stage":"AUTO-0021-04","active_state":"FINAL_RECONCILIATION_ACTIVE","release_line":"v0.2.0"}
 -->
 
 **Snapshot date:** 2026-08-21
@@ -14,14 +14,14 @@
 
 **Current milestone:** AUTO-0021 — Repository Landing State Coherence
 
-**Active stage:** AUTO-0021-03 — README Narrative Reconciliation
+**Active stage:** AUTO-0021-04 — Final Reconciliation / Next-Surface Audit
 
 ## Authoritative State
 
 The MCP/SDK/tooling/release/safety foundations and AUTO-0001 through AUTO-0020
 are COMPLETE / VERIFIED for their approved scopes. AUTO-0021-01 is also
 COMPLETE / VERIFIED. AUTO-0021-02 is COMPLETE / VERIFIED. AUTO-0021-03 is the
-only active stage.
+also COMPLETE / VERIFIED. AUTO-0021-04 is the only active stage.
 
 AUTO-0019 closed on exact `master`
 `c287e5cceef4e72148de7674f4095fedb78bd302`. Push-triggered Quality #394
@@ -54,8 +54,13 @@ current state.
 |---|---|
 | AUTO-0021-01 Design / Contract | COMPLETE / VERIFIED — PR #198; Quality #409/#410; merged `8121e3d1b2b38c4088e32a7128c58686e459542a`. |
 | AUTO-0021-02 Document-Set v2 / README Marker | COMPLETE / VERIFIED — PR #199; Quality #411/#412; merged `8363f50e86470092cdccf116e8dc00dcc8f9d43c`. |
-| AUTO-0021-03 README Narrative Reconciliation | ACTIVE |
-| AUTO-0021-04 Final Audit | PENDING |
+| AUTO-0021-03 README Narrative Reconciliation | COMPLETE / VERIFIED — PR #200; Quality #413/#414; merged `ad30d3155ee1561e0c6e37c3e4ffd5996b55dd72`. |
+| AUTO-0021-04 Final Audit | ACTIVE |
+
+The final audit finds no remaining repository-byte landing contradiction.
+Open issue #130 remains a separately governed external surface with a stale
+task-class list; AUTO-0021 does not authorize mutating it. No AUTO-0022 scope
+is approved.
 
 ## Coherence Contract
 
@@ -107,5 +112,5 @@ not approved and not published.
 
 ## Current Priority
 
-Complete AUTO-0021-03 exact gates. Final audit remains stage -04; external
-control issue #130 remains a separate future decision.
+Complete AUTO-0021-04 exact gates. External control issue #130 remains a
+separate future decision; no AUTO-0022 is approved.
