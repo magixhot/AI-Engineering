@@ -112,8 +112,9 @@ services, or expand reconciliation/OpenCode authority.
   COMPLETE / VERIFIED.
 - AUTO-0021-01 repository landing-state coherence design:
   COMPLETE / VERIFIED.
-- AUTO-0021-02 document-set v2 / README marker: ACTIVE.
-- AUTO-0021-03 through AUTO-0021-04: PENDING.
+- AUTO-0021-02 document-set v2 / README marker: COMPLETE / VERIFIED.
+- AUTO-0021-03 README narrative reconciliation: ACTIVE.
+- AUTO-0021-04 final audit: PENDING.
 
 AUTO-0019 closed at exact `master`
 `c287e5cceef4e72148de7674f4095fedb78bd302` through Quality #394.

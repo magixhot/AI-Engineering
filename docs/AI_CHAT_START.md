@@ -1,7 +1,7 @@
 # AI-Engineering
 
 <!-- canonical-project-state
-{"schema_version":2,"completed_through":"AUTO-0020","active_milestone":"AUTO-0021","active_stage":"AUTO-0021-02","active_state":"IMPLEMENTATION_ACTIVE"}
+{"schema_version":2,"completed_through":"AUTO-0020","active_milestone":"AUTO-0021","active_stage":"AUTO-0021-03","active_state":"EVIDENCE_ACTIVE"}
 -->
 
 ## Chat Bootstrap
@@ -24,7 +24,8 @@ Continue from `CURRENT_STATUS.md`; its marker and current-state section are auth
 
 The foundations and AUTO-0001 through AUTO-0020 are COMPLETE / VERIFIED for
 their approved scopes. AUTO-0021-01 is COMPLETE / VERIFIED. AUTO-0021-02
-document-set v2 / README marker implementation is the only active stage.
+document-set v2 / README marker implementation is COMPLETE / VERIFIED.
+AUTO-0021-03 README narrative reconciliation is the only active stage.
 
 The verified AUTO-0019 closure baseline is exact `master`
 `c287e5cceef4e72148de7674f4095fedb78bd302`, confirmed by push-triggered
@@ -33,6 +34,10 @@ Quality #394 (run id `32484748127`).
 AUTO-0020 terminal state merged through PR #197 as exact `master`
 `c72c79a477de630f50532a454e11d513e9727a79` after pre-merge Quality #407
 and push-triggered Quality #408.
+
+AUTO-0021-02 merged through PR #199 as exact `master`
+`8363f50e86470092cdccf116e8dc00dcc8f9d43c` after pre-merge Quality #411
+and push-triggered Quality #412.
 
 ## Milestone State
 
@@ -44,8 +49,8 @@ AUTO-0020-04 Quality integration/failure coverage    COMPLETE / VERIFIED
 AUTO-0020-05 canonical document reconciliation       COMPLETE / VERIFIED
 AUTO-0020-06 final reconciliation/next audit          COMPLETE / VERIFIED
 AUTO-0021-01 landing coherence design                 COMPLETE / VERIFIED
-AUTO-0021-02 document-set v2 / README marker          ACTIVE
-AUTO-0021-03 README narrative reconciliation          PENDING
+AUTO-0021-02 document-set v2 / README marker          COMPLETE / VERIFIED
+AUTO-0021-03 README narrative reconciliation          ACTIVE
 AUTO-0021-04 final audit                              PENDING
 ```
 
@@ -78,9 +83,9 @@ and does not execute or re-execute a claimed request.
 
 ## Current Priority
 
-Complete AUTO-0021-02 through exact PR-head Quality,
-expected-head-protected merge, and exact post-merge `master` Quality. Do not
-reconcile README narrative before stage -03.
+Complete AUTO-0021-03 README narrative reconciliation through exact PR-head
+Quality, expected-head-protected merge, and exact post-merge `master` Quality.
+Do not begin final audit stage -04 before that gate succeeds.
 
 ## General Engineering Guardrails
 
