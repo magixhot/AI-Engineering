@@ -1,27 +1,26 @@
 # AI-Engineering — Current Status
 
 <!-- canonical-project-state
-{"schema_version":2,"completed_through":"AUTO-0020","active_milestone":"AUTO-0021","active_stage":"AUTO-0021-04","active_state":"FINAL_RECONCILIATION_ACTIVE","release_line":"v0.2.0"}
+{"schema_version":2,"completed_through":"AUTO-0021","active_milestone":null,"active_stage":null,"active_state":"QUIESCENT","release_line":"v0.2.0"}
 -->
 
 **Snapshot date:** 2026-08-21
 
-**Status:** ACTIVE
+**Status:** QUIESCENT
 
 **Release line:** v0.2.0 (immutable historical release boundary)
 
-**Completed through:** AUTO-0020
+**Completed through:** AUTO-0021
 
-**Current milestone:** AUTO-0021 — Repository Landing State Coherence
+**Current milestone:** None
 
-**Active stage:** AUTO-0021-04 — Final Reconciliation / Next-Surface Audit
+**Active stage:** None
 
 ## Authoritative State
 
-The MCP/SDK/tooling/release/safety foundations and AUTO-0001 through AUTO-0020
-are COMPLETE / VERIFIED for their approved scopes. AUTO-0021-01 is also
-COMPLETE / VERIFIED. AUTO-0021-02 is COMPLETE / VERIFIED. AUTO-0021-03 is the
-also COMPLETE / VERIFIED. AUTO-0021-04 is the only active stage.
+The MCP/SDK/tooling/release/safety foundations and AUTO-0001 through AUTO-0021
+are COMPLETE / VERIFIED for their approved scopes. No successor milestone or
+stage is approved or active.
 
 AUTO-0019 closed on exact `master`
 `c287e5cceef4e72148de7674f4095fedb78bd302`. Push-triggered Quality #394
@@ -55,7 +54,7 @@ current state.
 | AUTO-0021-01 Design / Contract | COMPLETE / VERIFIED — PR #198; Quality #409/#410; merged `8121e3d1b2b38c4088e32a7128c58686e459542a`. |
 | AUTO-0021-02 Document-Set v2 / README Marker | COMPLETE / VERIFIED — PR #199; Quality #411/#412; merged `8363f50e86470092cdccf116e8dc00dcc8f9d43c`. |
 | AUTO-0021-03 README Narrative Reconciliation | COMPLETE / VERIFIED — PR #200; Quality #413/#414; merged `ad30d3155ee1561e0c6e37c3e4ffd5996b55dd72`. |
-| AUTO-0021-04 Final Audit | ACTIVE |
+| AUTO-0021-04 Final Audit | COMPLETE / VERIFIED — PR #201; Quality #415/#416; merged `965e2722ee9d232d526e716edbdabd6d9f8a0197`. |
 
 The final audit finds no remaining repository-byte landing contradiction.
 Open issue #130 remains a separately governed external surface with a stale
@@ -112,5 +111,6 @@ not approved and not published.
 
 ## Current Priority
 
-Complete AUTO-0021-04 exact gates. External control issue #130 remains a
+Preserve schema v2/document-set v2 `QUIESCENT` state until a successor is
+separately designed and approved. External control issue #130 remains a
 separate future decision; no AUTO-0022 is approved.

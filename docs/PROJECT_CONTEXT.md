@@ -1,7 +1,7 @@
 # AI-Engineering
 
 <!-- canonical-project-state
-{"schema_version":2,"completed_through":"AUTO-0020","active_milestone":"AUTO-0021","release_line":"v0.2.0"}
+{"schema_version":2,"completed_through":"AUTO-0021","active_milestone":null,"release_line":"v0.2.0"}
 -->
 
 ## Project Purpose
@@ -47,10 +47,10 @@ AUTO-0019 recovery does not call either path.
 
 ## Current Objectives
 
-- Preserve all completed foundations and AUTO-0001 through AUTO-0020 within
+- Preserve all completed foundations and AUTO-0001 through AUTO-0021 within
   their approved authority boundaries.
-- Complete AUTO-0021 design-first extension of the strict document set to
-  repository-root `README.md` without adding generic prose parsing.
+- Preserve schema v2/document-set v2 `QUIESCENT` state while no successor is
+  approved.
 - Keep `docs/CANONICAL_PROJECT_STATE.json` strict, minimal, and typed.
 - Keep coherence validation deterministic, offline, read-only, fail-closed,
   and limited to declared document projections.
@@ -88,7 +88,9 @@ AUTO-0021-02 merged through PR #199 as exact `master`
 `8363f50e86470092cdccf116e8dc00dcc8f9d43c` after Quality #411/#412.
 AUTO-0021-03 merged through PR #200 as exact `master`
 `ad30d3155ee1561e0c6e37c3e4ffd5996b55dd72` after Quality #413/#414.
-AUTO-0021-04 is the active final-reconciliation stage.
+AUTO-0021-04 merged through PR #201 as exact `master`
+`965e2722ee9d232d526e716edbdabd6d9f8a0197` after Quality #415/#416.
+AUTO-0021 is COMPLETE / VERIFIED and no successor is active.
 
 Document-set v2 adds only repository-root `README.md` to the exact governed
 set while document-set v1 retains its historical six-document compatibility.

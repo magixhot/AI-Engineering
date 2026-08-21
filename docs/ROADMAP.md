@@ -1,16 +1,16 @@
 # AI-Engineering Roadmap
 
 <!-- canonical-project-state
-{"schema_version":2,"completed_through":"AUTO-0020","active_milestone":"AUTO-0021","active_stage":"AUTO-0021-04","active_state":"FINAL_RECONCILIATION_ACTIVE"}
+{"schema_version":2,"completed_through":"AUTO-0021","active_milestone":null,"active_stage":null,"active_state":"QUIESCENT"}
 -->
 
 ## Completed / Verified
 
 The documentation foundation, MCP foundation, SDK-0001, TOOL-0001,
 REL-0001/REL-0002/REL-0003, CI-0001, SAFE-0001/SAFE-0002, and AUTO-0001
-through AUTO-0020 are COMPLETE / VERIFIED for their approved scopes.
+through AUTO-0021 are COMPLETE / VERIFIED for their approved scopes.
 
-Established automation boundaries remain layered and unchanged: AUTO-0007 is the permanent read-only reconciliation planner; AUTO-0008 is the guarded one-step apply boundary; AUTO-0009 is bounded multi-step orchestration; AUTO-0010 is the restrictive policy gate; AUTO-0011 is the optional explicit single-candidate approval gate; AUTO-0012 adds deterministic execution evidence; AUTO-0013 adds bounded read-only remote inspection/control transport; AUTO-0014 adds local worker lifecycle supervision; AUTO-0015 adds exact post-merge Quality verification; AUTO-0016 adds portable workstation bootstrap/doctor behavior plus the narrow read-only Quality relay; AUTO-0017 reconciles canonical project state/roadmap documentation with the verified implementation state; AUTO-0018 hardens reliability/observability of the existing read-only control plane; and AUTO-0019 adds bounded terminal recovery for aged unresolved claims without replaying their requests.
+Established automation boundaries remain layered and unchanged: AUTO-0007 is the permanent read-only reconciliation planner; AUTO-0008 is the guarded one-step apply boundary; AUTO-0009 is bounded multi-step orchestration; AUTO-0010 is the restrictive policy gate; AUTO-0011 is the optional explicit single-candidate approval gate; AUTO-0012 adds deterministic execution evidence; AUTO-0013 adds bounded read-only remote inspection/control transport; AUTO-0014 adds local worker lifecycle supervision; AUTO-0015 adds exact post-merge Quality verification; AUTO-0016 adds portable workstation bootstrap/doctor behavior plus the narrow read-only Quality relay; AUTO-0017 reconciles canonical project state/roadmap documentation with the verified implementation state; AUTO-0018 hardens reliability/observability of the existing read-only control plane; AUTO-0019 adds bounded terminal recovery for aged unresolved claims without replaying their requests; AUTO-0020 adds offline canonical-state coherence; and AUTO-0021 extends that exact contract to the repository landing README.
 
 ## AUTO-0014 — Local Control Worker Service / Lifecycle
 
@@ -112,12 +112,12 @@ AUTO-0020-06 audit merged through PR #196 as exact `master`
 
 ## Current Priority
 
-Complete AUTO-0021-04 final reconciliation / next-surface audit through the
-normal exact gates. Do not infer or start AUTO-0022 from numbering alone.
+No next milestone is approved or active. Preserve schema v2/document-set v2
+`QUIESCENT` state until a successor is separately designed and approved.
 
 ## AUTO-0021 — Repository Landing State Coherence
 
-**Status:** FINAL RECONCILIATION ACTIVE
+**Status:** COMPLETE / VERIFIED
 
 The fresh post-AUTO-0020 audit found that `README.md` is read first during
 bootstrap and is the public GitHub landing page, but it was outside the strict
@@ -132,7 +132,7 @@ Delivery stages:
 1. AUTO-0021-01 — design/contract and audit evidence: COMPLETE / VERIFIED.
 2. AUTO-0021-02 — document-set v2, README marker, compatibility/failure tests: COMPLETE / VERIFIED.
 3. AUTO-0021-03 — README narrative reconciliation and landing evidence: COMPLETE / VERIFIED.
-4. AUTO-0021-04 — final reconciliation and next-surface audit: ACTIVE.
+4. AUTO-0021-04 — final reconciliation and next-surface audit: COMPLETE / VERIFIED.
 
 The open control issue #130 is an external operational surface and is excluded
 from this offline repository-byte milestone.
