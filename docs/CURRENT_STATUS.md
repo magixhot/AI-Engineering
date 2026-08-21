@@ -1,65 +1,89 @@
 # AI-Engineering — Current Status
 
 <!-- canonical-project-state
-{"schema_version":1,"completed_through":"AUTO-0019","active_milestone":"AUTO-0020","active_stage":"AUTO-0020-04","active_state":"IMPLEMENTATION_ACTIVE","release_line":"v0.2.0"}
+{"schema_version":1,"completed_through":"AUTO-0019","active_milestone":"AUTO-0020","active_stage":"AUTO-0020-05","active_state":"IMPLEMENTATION_ACTIVE","release_line":"v0.2.0"}
 -->
 
-**Snapshot date:** 2026-08-19  
-**Status:** ACTIVE  
-**Release line:** 0.2.0  
-**Current milestone:** AUTO-0014 — Local Control Worker Service / Lifecycle  
-**Active stage:** AUTO-0014-06 — Final Evidence / Documentation Reconciliation
+**Snapshot date:** 2026-08-21
+
+**Status:** ACTIVE
+
+**Release line:** v0.2.0 (immutable historical release boundary)
+
+**Completed through:** AUTO-0019
+
+**Current milestone:** AUTO-0020 — Canonical Project-State Documentation Coherence Gate
+
+**Active stage:** AUTO-0020-05 — Canonical Document Reconciliation / Repository-Wide Evidence
 
 ## Authoritative State
 
-AUTO-0001 through AUTO-0013 are COMPLETE / VERIFIED for their approved scopes. AUTO-0014 stages 01 through 05 are COMPLETE / VERIFIED; AUTO-0014-06 is the only active stage.
+The MCP/SDK/tooling/release/safety foundations and AUTO-0001 through AUTO-0019
+are COMPLETE / VERIFIED for their approved scopes. AUTO-0020 stages 01 through
+04 are COMPLETE / VERIFIED. AUTO-0020-05 is the only active stage.
+
+AUTO-0019 closed on exact `master`
+`c287e5cceef4e72148de7674f4095fedb78bd302`. Push-triggered Quality #394
+(run id `32484748127`) completed successfully for that exact SHA.
+
+## AUTO-0020 Delivery State
 
 | Stage | State | Evidence |
 |---|---|---|
-| AUTO-0014-01 Local Worker Service Design / Contract | COMPLETE / VERIFIED | PR #137; pre-merge and exact post-merge Quality SUCCESS. |
-| AUTO-0014-02 Typed Runtime / Service Configuration | COMPLETE / VERIFIED | PR #138; pre-merge and exact post-merge Quality SUCCESS. |
-| AUTO-0014-03 Single-Instance Worker Lifecycle | COMPLETE / VERIFIED | PR #139; pre-merge and exact post-merge Quality SUCCESS. |
-| AUTO-0014-04 User Service Integration | COMPLETE / VERIFIED | PR #140; pre-merge and exact post-merge Quality SUCCESS. |
-| AUTO-0014-05 Installed Local-Service Verification | COMPLETE / VERIFIED | PR #143; Quality #302 SUCCESS; merged master `58e0b3c6cd5393386ad97871aa34f6fd9e4fef47`; exact post-merge Quality SUCCESS. |
-| AUTO-0014-06 Final Evidence / Documentation Reconciliation | ACTIVE | Final documentation gate in progress. |
+| AUTO-0020-01 Design / Contract | COMPLETE / VERIFIED | PR #191; Quality #395/#396; merged `84a8019457720554831e71d05e0b8ade7ca2d0db`. |
+| AUTO-0020-02 Typed Manifest / Strict Parser | COMPLETE / VERIFIED | PR #192; Quality #397/#398; merged `85597fcc8e9acc0240330f31f6d9a904175d0e44`. |
+| AUTO-0020-03 Read-Only Cross-Document Validator | COMPLETE / VERIFIED | PR #193; Quality #399/#400; merged `a9abe654ee3f2b42bab3fd2684ac27be463dbb73`. |
+| AUTO-0020-04 Quality Integration / Failure Coverage | COMPLETE / VERIFIED | PR #194; Quality #401/#402; merged `e62f69d4db2f288bb072cfa38108d5872d5ebdb4`. |
+| AUTO-0020-05 Canonical Document Reconciliation / Repository-Wide Evidence | ACTIVE | Reconcile all six governed documents and prove the tracked set coherent. |
+| AUTO-0020-06 Final Reconciliation / Next-Milestone Audit | PENDING | Starts only after the -05 exact post-merge gate. |
 
-Corrective prerequisites within AUTO-0014-05 included PR #141 for hardened per-user runtime-directory integration and PR #142 for safe OpenCode execution-stage diagnostics. PR #142 merged as exact master `5b5b3b0ec1922685a594679ddebc199f28b6b8d5` and passed exact post-merge Quality before final installed-service verification continued.
+## Coherence Contract
 
-## Verified AUTO-0014 Installed-Service Evidence
+The typed source of current project state is
+`docs/CANONICAL_PROJECT_STATE.json`. It governs exactly:
 
-The installed user-scoped worker service was verified for restart, single-instance behavior, and repository invariants:
+- `docs/AI_CHAT_START.md`
+- `docs/PROJECT_CONTEXT.md`
+- `docs/PROJECT_MAP.md`
+- `docs/CURRENT_STATUS.md`
+- `docs/ROADMAP.md`
+- `docs/MASTER_INDEX.md`
 
-```text
-restart=PASS
-single-instance=PASS
-repository-invariants=PASS
-```
+Each document contains exactly one strict document-specific
+`canonical-project-state` marker. The offline validator rejects missing,
+duplicate, malformed, unknown, stale, or contradictory marker claims and emits
+only bounded repository-relative diagnostics. Quality runs it before Ruff,
+mypy, and pytest.
 
-Successful live request:
+The manifest/parser, validator, and Quality gate are read-only. They do not
+edit documentation, repair repositories, call GitHub, control services, or
+expand any execution authority.
 
-```text
-sha256:593eff3b7e76a65ec2399ea3988ae0895ea01c2bc608bb690bc62be46fe9baf7
-```
+## Preserved Control-Plane Boundaries
 
-Verified path:
+AUTO-0018 reliability and observability remain fail-closed and non-mutating.
+AUTO-0019 recovery preserves the visible claim as an execution fence. An aged
+unresolved claim may receive a separate terminal `claim_recovery_required`
+envelope only after immediate reinspection. Recovery never invokes
+executor/OpenCode/`quality_verify` and never executes or re-executes the
+claimed request.
 
-```text
-GitHub control issue
-  -> installed user-scoped worker service
-  -> localhost OpenCode server
-  -> dedicated read-only AUTO-0013 agent
-  -> AI-Engineering workspace
-  -> typed GitHub result
-```
+Remote task classes remain bounded to `status`, `inspect`, `plan`,
+`diff`, and `quality_verify`. No automatic repository synchronization,
+workflow mutation, credential mutation, service-control mutation,
+deployment/publication/release change, or broader OpenCode authority is
+authorized.
 
-The terminal result recorded `state=SUCCEEDED`, `branch=master`, exact HEAD `5b5b3b0ec1922685a594679ddebc199f28b6b8d5`, `pre_clean=true`, and `post_clean=true`.
+## Release Boundary
 
-## Authority Boundaries
-
-AUTO-0007 remains permanently read-only. AUTO-0008 remains the sole guarded one-step apply authority. AUTO-0009 remains bounded replan-between-writes orchestration. AUTO-0010 remains restriction-only policy. AUTO-0011 approval cannot grant mutation authority. AUTO-0012 remains deterministic execution evidence only. AUTO-0013 remains bounded read-only remote inspection/control transport and evidence. AUTO-0014 adds only local service lifecycle supervision for that existing worker.
-
-AUTO-0014 does not authorize file mutation, Git mutation, reconciliation apply/run mutation, arbitrary remote shell execution, publication, deployment, public OpenCode ingress, remote service control, request replay, or a second write path.
+Git tag `v0.2.0` and GitHub Release `AI-Engineering 0.2.0` remain the
+published historical boundary at exact candidate
+`1faf14c121b7b5da7c8781e3de4e836f85838a76`. Later AUTO milestones exist on
+`master` and are not retroactively inserted into that release. PyPI remains
+not approved and not published.
 
 ## Current Priority
 
-Finish the AUTO-0014-06 pre-merge/merge/exact-post-merge Quality gate. After AUTO-0014 closure, begin the already-approved design-first milestone for a read-only exact post-merge Quality verifier so future merge gates no longer require manual GitHub Actions confirmation. The verifier must fail closed and must not gain workflow mutation or repository mutation authority.
+Complete AUTO-0020-05 through repository-wide coherence evidence, exact
+PR-head Quality, expected-head-protected merge, and exact post-merge
+`master` push Quality. Do not start AUTO-0020-06 before that gate succeeds.

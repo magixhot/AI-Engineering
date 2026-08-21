@@ -6,106 +6,90 @@
 
 ## Project Purpose
 
-AI-Engineering is the engineering platform for the AI Infrastructure ecosystem. Its primary
-implementation is the Engineering MCP Server: a standards-based interface through which AI
-assistants can participate in engineering workflows.
+AI-Engineering is the engineering platform for the AI Infrastructure ecosystem.
+Its primary implementation is the Engineering MCP Server: a standards-based
+interface through which AI assistants can participate in engineering workflows.
 
 ## Current Architecture
 
-The official Python `mcp` SDK remains the protocol and server boundary. AI-Engineering preserves its
-internal Runtime and Registry architecture behind that boundary. The current verified architecture
-also includes a layered engineering-automation control plane:
+The official Python `mcp` SDK remains the protocol/server boundary. The
+internal Runtime and Registry architecture remains behind it. The verified
+platform includes:
 
-- MCP bootstrap, server integration, configuration, diagnostics, Runtime, Registry, Discovery, and
-  workspace/Git/Python tool subsystems;
-- STDIO entry point and IDE integration models/adapters;
-- SDK-0001 project templates, standalone Python scaffold, and installed project-create CLI;
-- AUTO-0001 through AUTO-0006 bounded project bootstrap, documentation, ownership, migration, and
-  safe-step inspection/planning capabilities;
-- AUTO-0007 permanent read-only engineering reconciliation planning;
+- MCP bootstrap, configuration, diagnostics, discovery, runtime, registry,
+  workspace, Git, Python, STDIO, and IDE integrations;
+- SDK-0001 project templates, standalone scaffold, and project-create CLI;
+- AUTO-0001 through AUTO-0006 bounded bootstrap, documentation, ownership,
+  migration, and safe-step inspection/planning;
+- AUTO-0007 read-only reconciliation planning;
 - AUTO-0008 guarded one-step apply;
 - AUTO-0009 bounded multi-step orchestration;
-- AUTO-0010 restrictive policy gating;
+- AUTO-0010 restriction-only policy;
 - AUTO-0011 optional explicit single-candidate approval;
-- AUTO-0012 deterministic execution receipts/evidence;
-- AUTO-0013 bounded remote read-only inspection/control transport through the GitHub control channel;
-- AUTO-0014 user-scoped local worker lifecycle supervision without expanding remote task authority;
-- AUTO-0015 deterministic exact post-merge Quality verification for the exact merged `master` SHA;
-- AUTO-0016 portable workstation bootstrap/doctor behavior plus the narrow read-only Quality relay;
-- AUTO-0017 canonical project-state/roadmap reconciliation with a fresh hardening audit;
-- AUTO-0018 typed control-plane diagnostics, bounded read resilience/observability, non-mutating stale-workspace diagnosis, and installed/E2E hardening evidence.
+- AUTO-0012 deterministic execution receipts;
+- AUTO-0013 bounded GitHub-channel read-only control transport;
+- AUTO-0014 user-scoped local worker lifecycle supervision;
+- AUTO-0015 deterministic exact post-merge Quality verification;
+- AUTO-0016 portable workstation bootstrap/doctor plus the narrow read-only
+  Quality relay;
+- AUTO-0017 canonical project-state reconciliation and hardening audit;
+- AUTO-0018 typed control-plane failures, bounded read resilience,
+  low-noise observability, and non-mutating stale-workspace diagnosis;
+- AUTO-0019 bounded no-replay terminal recovery for aged unresolved claims;
+- AUTO-0020 a strict project-state manifest, offline/read-only coherence
+  validator, and Quality enforcement for six canonical documents.
 
-The control path is intentionally layered. GitHub is the external control/audit plane, the local
-user-scoped worker is the execution bridge, and OpenCode remains a loopback-only local executor for
-task classes that require it. The `quality_verify` path is deterministic and read-only and does not
-require OpenCode.
-
-## Vision
-
-Build engineering infrastructure that lets humans and AI assistants collaborate using consistent,
-testable tools, standards, workflows, and project structure.
+GitHub is the external control/audit plane. The installed user-scoped worker is
+the local bridge. OpenCode remains loopback-only for task classes that require
+it. `quality_verify` is deterministic/read-only and does not require OpenCode.
+AUTO-0019 recovery does not call either path.
 
 ## Current Objectives
 
-- Maintain the completed MCP Foundation, SDK-0001, TOOL/SAFE/REL/CI foundations, and AUTO-0001
-  through AUTO-0017 within their approved boundaries.
-- Preserve AUTO-0007 as the permanent read-only reconciliation planner and keep AUTO-0008 through
-  AUTO-0012 execution authority layered, explicit, guarded, and evidence-producing.
-- Preserve AUTO-0013 as bounded remote read-only control transport and AUTO-0014 as local worker
-  lifecycle supervision without adding remote mutation authority.
-- Preserve AUTO-0015 exact post-merge Quality verification as fail-closed and read-only: workflow
-  `.github/workflows/quality.yml`, branch `master`, event `push`, exact target `head_sha`, terminal
-  `completed`, successful conclusion.
-- Maintain AUTO-0016 portable workstation bootstrap/doctor behavior, canonical worker identity
-  `ai-engineering-worker.service`, discovery-before-action rules, deterministic `READY` / `NOT_READY`
-  semantics, and the narrow read-only Quality relay.
-- Preserve AUTO-0018 typed failure taxonomy, bounded protocol-rejection diagnostics, bounded read retry/backoff, low-noise transport state observability, and fail-closed stale-workspace diagnosis without hidden repository repair.
-- Keep workstation-local paths, usernames, credentials, tokens, private environment values, and
-  unrelated machine metadata out of public repository evidence.
-- Keep package installation, workstation repair, service-control mutation, credential mutation,
-  workflow rerun/cancel/dispatch, deployment/publication, and new remote write/apply authority behind
-  separately approved contracts.
-- Complete AUTO-0018-06 final reconciliation through exact PR-head and post-merge Quality gates before declaring the milestone complete.
+- Preserve all completed foundations and AUTO-0001 through AUTO-0019 within
+  their approved authority boundaries.
+- Complete AUTO-0020-05 by reconciling the six governed documents with exact
+  verified AUTO-0019 closure and active AUTO-0020 state.
+- Keep `docs/CANONICAL_PROJECT_STATE.json` strict, minimal, and typed.
+- Keep coherence validation deterministic, offline, read-only, fail-closed,
+  and limited to declared document projections.
+- Keep workstation-local paths, usernames, credentials, tokens, private
+  environment values, and unrelated machine metadata out of public evidence.
+- Keep package installation, workstation repair, service-control mutation,
+  workflow rerun/cancel/dispatch, deployment/publication, and new remote
+  write/apply authority behind separately approved contracts.
 
 ## Engineering Principles
 
 - Documentation before implementation.
-- Preserve originals; extend, never replace.
+- Preserve originals; extend rather than replace public contracts.
 - Public API boundaries and explicit dependencies.
 - Single responsibility and testability first.
 - Small, reviewable, atomic changes.
-- Evidence over stale narrative for canonical current-state documents.
+- Typed evidence over stale narrative for current-state claims.
 - Fail closed at authority and verification boundaries.
+
+## Verified Baselines
+
+AUTO-0019 final reconciliation is verified on exact `master`
+`c287e5cceef4e72148de7674f4095fedb78bd302` through push-triggered Quality
+#394 (run id `32484748127`).
+
+AUTO-0020-04 Quality integration is verified on exact `master`
+`e62f69d4db2f288bb072cfa38108d5872d5ebdb4` through pre-merge Quality #401
+and push-triggered Quality #402. AUTO-0020-05 is the active documentation and
+repository-wide evidence stage.
 
 ## Release Boundary
 
-The current published release remains Git tag `v0.2.0` and GitHub Release `AI-Engineering 0.2.0`,
-targeting exact candidate `1faf14c121b7b5da7c8781e3de4e836f85838a76`. Later AUTO milestones
-were implemented on `master` and are not retroactively inserted into that immutable release.
-Historical `v0.1.0` remains preserved. PyPI remains not approved and not published.
-
-## Current Engineering Baseline
-
-The last verified merged baseline before AUTO-0018-06 is exact `master`
-`b59f651b4719f8463b3cde1132980a1cf340ad10`, after AUTO-0018-05 installed/E2E evidence.
-
-AUTO-0018-01 through AUTO-0018-05 are COMPLETE / VERIFIED for their approved scopes. The installed
-worker demonstrated typed `expected_head_mismatch` failure without automatic repository mutation and
-successful exact-head Quality verification after explicit operator synchronization. The successful
-post-merge relay for the current baseline used Quality run `32379177746`, workflow id `334955954`,
-branch/event `master` / `push`, exact head `b59f651b4719f8463b3cde1132980a1cf340ad10`,
-`completed/success`, `satisfies_gate=true`, and clean pre/post evidence.
-
-AUTO-0018-06 is now the active documentation/evidence reconciliation stage. It does not add runtime
-behavior or authority. AUTO-0018 becomes COMPLETE / VERIFIED only after this stage passes exact
-PR-head Quality, merges with expected-head protection, and the exact merged `master` push passes the
-read-only post-merge Quality relay.
-
-The milestone continues to forbid new remote write/apply authority, automatic repository repair,
-workflow rerun/cancel/dispatch, service-control mutation, credential mutation,
-publication/deployment/release changes, and expanded OpenCode authority.
+Git tag `v0.2.0` and GitHub Release `AI-Engineering 0.2.0` remain the
+published historical boundary, targeting exact candidate
+`1faf14c121b7b5da7c8781e3de4e836f85838a76`. Later AUTO milestones are on
+`master` and are not retroactively inserted into that immutable release.
+Historical `v0.1.0` remains preserved. PyPI remains not approved/not
+published.
 
 ## Reference Project
 
-AI-Archive-Server remains the Reference Project for engineering processes and documentation
-standards.
+AI-Archive-Server remains the Reference Project for engineering processes and
+documentation standards.
