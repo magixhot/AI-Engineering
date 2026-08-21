@@ -107,10 +107,13 @@ services, or expand reconciliation/OpenCode authority.
 - AUTO-0020-03 deterministic validator: COMPLETE / VERIFIED.
 - AUTO-0020-04 Quality integration/failure coverage: COMPLETE / VERIFIED.
 - AUTO-0020-05 canonical document reconciliation/repository-wide evidence:
-  ACTIVE.
-- AUTO-0020-06 final reconciliation/next-milestone audit: PENDING.
+  COMPLETE / VERIFIED.
+- AUTO-0020-06 final reconciliation/next-milestone audit: ACTIVE.
 
 AUTO-0019 closed at exact `master`
 `c287e5cceef4e72148de7674f4095fedb78bd302` through Quality #394.
-AUTO-0020-04 merged at exact `master`
-`e62f69d4db2f288bb072cfa38108d5872d5ebdb4` through Quality #401/#402.
+AUTO-0020-05 merged at exact `master`
+`6e19e5f7ee35ee818a9b0ea1c8257d7f2609e364` through Quality #403/#404.
+
+Schema v1 has no quiescent/completed-without-successor lifecycle value. The
+AUTO-0020-06 audit must not fabricate AUTO-0021 or change that contract.

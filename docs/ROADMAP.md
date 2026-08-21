@@ -1,7 +1,7 @@
 # AI-Engineering Roadmap
 
 <!-- canonical-project-state
-{"schema_version":1,"completed_through":"AUTO-0019","active_milestone":"AUTO-0020","active_stage":"AUTO-0020-05","active_state":"IMPLEMENTATION_ACTIVE"}
+{"schema_version":1,"completed_through":"AUTO-0019","active_milestone":"AUTO-0020","active_stage":"AUTO-0020-06","active_state":"FINAL_RECONCILIATION_ACTIVE"}
 -->
 
 ## Completed / Verified
@@ -76,7 +76,7 @@ AUTO-0019 preserves the existing task-class and authority boundaries. It does no
 
 ## AUTO-0020 — Canonical Project-State Documentation Coherence Gate
 
-**Status:** IMPLEMENTATION ACTIVE
+**Status:** FINAL RECONCILIATION ACTIVE
 
 The fresh post-AUTO-0019 audit found that the six canonical bootstrap/state
 documents disagreed about the completed and active milestone state. At the
@@ -94,17 +94,17 @@ Delivery state:
 2. AUTO-0020-02 — typed canonical-state manifest and strict parser: COMPLETE / VERIFIED.
 3. AUTO-0020-03 — deterministic read-only cross-document validator: COMPLETE / VERIFIED.
 4. AUTO-0020-04 — Quality integration and failure-mode coverage: COMPLETE / VERIFIED.
-5. AUTO-0020-05 — canonical document reconciliation and repository-wide evidence: ACTIVE.
-6. AUTO-0020-06 — final reconciliation / next-milestone audit: PENDING.
+5. AUTO-0020-05 — canonical document reconciliation and repository-wide evidence: COMPLETE / VERIFIED.
+6. AUTO-0020-06 — final reconciliation / next-milestone audit: ACTIVE.
 
 AUTO-0020-04 merged through PR #194 as exact `master`
 `e62f69d4db2f288bb072cfa38108d5872d5ebdb4` after Quality #401/#402.
+AUTO-0020-05 merged through PR #195 as exact `master`
+`6e19e5f7ee35ee818a9b0ea1c8257d7f2609e364` after Quality #403/#404.
 
 ## Current Priority
 
-Complete AUTO-0020-05 canonical document reconciliation and repository-wide
-coherence evidence through the normal exact PR-head Quality gate,
-expected-head-protected merge, and exact post-merge `master` push Quality
-gate.
-
-Do not start AUTO-0020-06 before that gate succeeds.
+Complete AUTO-0020-06 final audit and exact Quality gates. The audit must not
+declare AUTO-0021 or change the schema v1 lifecycle model. A separate approved
+decision is required to represent a completed milestone with no active
+successor.

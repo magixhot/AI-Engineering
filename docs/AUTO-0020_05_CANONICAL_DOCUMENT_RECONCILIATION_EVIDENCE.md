@@ -17,9 +17,8 @@ for AUTO-0020-04.
 The repository-wide current state is:
 
 - AUTO-0001 through AUTO-0019: COMPLETE / VERIFIED;
-- AUTO-0020-01 through AUTO-0020-04: COMPLETE / VERIFIED;
-- AUTO-0020-05: ACTIVE;
-- AUTO-0020-06: PENDING;
+- AUTO-0020-01 through AUTO-0020-05: COMPLETE / VERIFIED;
+- AUTO-0020-06: ACTIVE;
 - historical release boundary: `v0.2.0`;
 - PyPI: not approved / not published.
 
@@ -82,3 +81,10 @@ AUTO-0020-05 becomes COMPLETE / VERIFIED only after:
    `master` SHA.
 
 AUTO-0020-06 must not start before those conditions are satisfied.
+
+## Closure Outcome
+
+PR #195 passed pre-merge Quality #403, merged with expected-head protection as
+exact `master` `6e19e5f7ee35ee818a9b0ea1c8257d7f2609e364`, and that SHA passed
+push-triggered Quality #404 (run id `32491943719`). AUTO-0020-05 is therefore
+COMPLETE / VERIFIED.

@@ -1,7 +1,7 @@
 # AI-Engineering — Master Documentation Index
 
 <!-- canonical-project-state
-{"schema_version":1,"completed_through":"AUTO-0019","active_milestone":"AUTO-0020","active_stage":"AUTO-0020-05","active_state":"IMPLEMENTATION_ACTIVE"}
+{"schema_version":1,"completed_through":"AUTO-0019","active_milestone":"AUTO-0020","active_stage":"AUTO-0020-06","active_state":"FINAL_RECONCILIATION_ACTIVE"}
 -->
 
 ## Canonical Project Documents
@@ -32,7 +32,8 @@
 | AUTO-0018 design/installed/final evidence | Control-plane reliability and observability | Complete / Verified |
 | AUTO-0019 design/recovery/installed/final evidence | Aged unresolved-claim terminalization without replay | Complete / Verified |
 | AUTO-0020_CANONICAL_PROJECT_STATE_DOCUMENTATION_COHERENCE_GATE_DESIGN.md | Manifest, validator, Quality gate, and reconciliation contract | Active |
-| AUTO-0020_05_CANONICAL_DOCUMENT_RECONCILIATION_EVIDENCE.md | Six-document reconciliation and repository-wide coherence evidence | Active |
+| AUTO-0020_05_CANONICAL_DOCUMENT_RECONCILIATION_EVIDENCE.md | Six-document reconciliation and repository-wide coherence evidence | Complete / Verified |
+| AUTO-0020_06_FINAL_RECONCILIATION_NEXT_MILESTONE_AUDIT.md | Final coherence closure and terminal-state modeling audit | Active |
 
 ## Active Engineering Work
 
@@ -41,9 +42,8 @@
 | MCP / SDK / tooling foundations | COMPLETE / VERIFIED |
 | Release line v0.2.0 | VERIFIED HISTORICAL LINE |
 | AUTO-0001 through AUTO-0019 | COMPLETE / VERIFIED |
-| AUTO-0020-01 through AUTO-0020-04 | COMPLETE / VERIFIED |
-| AUTO-0020-05 Canonical Document Reconciliation / Repository-Wide Evidence | ACTIVE |
-| AUTO-0020-06 Final Reconciliation / Next-Milestone Audit | PENDING |
+| AUTO-0020-01 through AUTO-0020-05 | COMPLETE / VERIFIED |
+| AUTO-0020-06 Final Reconciliation / Next-Milestone Audit | ACTIVE |
 
 ## AUTO-0020 Delivery Evidence
 
@@ -53,8 +53,8 @@
 | AUTO-0020-02 Typed Manifest / Strict Parser | PR #192; Quality #397/#398; exact merge `85597fcc8e9acc0240330f31f6d9a904175d0e44` |
 | AUTO-0020-03 Read-Only Validator | PR #193; Quality #399/#400; exact merge `a9abe654ee3f2b42bab3fd2684ac27be463dbb73` |
 | AUTO-0020-04 Quality Integration / Failure Coverage | PR #194; Quality #401/#402; exact merge `e62f69d4db2f288bb072cfa38108d5872d5ebdb4` |
-| AUTO-0020-05 Canonical Reconciliation / Repository-Wide Evidence | ACTIVE |
-| AUTO-0020-06 Final Reconciliation / Next Audit | PENDING |
+| AUTO-0020-05 Canonical Reconciliation / Repository-Wide Evidence | PR #195; Quality #403/#404; exact merge `6e19e5f7ee35ee818a9b0ea1c8257d7f2609e364` |
+| AUTO-0020-06 Final Reconciliation / Next Audit | ACTIVE |
 
 ## Active Source and Tests
 
@@ -82,5 +82,5 @@ repository mutation authority.
 
 ## Current Continuation Point
 
-Complete AUTO-0020-05 repository-wide coherence evidence and its exact
-pre-merge/post-merge Quality gates. Start AUTO-0020-06 only afterward.
+Complete AUTO-0020-06 and its exact gates. Do not declare AUTO-0021 or change
+the schema lifecycle model without a separately approved decision.
