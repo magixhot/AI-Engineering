@@ -129,6 +129,20 @@ AUTO-0019 must fail closed under the following races:
 
 The design does not require distributed locking. It requires deterministic reinspection immediately before publication and no executor replay. Duplicate recovery comments must be prevented where the existing GitHub evidence model permits; if an unavoidable ambiguous-write edge remains, it must be documented explicitly rather than hidden by retry.
 
+AUTO-0019-04 adds a process-local fence after an ambiguous recovery-publication
+failure. The same worker process will not retry that request, regardless of
+whether the failed call wrote the comment before returning the error. A later
+visible recovery comment remains protected by normal terminal-evidence
+inspection.
+
+This fence cannot eliminate a true simultaneous race between separate worker
+processes: both may complete their final reinspection before either publication
+is visible. It also cannot preserve an ambiguous-before-write decision across a
+process restart. Eliminating those edges would require an approved atomic
+server-side idempotency primitive, durable shared state, or a distributed lock;
+none is introduced by this milestone. The safety invariant remains fail-closed:
+publication is single-attempt and the claimed request is never replayed.
+
 ## Operator workflow
 
 Normal request handling remains unchanged:

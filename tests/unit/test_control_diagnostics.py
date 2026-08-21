@@ -143,5 +143,6 @@ def test_failure_taxonomy_includes_all_design_required_categories() -> None:
         "executor_failure",
         "quality_verification_failure",
         "claim_recovery_required",
+        "claim_recovery_publication_ambiguous",
         "success",
     }

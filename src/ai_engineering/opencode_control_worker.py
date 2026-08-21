@@ -433,6 +433,7 @@ class GitHubControlWorker:
         self._recovery_grace_seconds = recovery_grace_seconds
         self._clock = clock
         self._transport_read_failed = False
+        self._ambiguous_recovery_publications: set[str] = set()
 
     def _list_comments_fail_closed(self) -> list[IssueComment] | None:
         try:
@@ -514,7 +515,11 @@ class GitHubControlWorker:
         latest_claims = self._latest_claims(trusted_comments)
 
         for request_id, claim in latest_claims.items():
-            if request_id in terminal or not self._claim_is_aged(claim):
+            if (
+                request_id in terminal
+                or request_id in self._ambiguous_recovery_publications
+                or not self._claim_is_aged(claim)
+            ):
                 continue
             origin = valid_requests.get(request_id)
             if origin is None:
@@ -545,7 +550,19 @@ class GitHubControlWorker:
                 task_class=request.task_class,
                 repository=request.repository,
             )
-            self._transport.post_comment(format_recovery_comment(evidence))
+            try:
+                self._transport.post_comment(format_recovery_comment(evidence))
+            except ControlWorkerError:
+                self._ambiguous_recovery_publications.add(request_id)
+                print(
+                    _structured_local_event(
+                        ControlFailureKind.CLAIM_RECOVERY_PUBLICATION_AMBIGUOUS,
+                        "failed_closed",
+                        request_id=request_id,
+                    ),
+                    file=sys.stderr,
+                )
+                return None
             return request_id
         return None
 

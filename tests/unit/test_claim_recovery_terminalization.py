@@ -12,6 +12,7 @@ from ai_engineering.opencode_control_protocol import (
 )
 from ai_engineering.opencode_control_worker import (
     RECOVERY_FENCE,
+    ControlWorkerError,
     GitHubControlWorker,
     IssueComment,
     format_claim_comment,
@@ -37,6 +38,61 @@ class SequencedTransport:
 
     def post_comment(self, body: str) -> None:
         self.posted.append(body)
+
+
+class SharedCommentChannel:
+    def __init__(self, comments: Iterable[IssueComment]) -> None:
+        self.comments = list(comments)
+        self.posted: list[str] = []
+
+    def publish(self, body: str) -> None:
+        self.posted.append(body)
+        self.comments.append(
+            IssueComment(
+                self.comments[-1].comment_id + 1,
+                "magixhot",
+                body,
+                BASE_TIME,
+            )
+        )
+
+
+class StaleFirstReadTransport:
+    def __init__(
+        self,
+        channel: SharedCommentChannel,
+        initial: Iterable[IssueComment],
+    ) -> None:
+        self._channel = channel
+        self._initial = list(initial)
+        self.reads = 0
+
+    def list_comments(self) -> list[IssueComment]:
+        self.reads += 1
+        if self.reads == 1:
+            return list(self._initial)
+        return list(self._channel.comments)
+
+    def post_comment(self, body: str) -> None:
+        self._channel.publish(body)
+
+
+class AmbiguousPostTransport(SequencedTransport):
+    def __init__(
+        self,
+        batches: Iterable[Iterable[IssueComment]],
+        *,
+        write_before_error: bool,
+    ) -> None:
+        super().__init__(batches)
+        self._write_before_error = write_before_error
+        self.post_attempts = 0
+
+    def post_comment(self, body: str) -> None:
+        self.post_attempts += 1
+        if self._write_before_error:
+            self.posted.append(body)
+        raise ControlWorkerError("private transport failure detail")
 
 
 def make_request() -> ControlRequest:
@@ -213,3 +269,81 @@ def test_newer_claim_seen_during_reinspection_suppresses_recovery() -> None:
     assert worker.poll_once() is None
     assert transport.reads == 2
     assert transport.posted == []
+
+
+def test_sequential_workers_reinspect_shared_channel_before_publication() -> None:
+    request, initial = claim_fixture(claim_age_seconds=301)
+    channel = SharedCommentChannel(initial)
+    first_transport = StaleFirstReadTransport(channel, initial)
+    second_transport = StaleFirstReadTransport(channel, initial)
+    first_worker = GitHubControlWorker(
+        transport=first_transport,
+        executor=never_execute,
+        recovery_grace_seconds=300,
+        clock=lambda: BASE_TIME,
+    )
+    second_worker = GitHubControlWorker(
+        transport=second_transport,
+        executor=never_execute,
+        recovery_grace_seconds=300,
+        clock=lambda: BASE_TIME,
+    )
+
+    assert first_worker.poll_once() == request.request_id
+    assert second_worker.poll_once() is None
+    assert first_transport.reads == 2
+    assert second_transport.reads == 2
+    assert len(channel.posted) == 1
+
+
+def test_ambiguous_before_write_is_fenced_without_retry(
+    capsys: object,
+) -> None:
+    request, comments = claim_fixture(claim_age_seconds=301)
+    transport = AmbiguousPostTransport(
+        [comments, comments],
+        write_before_error=False,
+    )
+    worker = GitHubControlWorker(
+        transport=transport,
+        executor=never_execute,
+        recovery_grace_seconds=300,
+        clock=lambda: BASE_TIME,
+    )
+
+    assert worker.poll_once() is None
+    assert worker.poll_once() is None
+    assert transport.post_attempts == 1
+    assert transport.posted == []
+    diagnostic = capsys.readouterr().err  # type: ignore[attr-defined]
+    assert diagnostic.count("claim_recovery_publication_ambiguous") == 1
+    assert '"state":"failed_closed"' in diagnostic
+    assert request.request_id in diagnostic
+    assert "private transport failure detail" not in diagnostic
+
+
+def test_ambiguous_after_write_is_fenced_without_retry(
+    capsys: object,
+) -> None:
+    request, comments = claim_fixture(claim_age_seconds=301)
+    transport = AmbiguousPostTransport(
+        [comments, comments],
+        write_before_error=True,
+    )
+    worker = GitHubControlWorker(
+        transport=transport,
+        executor=never_execute,
+        recovery_grace_seconds=300,
+        clock=lambda: BASE_TIME,
+    )
+
+    assert worker.poll_once() is None
+    assert worker.poll_once() is None
+    assert transport.post_attempts == 1
+    assert len(transport.posted) == 1
+    assert transport.posted[0].startswith(f"```{RECOVERY_FENCE}\n")
+    diagnostic = capsys.readouterr().err  # type: ignore[attr-defined]
+    assert diagnostic.count("claim_recovery_publication_ambiguous") == 1
+    assert '"state":"failed_closed"' in diagnostic
+    assert request.request_id in diagnostic
+    assert "private transport failure detail" not in diagnostic
