@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-import tomllib
 from pathlib import Path
+import tomllib
 
 from ai_engineering import public_cli
 from ai_engineering.mcp.config import MCPConfig
