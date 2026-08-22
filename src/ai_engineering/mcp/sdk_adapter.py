@@ -29,13 +29,15 @@ class SDKAdapter:
     def __init__(
         self,
         registry: CompositeRegistry,
+        *,
+        version: str,
     ) -> None:
 
         self._registry = registry
 
         self._server = Server(
             name="AI-Engineering",
-            version="0.1.0",
+            version=version,
         )
 
         self._register_handlers()
@@ -119,7 +121,6 @@ class SDKAdapter:
                 internal_name,
             )
 
-            # Ensure the result is formatted as a string for TextContent
             result_type = type(result).__name__
 
             if not isinstance(result, str):
@@ -131,7 +132,7 @@ class SDKAdapter:
                 text_result = result
 
             if runtime_logger:
-                size = len(text_result.encode('utf-8'))
+                size = len(text_result.encode("utf-8"))
                 runtime_logger.info(
                     f"Tool result: {internal_name}"
                     f" ({elapsed * 1000:.1f} ms)"
