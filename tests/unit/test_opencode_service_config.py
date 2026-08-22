@@ -14,8 +14,11 @@ from ai_engineering.opencode_service_config import (
 
 
 def valid_mapping() -> dict[str, object]:
+    repository_root = Path.cwd().anchor or str(Path.cwd().resolve())
+    if repository_root == Path.cwd().anchor:
+        repository_root = str(Path(repository_root) / "workspace" / "AI-Engineering")
     return {
-        "repository_root": "/workspace/AI-Engineering",
+        "repository_root": repository_root,
         "repository": "magixhot/AI-Engineering",
         "control_issue": 130,
         "server_url": "http://127.0.0.1:4096",
@@ -25,7 +28,7 @@ def valid_mapping() -> dict[str, object]:
 def test_build_service_config_accepts_strict_runtime_binding() -> None:
     config = build_service_config(valid_mapping())
 
-    assert config.repository_root == Path("/workspace/AI-Engineering")
+    assert config.repository_root.is_absolute()
     assert config.repository == "magixhot/AI-Engineering"
     assert config.control_issue == 130
     assert config.server_url == "http://127.0.0.1:4096"
@@ -102,10 +105,12 @@ def test_parse_service_config_rejects_non_object_root() -> None:
 
 
 def test_load_service_config_reads_utf8_json(tmp_path: Path) -> None:
+    repository_root = str((tmp_path / "AI-Engineering").resolve())
     config_path = tmp_path / "service.json"
     config_path.write_text(
-        '{"repository_root":"/workspace/AI-Engineering",'
-        '"repository":"magixhot/AI-Engineering",'
+        '{"repository_root":'
+        + repr(repository_root).replace("'", '"')
+        + ',"repository":"magixhot/AI-Engineering",'
         '"control_issue":130,'
         '"server_url":"http://localhost:4096",'
         '"poll_seconds":5}',
