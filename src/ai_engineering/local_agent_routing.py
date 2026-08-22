@@ -186,11 +186,15 @@ def decide_route(request: RoutingRequest) -> RoutingDecision:
 
 def _parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--task-class", choices=TaskClass, required=True)
+    parser.add_argument(
+        "--task-class",
+        choices=[member.value for member in TaskClass],
+        required=True,
+    )
     parser.add_argument(
         "--local-state",
-        choices=LocalState,
-        default=LocalState.NOT_ATTEMPTED,
+        choices=[member.value for member in LocalState],
+        default=LocalState.NOT_ATTEMPTED.value,
     )
     parser.add_argument("--deterministic-verification", action="store_true")
     parser.add_argument("--local-unavailable", action="store_true")
