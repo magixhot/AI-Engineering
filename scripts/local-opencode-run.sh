@@ -11,6 +11,19 @@ EOF
   exit 2
 }
 
+git_fingerprint() {
+  {
+    printf 'branch\0%s\0' "$(git branch --show-current)"
+    printf 'head\0%s\0' "$(git rev-parse HEAD)"
+    printf 'status\0'
+    git --no-optional-locks status --porcelain=v1 --untracked-files=all -z
+    printf '\0worktree-diff\0'
+    git diff --binary
+    printf '\0index-diff\0'
+    git diff --cached --binary
+  } | sha256sum | awk '{print $1}'
+}
+
 role="${1:-}"
 [[ -n "$role" ]] || usage
 shift
@@ -104,13 +117,20 @@ if [[ "$role" == "implementer" ]]; then
   exit 0
 fi
 
+before_fingerprint="$(git_fingerprint)"
+
 if [[ "$role" == "verifier" ]]; then
   exec 9>"$lock_path"
   if ! flock -n 9; then
     echo "BLOCKED: writer is active in this worktree" >&2
     exit 3
   fi
-  flock -u 9
 fi
 
 opencode run --agent "$role" --model "$model" "$objective"
+
+after_fingerprint="$(git_fingerprint)"
+if [[ "$after_fingerprint" != "$before_fingerprint" ]]; then
+  echo "FAIL: read-only agent changed repository state" >&2
+  exit 4
+fi
