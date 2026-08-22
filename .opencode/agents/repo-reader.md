@@ -1,6 +1,6 @@
 ---
 description: Bounded read-only repository inspection for INFRA-0001.
-mode: subagent
+mode: primary
 permission:
   read:
     "*": allow
