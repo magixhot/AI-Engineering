@@ -1,6 +1,5 @@
 from pathlib import Path
 
-
 AGENT_FILES = (
     Path(".opencode/agents/repo-reader.md"),
     Path(".opencode/agents/verifier.md"),
