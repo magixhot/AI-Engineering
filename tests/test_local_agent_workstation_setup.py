@@ -1,6 +1,5 @@
 from pathlib import Path
 
-
 BOOTSTRAP = Path("scripts/bootstrap-local-agent.sh")
 VERIFY = Path("scripts/verify-local-agent.sh")
 SETUP_DOC = Path("docs/LOCAL_AGENT_WORKSTATION_SETUP.md")
