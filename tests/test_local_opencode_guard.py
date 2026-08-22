@@ -1,12 +1,16 @@
 from __future__ import annotations
 
-import fcntl
 import hashlib
 import os
 import subprocess
 from pathlib import Path
 
 import pytest
+
+fcntl = pytest.importorskip(
+    "fcntl",
+    reason="local OpenCode guard uses the POSIX bash/flock/fcntl workstation contract",
+)
 
 SCRIPT = Path(__file__).resolve().parents[1] / "scripts" / "local-opencode-run.sh"
 
