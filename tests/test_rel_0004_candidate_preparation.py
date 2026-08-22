@@ -1,12 +1,11 @@
 from __future__ import annotations
 
-from pathlib import Path
 import tomllib
+from pathlib import Path
 
 from ai_engineering import public_cli
 from ai_engineering.mcp.config import MCPConfig
 from ai_engineering.version import VERSION
-
 
 ROOT = Path(__file__).resolve().parents[1]
 
