@@ -104,7 +104,9 @@ def test_cli_validates_evidence(tmp_path: Path, capsys) -> None:
                     "repository_clean_before": observation.repository_clean_before,
                     "repository_clean_after": observation.repository_clean_after,
                     "head_unchanged": observation.head_unchanged,
-                    "deterministic_check_passed": observation.deterministic_check_passed,
+                    "deterministic_check_passed": (
+                        observation.deterministic_check_passed
+                    ),
                 }
                 for observation in _passing_observations()
             ]
