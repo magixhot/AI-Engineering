@@ -40,7 +40,11 @@ def _run(command: list[str], *, cwd: Path, environment: dict[str, str]) -> str:
 
 def _venv_executable(venv_directory: Path, name: str) -> Path:
     scripts = venv_directory / ("Scripts" if os.name == "nt" else "bin")
-    suffix = ".exe" if os.name == "nt" and name in {"python", "ai-engineering"} else ""
+    suffix = (
+        ".exe"
+        if os.name == "nt" and name in {"python", "ai-engineering"}
+        else ""
+    )
     return scripts / f"{name}{suffix}"
 
 
@@ -105,9 +109,11 @@ def test_rel_0004_distribution_boundary_and_installed_mcp(tmp_path: Path) -> Non
                 "-c",
                 (
                     "import importlib.metadata as m, json; "
-                    "eps=[(e.name,e.value) for e in m.entry_points(group='console_scripts') "
+                    "eps=[(e.name,e.value) for e in "
+                    "m.entry_points(group='console_scripts') "
                     "if e.dist and e.dist.name=='ai-engineering']; "
-                    "print(json.dumps({'version':m.version('ai-engineering'),'eps':eps}))"
+                    "print(json.dumps({"
+                    "'version':m.version('ai-engineering'),'eps':eps}))"
                 ),
             ],
             cwd=isolated,
@@ -139,7 +145,10 @@ def test_rel_0004_distribution_boundary_and_installed_mcp(tmp_path: Path) -> Non
         [
             str(python),
             "-c",
-            "from mcp.types import LATEST_PROTOCOL_VERSION; print(LATEST_PROTOCOL_VERSION)",
+            (
+                "from mcp.types import LATEST_PROTOCOL_VERSION; "
+                "print(LATEST_PROTOCOL_VERSION)"
+            ),
         ],
         cwd=isolated,
         environment=environment,
@@ -166,7 +175,11 @@ def test_rel_0004_distribution_boundary_and_installed_mcp(tmp_path: Path) -> Non
         timeout=20,
         check=True,
     )
-    responses = [json.loads(line) for line in process.stdout.splitlines() if line.strip()]
+    responses = [
+        json.loads(line)
+        for line in process.stdout.splitlines()
+        if line.strip()
+    ]
     response = next(item for item in responses if item.get("id") == request_id)
     assert "error" not in response
     assert response["result"]["serverInfo"] == {
