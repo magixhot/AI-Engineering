@@ -14,6 +14,7 @@ from mcp.server import Server
 from mcp.types import CallToolResult, TextContent
 
 from ..registry.composite import CompositeRegistry
+from ..version import VERSION
 from .debug import get_runtime_logger
 from .name_mapper import ToolNameMapper
 
@@ -30,7 +31,7 @@ class SDKAdapter:
         self,
         registry: CompositeRegistry,
         *,
-        version: str,
+        version: str = VERSION,
     ) -> None:
 
         self._registry = registry
