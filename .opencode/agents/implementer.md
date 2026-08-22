@@ -1,6 +1,6 @@
 ---
 description: Scope-bounded write-capable implementation agent for INFRA-0001.
-mode: subagent
+mode: primary
 permission:
   read:
     "*": allow

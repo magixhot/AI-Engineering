@@ -1,6 +1,6 @@
 ---
 description: Read-only deterministic verification agent for INFRA-0001.
-mode: subagent
+mode: primary
 permission:
   read:
     "*": allow
