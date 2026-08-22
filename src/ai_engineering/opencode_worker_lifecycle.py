@@ -3,14 +3,14 @@
 from __future__ import annotations
 
 import argparse
-import fcntl
 import hashlib
+import importlib
 import json
 import os
 import time
 from contextlib import AbstractContextManager
 from pathlib import Path
-from typing import Callable, TextIO
+from typing import Any, Callable, TextIO
 
 from .control_diagnostics import ControlFailureKind
 from .opencode_control_protocol import (
@@ -32,6 +32,11 @@ from .opencode_readonly_adapter import (
 )
 from .opencode_service_config import ServiceRuntimeConfig, load_service_config
 from .quality_gate_relay import execute_quality_verify
+
+try:
+    _fcntl: Any = importlib.import_module("fcntl")
+except ImportError:
+    _fcntl = None
 
 
 class WorkerLifecycleError(RuntimeError):
@@ -65,11 +70,13 @@ class SingleInstanceLock(AbstractContextManager["SingleInstanceLock"]):
         return self._path
 
     def __enter__(self) -> "SingleInstanceLock":
+        if _fcntl is None:
+            raise WorkerLifecycleError("worker lifecycle lock requires POSIX fcntl")
         try:
             self._runtime_dir.mkdir(mode=0o700, parents=True, exist_ok=True)
             handle = self._path.open("a+", encoding="utf-8")
             os.chmod(self._path, 0o600)
-            fcntl.flock(handle.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
+            _fcntl.flock(handle.fileno(), _fcntl.LOCK_EX | _fcntl.LOCK_NB)
         except BlockingIOError as exc:
             if "handle" in locals():
                 handle.close()
@@ -86,7 +93,7 @@ class SingleInstanceLock(AbstractContextManager["SingleInstanceLock"]):
         self._handle = None
         if handle is not None:
             try:
-                fcntl.flock(handle.fileno(), fcntl.LOCK_UN)
+                _fcntl.flock(handle.fileno(), _fcntl.LOCK_UN)
             finally:
                 handle.close()
         return None

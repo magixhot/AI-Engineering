@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 from pathlib import Path
 
 import pytest
@@ -10,6 +11,11 @@ from ai_engineering.opencode_worker_lifecycle import (
     WorkerLifecycleError,
     lifecycle_key,
     run_lifecycle,
+)
+
+requires_posix_lock = pytest.mark.skipif(
+    os.name == "nt",
+    reason="worker lifecycle locking is the POSIX fcntl contract used by WSL/Linux",
 )
 
 
@@ -31,6 +37,7 @@ def test_lifecycle_key_is_deterministic_and_path_independent(tmp_path: Path) -> 
     assert len(lifecycle_key(first)) == 24
 
 
+@requires_posix_lock
 def test_single_instance_lock_rejects_second_active_instance(tmp_path: Path) -> None:
     runtime_dir = (tmp_path / "runtime").resolve()
     key = "a" * 24
@@ -42,6 +49,7 @@ def test_single_instance_lock_rejects_second_active_instance(tmp_path: Path) -> 
                 pass
 
 
+@requires_posix_lock
 def test_lock_is_reacquirable_after_clean_exit(tmp_path: Path) -> None:
     runtime_dir = (tmp_path / "runtime").resolve()
     key = "b" * 24
@@ -52,6 +60,7 @@ def test_lock_is_reacquirable_after_clean_exit(tmp_path: Path) -> None:
         pass
 
 
+@requires_posix_lock
 def test_lifecycle_invokes_runner_once_under_lock(tmp_path: Path) -> None:
     config = make_config((tmp_path / "repo").resolve())
     runtime_dir = (tmp_path / "runtime").resolve()
