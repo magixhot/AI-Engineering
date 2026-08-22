@@ -144,7 +144,7 @@ def test_stdio_initialize_is_protocol_only_and_exits_cleanly() -> None:
         assert isinstance(result["capabilities"], dict)
         assert result["serverInfo"] == {
             "name": "AI-Engineering",
-            "version": "0.1.0",
+            "version": "0.3.0",
         }
 
         initialized_notification = {

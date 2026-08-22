@@ -49,6 +49,40 @@ def _doctor_parser() -> argparse.ArgumentParser:
     return parser
 
 
+def _print_public_help(arguments: Sequence[str]) -> bool:
+    """Expose public wrapper-only routes in their parent help surfaces."""
+
+    if list(arguments) in (["--help"], ["-h"]):
+        print("usage: ai-engineering {project,workstation} ...")
+        print()
+        print("commands:")
+        print("  project      project engineering workflows")
+        print("  workstation  workstation readiness workflows")
+        return True
+    if list(arguments) in (
+        ["project", "reconcile", "--help"],
+        ["project", "reconcile", "-h"],
+    ):
+        print("usage: ai-engineering project reconcile {plan,apply,approve,run} ...")
+        print()
+        print("actions:")
+        print("  plan")
+        print("  apply")
+        print("  approve")
+        print("  run")
+        return True
+    if list(arguments) in (
+        ["workstation", "--help"],
+        ["workstation", "-h"],
+    ):
+        print("usage: ai-engineering workstation {doctor} ...")
+        print()
+        print("actions:")
+        print("  doctor")
+        return True
+    return False
+
+
 def _is_reconciliation_action(argv: Sequence[str], action: str) -> bool:
     return len(argv) >= 3 and list(argv[:3]) == ["project", "reconcile", action]
 
@@ -82,6 +116,8 @@ def main(argv: Sequence[str] | None = None) -> int:
     """Route doctor/approval/run while preserving all existing CLI commands."""
 
     arguments = list(sys.argv[1:] if argv is None else argv)
+    if _print_public_help(arguments):
+        return 0
     if _is_doctor_action(arguments):
         return _doctor_command(arguments[2:])
     if _is_reconciliation_action(arguments, "approve"):

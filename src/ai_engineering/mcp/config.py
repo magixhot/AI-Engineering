@@ -9,6 +9,8 @@ from __future__ import annotations
 from dataclasses import dataclass
 from pathlib import Path
 
+from ..version import VERSION
+
 
 @dataclass(slots=True)
 class MCPConfig:
@@ -17,7 +19,7 @@ class MCPConfig:
     """
 
     server_name: str = "ai-engineering"
-    server_version: str = "0.2.0"
+    server_version: str = VERSION
 
     workspace_root: Path = Path.cwd()
 

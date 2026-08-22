@@ -32,7 +32,10 @@ class EngineeringMCPServer:
         self._python_tools = PythonTools(self._python_service)
 
         self._register_builtin_tools()
-        self._sdk = SDKAdapter(self._registry)
+        self._sdk = SDKAdapter(
+            self._registry,
+            version=self._config.server_version,
+        )
 
     def _register_builtin_tools(self) -> None:
         self._registry.register(
