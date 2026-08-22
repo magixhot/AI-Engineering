@@ -96,7 +96,9 @@ def decide_route(request: RoutingRequest) -> RoutingDecision:
     if request.task_class in DIRECT_CODEX_CLASSES:
         return RoutingDecision(
             route=Route.CODEX_ESCALATE,
-            reason=f"task class {request.task_class.value} requires stronger reasoning",
+            reason=(
+                f"task class {request.task_class.value} requires stronger reasoning"
+            ),
             local_first=False,
             external_execution_authorized=False,
             codex_execution_authorized=False,
@@ -139,7 +141,10 @@ def decide_route(request: RoutingRequest) -> RoutingDecision:
         if external_ready:
             return RoutingDecision(
                 route=Route.EXTERNAL_EXPLICIT,
-                reason="local attempt did not pass; explicit external fallback is approved",
+                reason=(
+                    "local attempt did not pass; explicit external fallback "
+                    "is approved"
+                ),
                 local_first=True,
                 external_execution_authorized=True,
                 codex_execution_authorized=False,
@@ -182,7 +187,11 @@ def decide_route(request: RoutingRequest) -> RoutingDecision:
 def _parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--task-class", choices=TaskClass, required=True)
-    parser.add_argument("--local-state", choices=LocalState, default=LocalState.NOT_ATTEMPTED)
+    parser.add_argument(
+        "--local-state",
+        choices=LocalState,
+        default=LocalState.NOT_ATTEMPTED,
+    )
     parser.add_argument("--deterministic-verification", action="store_true")
     parser.add_argument("--local-unavailable", action="store_true")
     parser.add_argument("--external-fallback-approved", action="store_true")
